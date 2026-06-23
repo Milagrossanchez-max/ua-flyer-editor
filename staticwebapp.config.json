@@ -1,0 +1,50 @@
+# UA Flyer Editor - Prototipo seguro con login corporativo
+
+Editor web de flyers con templates cerrados, campos editables y login con Microsoft Entra ID.
+
+## Importante de seguridad
+Este proyecto esta preparado para usar Microsoft Entra ID, pero para que sea seguro de verdad se debe publicar en un entorno privado/autorizado:
+
+1. GitHub Enterprise Cloud con Pages privado y SSO corporativo, o
+2. GitHub como repositorio + despliegue a Azure Static Web Apps con Microsoft Entra ID, o
+3. Hosting interno aprobado por IT.
+
+No publicar informacion confidencial en GitHub Pages publico.
+
+## Configuracion necesaria
+Editar `config.js` con:
+
+- tenantId de Microsoft Entra ID de UA
+- clientId de la App Registration
+- redirectUri de la URL final
+- allowedDomains: dominios de correo UA permitidos
+
+```js
+window.UA_APP_CONFIG = {
+  enableAuth: true,
+  tenantId: "TU_TENANT_ID",
+  clientId: "TU_CLIENT_ID",
+  redirectUri: "https://TU_ORG.github.io/ua-flyer-editor/",
+  allowedDomains: ["universal-assistance.com"],
+  allowedGroups: []
+};
+```
+
+## Uso
+Abrir `index.html`. Si `enableAuth` esta en true, solicita login Microsoft.
+
+## Archivos principales
+- `index.html`: app
+- `styles.css`: estilos
+- `script.js`: editor de flyers
+- `auth.js`: login Microsoft Entra ID + validacion de dominio
+- `config.js`: configuracion de tenant/cliente/dominio
+- `staticwebapp.config.json`: ejemplo para Azure Static Web Apps
+
+## MVP incluido
+- 3 templates: Invitacion, Incentivo, Producto
+- Edicion en vivo
+- Colores/tamanos de fuente
+- Logo partner opcional
+- Imagen de fondo por URL
+- Exportacion a PNG/SVG

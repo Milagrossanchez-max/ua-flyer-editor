@@ -1,0 +1,77 @@
+(function(){
+  const cfg = window.UA_APP_CONFIG || {};
+  const loginScreen = () => document.getElementById('loginScreen');
+  const app = () => document.getElementById('app');
+  const loginError = () => document.getElementById('loginError');
+  const userEmail = () => document.getElementById('userEmail');
+
+  function getDomain(email){ return (email || '').split('@').pop().toLowerCase().trim(); }
+  function isAllowedEmail(email){
+    const domains = (cfg.allowedDomains || []).map(d => d.toLowerCase());
+    return domains.includes(getDomain(email));
+  }
+  function showApp(account){
+    loginScreen().classList.add('hidden');
+    app().classList.remove('hidden');
+    userEmail().textContent = account?.username || account?.name || 'Usuario UA';
+  }
+  function showLogin(message){
+    app().classList.add('hidden');
+    loginScreen().classList.remove('hidden');
+    if(message) loginError().textContent = message;
+  }
+
+  async function initAuth(){
+    if(!cfg.enableAuth){
+      showApp({ username:'demo@universal-assistance.com' });
+      return;
+    }
+
+    if(!window.msal){
+      showLogin('No se pudo cargar la librería de Microsoft Login. Revisar bloqueo de red o incluir MSAL local.');
+      return;
+    }
+
+    if(!cfg.clientId || cfg.clientId.includes('TU_') || !cfg.tenantId || cfg.tenantId.includes('TU_')){
+      showLogin('Falta configurar tenantId y clientId de Microsoft Entra ID en config.js.');
+      return;
+    }
+
+    const msalConfig = {
+      auth: {
+        clientId: cfg.clientId,
+        authority: `https://login.microsoftonline.com/${cfg.tenantId}`,
+        redirectUri: cfg.redirectUri
+      },
+      cache: { cacheLocation: 'sessionStorage', storeAuthStateInCookie: false }
+    };
+
+    const msalInstance = new msal.PublicClientApplication(msalConfig);
+    window.uaMsal = msalInstance;
+
+    try{
+      const response = await msalInstance.handleRedirectPromise();
+      const account = response?.account || msalInstance.getAllAccounts()[0];
+      if(account){
+        if(!isAllowedEmail(account.username)){
+          await msalInstance.logoutRedirect();
+          showLogin('Acceso denegado. Debe ingresar con un mail corporativo UA autorizado.');
+          return;
+        }
+        msalInstance.setActiveAccount(account);
+        showApp(account);
+      } else {
+        showLogin();
+      }
+    } catch(err){
+      showLogin('Error de autenticación: ' + (err.message || err));
+    }
+
+    document.getElementById('loginBtn').onclick = () => {
+      msalInstance.loginRedirect({ scopes: ['openid','profile','email','User.Read'], prompt: 'select_account' });
+    };
+    document.getElementById('logoutBtn').onclick = () => msalInstance.logoutRedirect();
+  }
+
+  window.addEventListener('DOMContentLoaded', initAuth);
+})();

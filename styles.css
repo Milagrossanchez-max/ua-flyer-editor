@@ -1,0 +1,131 @@
+(function(){
+  const templates = {
+    invitation: {
+      name:'Invitación', cls:'invitation',
+      fieldSubtitle:'Te esperamos en', fieldTitle:'Congreso\nde Agentes\nde Viajes.',
+      fieldDate:'Fecha:\nMiércoles 24.06.26', fieldTime:'Hora:\n23:00 hs', fieldPlace:'Lugar:\nAv. Córdoba 820\nCABA',
+      fieldLegal:'Válido para agencias participantes. Sujeto a condiciones comerciales vigentes.', partnerLogo:'logo\npartner'
+    },
+    incentive: {
+      name:'Incentivo', cls:'incentive',
+      fieldSubtitle:'Nueva campaña de incentivos', fieldTitle:'Vendé más\ny ganá premios\nexclusivos',
+      fieldDate:'Vigencia:\n15.06 al 15.08', fieldTime:'Premios:\nGift Cards para agencias', fieldPlace:'Participan:\nAgencias seleccionadas\nCanal Retail',
+      fieldLegal:'Campaña sujeta a condiciones comerciales vigentes. Aplican productos y agencias participantes.', partnerLogo:'partner'
+    },
+    product: {
+      name:'Producto', cls:'product',
+      fieldSubtitle:'Producto destacado', fieldTitle:'Más cobertura\npara viajar\ncon tranquilidad',
+      fieldDate:'Cobertura:\nAsistencia médica internacional', fieldTime:'Beneficio:\nAtención 24/7', fieldPlace:'Ideal para:\nAgencias, pasajeros\ny partners',
+      fieldLegal:'Los beneficios aplican según condiciones generales del producto contratado.', partnerLogo:'UA'
+    }
+  };
+  const colors = ['white','cyan','lime','navy','pink','black'];
+  const colorMap = {white:'#ffffff', cyan:'#00a7c8', lime:'#d6ff00', navy:'#003b76', pink:'#ff5c9a', black:'#000000'};
+
+  function byId(id){return document.getElementById(id)}
+  function textToHtml(v){ return (v || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>'); }
+  function htmlToText(el){ return el.innerText; }
+
+  function buildControls(){
+    document.querySelectorAll('.controls').forEach(c => {
+      const target = c.dataset.target;
+      c.innerHTML = `
+        <button data-act="bold" title="Negrita">N</button>
+        <button data-act="smaller" title="Achicar">A-</button>
+        <button data-act="bigger" title="Agrandar">A+</button>
+        ${colors.map(x=>`<button class="swatch ${x}" data-act="color" data-color="${colorMap[x]}" title="${x}"></button>`).join('')}
+      `;
+      c.querySelectorAll('button').forEach(btn => btn.onclick = () => applyControl(target, btn));
+    });
+  }
+
+  function applyControl(target, btn){
+    const el = byId(target);
+    const act = btn.dataset.act;
+    const size = parseFloat(getComputedStyle(el).fontSize);
+    if(act === 'bold') el.style.fontWeight = getComputedStyle(el).fontWeight >= 700 ? '400' : '900';
+    if(act === 'smaller') el.style.fontSize = Math.max(10, size - 2) + 'px';
+    if(act === 'bigger') el.style.fontSize = Math.min(90, size + 2) + 'px';
+    if(act === 'color') el.style.color = btn.dataset.color;
+  }
+
+  function bindTextareas(){
+    document.querySelectorAll('textarea[data-target]').forEach(t => {
+      t.addEventListener('input', () => { byId(t.dataset.target).innerHTML = textToHtml(t.value); });
+      const targetEl = byId(t.dataset.target);
+      targetEl.addEventListener('input', () => { t.value = htmlToText(targetEl); });
+    });
+  }
+
+  function setTemplate(key){
+    const t = templates[key];
+    const flyer = byId('flyer');
+    flyer.className = 'flyer ' + t.cls;
+    byId('templateName').textContent = t.name;
+    Object.keys(t).forEach(k => {
+      if(k.startsWith('field') || k === 'partnerLogo'){
+        byId(k).innerHTML = textToHtml(t[k]);
+        const area = document.querySelector(`textarea[data-target="${k}"]`);
+        if(area) area.value = t[k];
+      }
+    });
+    document.querySelectorAll('.template-btn').forEach(b => b.classList.toggle('active', b.dataset.template === key));
+    localStorage.setItem('ua_current_template', key);
+  }
+
+  function applyBg(){
+    const url = byId('bgInput').value.trim();
+    if(url) byId('flyer').style.backgroundImage = `url('${url}')`;
+  }
+
+  function download(filename, content, type='text/plain'){
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([content], {type}));
+    a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+  }
+
+  function createSvgString(){
+    const flyer = byId('flyer');
+    const clone = flyer.cloneNode(true);
+    clone.querySelectorAll('.editable').forEach(el => el.removeAttribute('contenteditable'));
+    clone.querySelectorAll('*').forEach(el => { el.style.outline = 'none'; });
+    const css = Array.from(document.styleSheets).map(sheet=>{
+      try { return Array.from(sheet.cssRules).map(r=>r.cssText).join('\n'); } catch(e){ return ''; }
+    }).join('\n');
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="800"><foreignObject width="100%" height="100%"><div xmlns="http://www.w3.org/1999/xhtml"><style>${css}</style>${clone.outerHTML}</div></foreignObject></svg>`;
+  }
+
+  function exportSvg(){ download('ua-flyer.svg', createSvgString(), 'image/svg+xml'); }
+  function exportPng(){
+    const svg = createSvgString();
+    const img = new Image();
+    const blob = new Blob([svg], {type:'image/svg+xml;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 640; canvas.height = 800;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      URL.revokeObjectURL(url);
+      canvas.toBlob(png => {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(png); a.download = 'ua-flyer.png';
+        document.body.appendChild(a); a.click(); a.remove();
+      }, 'image/png');
+    };
+    img.onerror = () => alert('No se pudo exportar PNG. Probá descargar SVG o revisar imágenes externas/CORS.');
+    img.src = url;
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    buildControls(); bindTextareas();
+    document.querySelectorAll('.template-btn').forEach(b => b.onclick = () => setTemplate(b.dataset.template));
+    byId('applyBgBtn').onclick = applyBg;
+    byId('exportSvgBtn').onclick = exportSvg;
+    byId('exportPngBtn').onclick = exportPng;
+    byId('resetBtn').onclick = () => setTemplate(localStorage.getItem('ua_current_template') || 'invitation');
+    setTemplate('invitation');
+  });
+})();
