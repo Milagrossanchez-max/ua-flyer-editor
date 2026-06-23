@@ -1,77 +1,44 @@
-(function(){
-  const cfg = window.UA_APP_CONFIG || {};
-  const loginScreen = () => document.getElementById('loginScreen');
-  const app = () => document.getElementById('app');
-  const loginError = () => document.getElementById('loginError');
-  const userEmail = () => document.getElementById('userEmail');
-
-  function getDomain(email){ return (email || '').split('@').pop().toLowerCase().trim(); }
-  function isAllowedEmail(email){
-    const domains = (cfg.allowedDomains || []).map(d => d.toLowerCase());
-    return domains.includes(getDomain(email));
-  }
-  function showApp(account){
-    loginScreen().classList.add('hidden');
-    app().classList.remove('hidden');
-    userEmail().textContent = account?.username || account?.name || 'Usuario UA';
-  }
-  function showLogin(message){
-    app().classList.add('hidden');
-    loginScreen().classList.remove('hidden');
-    if(message) loginError().textContent = message;
-  }
-
-  async function initAuth(){
-    if(!cfg.enableAuth){
-      showApp({ username:'demo@universal-assistance.com' });
-      return;
-    }
-
-    if(!window.msal){
-      showLogin('No se pudo cargar la librería de Microsoft Login. Revisar bloqueo de red o incluir MSAL local.');
-      return;
-    }
-
-    if(!cfg.clientId || cfg.clientId.includes('TU_') || !cfg.tenantId || cfg.tenantId.includes('TU_')){
-      showLogin('Falta configurar tenantId y clientId de Microsoft Entra ID en config.js.');
-      return;
-    }
-
-    const msalConfig = {
-      auth: {
-        clientId: cfg.clientId,
-        authority: `https://login.microsoftonline.com/${cfg.tenantId}`,
-        redirectUri: cfg.redirectUri
-      },
-      cache: { cacheLocation: 'sessionStorage', storeAuthStateInCookie: false }
-    };
-
-    const msalInstance = new msal.PublicClientApplication(msalConfig);
-    window.uaMsal = msalInstance;
-
-    try{
-      const response = await msalInstance.handleRedirectPromise();
-      const account = response?.account || msalInstance.getAllAccounts()[0];
-      if(account){
-        if(!isAllowedEmail(account.username)){
-          await msalInstance.logoutRedirect();
-          showLogin('Acceso denegado. Debe ingresar con un mail corporativo UA autorizado.');
-          return;
-        }
-        msalInstance.setActiveAccount(account);
-        showApp(account);
-      } else {
-        showLogin();
-      }
-    } catch(err){
-      showLogin('Error de autenticación: ' + (err.message || err));
-    }
-
-    document.getElementById('loginBtn').onclick = () => {
-      msalInstance.loginRedirect({ scopes: ['openid','profile','email','User.Read'], prompt: 'select_account' });
-    };
-    document.getElementById('logoutBtn').onclick = () => msalInstance.logoutRedirect();
-  }
-
-  window.addEventListener('DOMContentLoaded', initAuth);
-})();
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>UA Flyer Editor</title>
+  <style>
+    :root{--ua-navy:#001f3f;--ua-blue:#005c97;--ua-cyan:#00a3c7;--panel:#062b46;--bg:#071522;--white:#fff;--muted:#b9d4e4;--lime:#d6ff00;}
+    *{box-sizing:border-box} body{margin:0;font-family:Arial, Helvetica, sans-serif;background:var(--bg);color:var(--white)}
+    .topbar{height:76px;background:linear-gradient(90deg,#00345e,#00779e);display:flex;align-items:center;padding:0 28px;border-bottom:1px solid rgba(255,255,255,.12)}
+    .brand{display:flex;align-items:center;gap:18px;font-weight:700}.mark{width:58px;height:38px;border-radius:10px;background:white;color:#004b7a;display:grid;place-items:center;font-weight:900;font-size:26px}.brand small{display:block;color:#c7e7f2;margin-top:3px;font-weight:400}.title{margin-left:28px;padding-left:28px;border-left:1px solid rgba(255,255,255,.25);font-size:20px;font-weight:700}
+    .layout{display:grid;grid-template-columns:1fr 370px;min-height:calc(100vh - 76px)}.workspace{padding:28px;display:flex;gap:24px;align-items:flex-start;justify-content:center}.side{background:#0b2a44;border-left:1px solid rgba(255,255,255,.12);padding:22px;overflow:auto;max-height:calc(100vh - 76px)}
+    .canvas-wrap{width:min(560px,90vw)}.toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;color:var(--muted)}.toolbar button,.btn{border:0;background:#00a3c7;color:white;padding:10px 14px;border-radius:10px;font-weight:700;cursor:pointer}.toolbar select{background:#0b2a44;color:white;border:1px solid #1e6386;padding:10px;border-radius:10px}
+    .flyer{width:560px;height:700px;position:relative;overflow:hidden;border-radius:22px;box-shadow:0 24px 80px rgba(0,0,0,.45);background:linear-gradient(145deg,#024c82,#00a3c7);transform-origin:top center}.bg{position:absolute;inset:0;background:radial-gradient(circle at 80% 20%,rgba(214,255,0,.20),transparent 28%),linear-gradient(135deg,rgba(0,31,63,.92),rgba(0,163,199,.68)),url('bg-travel.svg');background-size:cover;opacity:.95}.flyer.producto .bg{background:radial-gradient(circle at 70% 15%,rgba(214,255,0,.28),transparent 30%),linear-gradient(135deg,#001f3f,#005c97)}.flyer.incentivo .bg{background:linear-gradient(135deg,#001f3f 0%,#005c97 55%,#00a3c7 100%)}
+    .logo{position:absolute;top:44px;left:44px;display:flex;gap:12px;align-items:center}.logo .mark{width:70px;height:46px;font-size:32px}.logo-text{font-size:22px;line-height:.95;font-weight:800}.zurich{font-size:12px;color:#dbeef6;margin-top:9px}.content{position:absolute;left:48px;right:48px;top:170px}.kicker{font-size:38px;line-height:1.04;font-weight:300;margin:0 0 4px}.headline{font-size:62px;line-height:.92;font-weight:900;margin:0;letter-spacing:-2px}.sub{font-size:24px;line-height:1.15;margin:20px 0 0;color:#eafaff}.info{position:absolute;left:48px;bottom:88px;width:315px;background:rgba(0,31,63,.55);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:18px}.info p{margin:0 0 12px;font-size:19px;line-height:1.15}.info p:last-child{margin-bottom:0}.cta{position:absolute;right:42px;bottom:44px;background:white;color:#004b7a;padding:14px 18px;border-radius:18px;font-weight:900}.legal{position:absolute;left:48px;right:48px;bottom:22px;color:rgba(255,255,255,.75);font-size:10px;line-height:1.2}.partner{position:absolute;right:44px;top:48px;background:rgba(255,255,255,.9);color:#004b7a;padding:10px 16px;border-radius:12px;font-weight:800;display:none}.partner.show{display:block}
+    h3{letter-spacing:2px;color:#b9d4e4;font-size:12px;margin:0 0 18px;text-transform:uppercase}.field{background:#09233a;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px;margin-bottom:14px}.field label{display:block;color:#e4f7ff;font-weight:700;margin-bottom:8px}.field input,.field textarea,.field select{width:100%;background:#0e3554;color:white;border:1px solid #1e6386;border-radius:10px;padding:10px;font-size:14px}.field textarea{min-height:64px;resize:vertical}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.colors{display:flex;gap:8px;margin-top:8px}.sw{width:24px;height:24px;border-radius:7px;border:2px solid rgba(255,255,255,.35);cursor:pointer}.hint{color:#a8c8d8;font-size:12px;line-height:1.35}.download{width:100%;margin-top:8px;background:var(--lime);color:#00345e}.warn{background:#2f2600;color:#ffeaa2;padding:10px 12px;border-radius:12px;font-size:13px;margin-bottom:16px;border:1px solid rgba(255,234,162,.2)}
+    @media(max-width:960px){.layout{grid-template-columns:1fr}.side{max-height:none}.flyer{transform:scale(.78);margin-bottom:-150px}.canvas-wrap{height:560px}.title{font-size:16px}}
+  </style>
+</head>
+<body>
+  <header class="topbar"><div class="brand"><div class="mark">ua</div><div>universal<br>assistance<small>A company of Zurich</small></div></div><div class="title">Editor de Flyers</div></header>
+  <main class="layout">
+    <section class="workspace"><div class="canvas-wrap"><div class="toolbar"><select id="template"><option value="invitacion">Invitación</option><option value="incentivo">Incentivo</option><option value="producto">Producto</option></select><button id="reset">Restaurar</button></div><div id="flyer" class="flyer invitacion"><div class="bg"></div><div id="partnerBadge" class="partner">PARTNER</div><div class="logo"><div class="mark">ua</div><div><div class="logo-text">universal<br>assistance</div><div class="zurich">A company of Zurich</div></div></div><div class="content"><p id="kickerText" class="kicker">Te esperamos en</p><h1 id="headlineText" class="headline">Congreso<br>de Agentes<br>de Viajes.</h1><p id="subText" class="sub">Una jornada para compartir novedades, herramientas y oportunidades comerciales.</p></div><div class="info"><p id="dateText"><b>Fecha:</b><br>Miércoles 24.06.26</p><p id="timeText"><b>Hora:</b><br>23:00 hs</p><p id="placeText"><b>Lugar:</b><br>Av. Córdoba 820<br>CABA</p></div><div id="ctaText" class="cta">Confirmar asistencia</div><div id="legalText" class="legal">Válido según condiciones comerciales informadas por Universal Assistance.</div></div></div></section>
+    <aside class="side"><h3>Campos editables</h3><div class="warn">Demo publicada en GitHub Pages. Para uso real, validar seguridad/login corporativo con IT.</div><div class="field"><label>Título chico</label><input id="kicker" value="Te esperamos en"></div><div class="field"><label>Título principal</label><textarea id="headline">Congreso
+de Agentes
+de Viajes.</textarea></div><div class="field"><label>Bajada</label><textarea id="sub">Una jornada para compartir novedades, herramientas y oportunidades comerciales.</textarea></div><div class="row"><div class="field"><label>Fecha</label><textarea id="date">Fecha:
+Miércoles 24.06.26</textarea></div><div class="field"><label>Hora</label><textarea id="time">Hora:
+23:00 hs</textarea></div></div><div class="field"><label>Lugar</label><textarea id="place">Lugar:
+Av. Córdoba 820
+CABA</textarea></div><div class="field"><label>CTA</label><input id="cta" value="Confirmar asistencia"></div><div class="field"><label>Partner opcional</label><input id="partner" placeholder="Ej: HOTELDO / COSTA / GEA"></div><div class="field"><label>Legal</label><textarea id="legal">Válido según condiciones comerciales informadas por Universal Assistance.</textarea><p class="hint">Sugerencia: legal corto para no saturar la pieza.</p></div><div class="field"><label>Color del título</label><div class="colors"><span class="sw" data-c="#ffffff" style="background:#fff"></span><span class="sw" data-c="#d6ff00" style="background:#d6ff00"></span><span class="sw" data-c="#00d5ff" style="background:#00d5ff"></span><span class="sw" data-c="#ff4f86" style="background:#ff4f86"></span></div></div><button class="btn download" id="downloadSvg">Descargar SVG</button></aside>
+  </main>
+  <script>
+    const $=id=>document.getElementById(id); const flyer=$('flyer');
+    const presets={invitacion:{k:'Te esperamos en',h:'Congreso\nde Agentes\nde Viajes.',s:'Una jornada para compartir novedades, herramientas y oportunidades comerciales.',c:'Confirmar asistencia',l:'Válido según condiciones comerciales informadas por Universal Assistance.'},incentivo:{k:'Nueva campaña',h:'Incentivo\nProductos\nPremium.',s:'Premios especiales para agencias participantes durante la vigencia de la acción.',c:'Conocé la mecánica',l:'Participan agencias habilitadas. Premios sujetos a condiciones comerciales vigentes.'},producto:{k:'Conocé nuestros',h:'Productos\npara viajar\ntranquilo.',s:'Coberturas diseñadas para acompañar a tus pasajeros antes, durante y después del viaje.',c:'Ver beneficios',l:'Coberturas sujetas a condiciones generales del producto contratado.'}};
+    function htmlLines(v,boldFirst=false){let lines=(v||'').split('\n').filter(Boolean); if(boldFirst&&lines[0]) lines[0]='<b>'+lines[0].replace(':','')+':</b>'; return lines.join('<br>')}
+    function update(){ $('kickerText').textContent=$('kicker').value; $('headlineText').innerHTML=htmlLines($('headline').value); $('subText').textContent=$('sub').value; $('dateText').innerHTML=htmlLines($('date').value,true); $('timeText').innerHTML=htmlLines($('time').value,true); $('placeText').innerHTML=htmlLines($('place').value,true); $('ctaText').textContent=$('cta').value; $('legalText').textContent=$('legal').value; const p=$('partner').value.trim(); $('partnerBadge').textContent=p; $('partnerBadge').classList.toggle('show',!!p); }
+    document.querySelectorAll('input,textarea').forEach(el=>el.addEventListener('input',update));
+    $('template').addEventListener('change',()=>{const p=presets[$('template').value]; flyer.className='flyer '+$('template').value; $('kicker').value=p.k; $('headline').value=p.h; $('sub').value=p.s; $('cta').value=p.c; $('legal').value=p.l; update();});
+    $('reset').onclick=()=>{$('template').dispatchEvent(new Event('change'))}; document.querySelectorAll('.sw').forEach(s=>s.onclick=()=>{$('headlineText').style.color=s.dataset.c});
+    $('downloadSvg').onclick=()=>{const clone=flyer.cloneNode(true); const css=document.querySelector('style').innerHTML; const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="560" height="700"><foreignObject width="100%" height="100%"><div xmlns="http://www.w3.org/1999/xhtml"><style>${css}</style>${clone.outerHTML}</div></foreignObject></svg>`; const blob=new Blob([svg],{type:'image/svg+xml'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='ua-flyer.svg'; a.click(); URL.revokeObjectURL(a.href)};
+    update();
+  </script>
+</body>
+</html>
