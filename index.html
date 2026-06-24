@@ -7,296 +7,260 @@
   <style>
     :root{
       --ua-blue:#00528F;
-      --ua-dark:#002447;
+      --ua-deep:#002447;
       --ua-teal:#008091;
       --ua-cyan:#00C4DF;
-      --ua-pink:#ff436e;
-      --ua-soft:#E8FBFF;
-      --ink:#ffffff;
-      --paper:#f6fbff;
-      --panel:#07182a;
-      --panel2:#0d2a45;
-      --shadow:0 28px 80px rgba(0,0,0,.42);
+      --ua-pink:#FF436E;
+      --ua-light:#E7FAFC;
+      --ink:#FFFFFF;
+      --paper:#f8f2df;
+      --shadow:0 18px 55px rgba(0,0,0,.38);
     }
     *{box-sizing:border-box}
-    body{margin:0;font-family:Poppins, Arial, Helvetica, sans-serif;background:#05111f;color:#fff;overflow-x:hidden}
-    .topbar{height:72px;background:linear-gradient(90deg,var(--ua-dark),var(--ua-blue),var(--ua-cyan));display:flex;align-items:center;padding:0 28px;border-bottom:1px solid rgba(255,255,255,.14)}
-    .topbar-title{font-weight:800;font-size:22px;letter-spacing:.2px;margin-left:22px;padding-left:22px;border-left:1px solid rgba(255,255,255,.28)}
-    .top-logo{height:40px;max-width:280px;object-fit:contain}
-    .app{display:grid;grid-template-columns:1fr 392px;min-height:calc(100vh - 72px)}
-    .work{padding:26px 24px 42px;background:radial-gradient(circle at 18% 12%,rgba(0,196,223,.16),transparent 24%),linear-gradient(135deg,#07111e,#0a1728 48%,#07111e);display:flex;justify-content:center;align-items:flex-start;gap:22px;overflow:auto}
-    .stage{width:760px;max-width:100%}
-    .toolbar{display:flex;justify-content:space-between;align-items:center;margin:0 auto 20px;width:560px;max-width:100%}
-    select,.btn{background:#0e2b46;color:#fff;border:1px solid rgba(255,255,255,.22);border-radius:14px;padding:12px 16px;font-weight:800;font-size:15px;outline:none}
-    .btn{background:linear-gradient(135deg,var(--ua-cyan),#76e5d2);color:#003045;border:0;cursor:pointer;box-shadow:0 8px 24px rgba(0,196,223,.22)}
-    .side{background:linear-gradient(180deg,#0a2138,#07182a);border-left:1px solid rgba(255,255,255,.1);padding:22px;overflow:auto;max-height:calc(100vh - 72px)}
-    .side h3{font-size:12px;text-transform:uppercase;letter-spacing:2.4px;color:#a9c9d8;margin:0 0 18px}
-    .field{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);border-radius:16px;padding:14px;margin-bottom:13px}
-    .field label{display:block;font-size:13px;font-weight:800;color:#e8fbff;margin-bottom:8px}
-    .field input,.field textarea,.field select{width:100%;border:1px solid rgba(0,196,223,.34);background:#092139;color:#fff;border-radius:12px;padding:10px 11px;font-size:14px;outline:none}
-    .field textarea{min-height:68px;resize:vertical;line-height:1.28}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .hint{font-size:11.5px;color:#a9c9d8;line-height:1.35;margin:8px 0 0}
-    .mini-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
-    .mini-actions button{padding:10px;border:0;border-radius:12px;font-weight:800;cursor:pointer;color:#003045;background:#dff9ff}
-    .mini-actions button:last-child{background:#c9fff3}
+    body{margin:0;font-family:Poppins, Arial, Helvetica, sans-serif;background:#071522;color:#fff;}
+    .topbar{height:72px;background:linear-gradient(90deg,var(--ua-deep),var(--ua-blue),var(--ua-teal));display:flex;align-items:center;padding:0 28px;border-bottom:1px solid rgba(255,255,255,.12)}
+    .topbar-title{font-size:20px;font-weight:800;letter-spacing:.2px;margin-left:18px;padding-left:18px;border-left:1px solid rgba(255,255,255,.28)}
+    .topbar-logo{height:42px;max-width:250px;object-fit:contain;display:block}
+    .app{display:grid;grid-template-columns:minmax(720px,1fr) 390px;min-height:calc(100vh - 72px)}
+    .workspace{padding:28px 30px 44px;display:flex;justify-content:center;align-items:flex-start;background:radial-gradient(circle at 30% 10%,rgba(0,196,223,.11),transparent 32%),#071522;overflow:auto}
+    .stage{width:720px;max-width:100%}
+    .stagebar{display:flex;justify-content:space-between;align-items:center;margin:0 0 22px;gap:20px}
+    select,.btn{border:1px solid rgba(255,255,255,.18);background:#122d42;color:#fff;border-radius:14px;padding:13px 18px;font-size:16px;font-weight:800;box-shadow:0 8px 22px rgba(0,0,0,.14)}
+    .btn{background:linear-gradient(90deg,#4ee0c1,#77e783);color:#073048;cursor:pointer;border:0}
+    .side{padding:22px;background:#0b2942;border-left:1px solid rgba(255,255,255,.12);height:calc(100vh - 72px);overflow:auto}
+    .side h3{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#bde8f2;margin:0 0 16px}
+    .field{background:#0a2238;border:1px solid rgba(255,255,255,.09);border-radius:16px;padding:14px;margin-bottom:13px}
+    .field label{display:block;font-size:13px;font-weight:800;margin-bottom:8px;color:#eafcff}
+    .field input,.field textarea,.field select{width:100%;border:1px solid rgba(0,196,223,.38);background:#0f3552;color:#fff;border-radius:10px;padding:10px 11px;font-size:14px;outline:none}
+    .field textarea{min-height:74px;resize:vertical;line-height:1.25}
+    .twocol{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .hint{font-size:12px;color:#a9cad9;line-height:1.3;margin:8px 0 0}
+    .hide{display:none!important}
+    .ghostbtn{width:100%;background:#153d5c;color:#ccecf5;border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px 12px;font-weight:800;cursor:pointer}
 
-    /* Canvas */
-    .flyer-wrap{width:560px;margin:auto;filter:drop-shadow(0 24px 60px rgba(0,0,0,.42))}
-    .flyer{width:560px;height:700px;position:relative;overflow:hidden;background:var(--ua-blue);color:#fff;isolation:isolate}
-    .flyer:before{content:"";position:absolute;inset:0;z-index:0;background:linear-gradient(135deg,rgba(0,36,71,.98),rgba(0,82,143,.9) 48%,rgba(0,196,223,.46));}
-    .flyer:after{content:"";position:absolute;inset:0;z-index:1;background:radial-gradient(circle at 82% 16%,rgba(255,255,255,.13),transparent 22%),radial-gradient(circle at 10% 88%,rgba(0,196,223,.18),transparent 24%);pointer-events:none}
-    .bg-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;opacity:.42;filter:saturate(1.05) contrast(1.05)}
-    .overlay{position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(0,36,71,.98) 0%,rgba(0,36,71,.82) 42%,rgba(0,128,145,.56) 100%)}
-    .brand-logo{position:absolute;top:38px;left:40px;width:242px;height:auto;z-index:5;object-fit:contain}
-    .partner-logo{position:absolute;top:42px;right:38px;max-width:135px;max-height:58px;z-index:5;object-fit:contain;display:none;padding:7px;border-radius:12px;background:rgba(255,255,255,.94)}
-    .partner-logo.show{display:block}
-    .content{position:absolute;z-index:4;left:40px;right:40px;top:140px;bottom:70px}
-    .kicker{margin:0 0 8px;font-size:30px;line-height:1;font-weight:600;color:#fff;text-shadow:0 3px 12px rgba(0,0,0,.28)}
-    .headline{margin:0;font-size:60px;line-height:.93;font-weight:900;letter-spacing:-2.1px;color:#fff;text-shadow:0 4px 18px rgba(0,0,0,.28)}
-    .subline{margin:18px 0 0;max-width:430px;font-size:24px;line-height:1.1;font-weight:800;color:#fff;text-shadow:0 3px 14px rgba(0,0,0,.26)}
-    .legal{position:absolute;left:40px;right:40px;bottom:24px;z-index:6;font-size:10px;line-height:1.22;color:rgba(255,255,255,.86);font-weight:600}
-    .pill{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;background:#fff;color:var(--ua-blue);padding:14px 20px;font-weight:900;line-height:1}
+    /* Flyer base */
+    .flyer{width:640px;height:800px;margin:0 auto;position:relative;overflow:hidden;background:linear-gradient(140deg,var(--ua-deep) 0%,var(--ua-blue) 52%,var(--ua-teal) 100%);box-shadow:var(--shadow);color:#fff;border-radius:0}
+    .flyer::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 86% 12%,rgba(0,196,223,.22),transparent 30%),radial-gradient(circle at 0% 100%,rgba(0,36,71,.55),transparent 44%);pointer-events:none}
+    .flyer::after{content:"";position:absolute;right:-110px;bottom:-120px;width:280px;height:280px;border-radius:50%;background:linear-gradient(135deg,rgba(0,196,223,.28),rgba(255,67,110,.28));opacity:.85;pointer-events:none}
+    .bg-img{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:.2s;z-index:0}.bg-img.show{opacity:.36}
+    .shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,36,71,.70) 0%,rgba(0,36,71,.34) 52%,rgba(0,128,145,.20) 100%);z-index:1}
+    .ua-logo{position:absolute;top:48px;left:50px;width:265px;height:auto;z-index:4;object-fit:contain}
+    .partner-logo{position:absolute;top:50px;right:46px;max-width:150px;max-height:72px;object-fit:contain;z-index:5;background:rgba(255,255,255,.90);padding:10px 13px;border-radius:12px;display:none}.partner-logo.show{display:block}
+    .legal{position:absolute;left:50px;right:50px;bottom:28px;font-size:10.5px;line-height:1.2;font-weight:700;color:rgba(255,255,255,.88);z-index:4;max-height:38px;overflow:hidden}
+    .smallnote{font-size:18px;line-height:1.05;font-weight:900;color:#fff;opacity:.9}
+    .kicker{font-size:30px;line-height:1.03;font-weight:800;margin:0;color:#fff;letter-spacing:-.5px;text-shadow:0 3px 7px rgba(0,0,0,.22)}
+    .headline{font-size:62px;line-height:.90;font-weight:900;margin:10px 0 0;letter-spacing:-2px;color:#fff;text-shadow:0 4px 12px rgba(0,0,0,.28)}
+    .subline{font-size:24px;line-height:1.16;font-weight:800;margin:22px 0 0;color:#fff;max-width:520px;text-shadow:0 3px 8px rgba(0,0,0,.22)}
 
-    /* Promo */
-    .flyer.promo .content{top:158px}
-    .promo-card{border:4px solid rgba(255,255,255,.88);border-radius:24px;padding:24px 24px 20px;width:360px;min-height:176px;background:rgba(0,36,71,.18);backdrop-filter:blur(1px)}
-    .promo-kicker{font-size:44px;line-height:.9;font-weight:900;margin:0 0 2px;color:#fff}
-    .discount-line{display:flex;align-items:flex-end;gap:12px;white-space:nowrap;color:#fff}.discount-number{font-size:118px;line-height:.78;font-weight:950;letter-spacing:-7px}.discount-symbol{font-size:48px;font-weight:950;line-height:.85;margin-bottom:6px}.discount-off{font-size:44px;font-weight:950;line-height:.85;margin-bottom:7px;text-transform:uppercase}
-    .promo-main{font-size:38px;line-height:1.03;font-weight:950;margin:90px 0 0;max-width:500px;color:#fff}
-    .promo-note{font-size:21px;line-height:1.14;font-weight:850;margin:52px 0 0;max-width:360px}.app-cta{position:absolute;right:28px;bottom:86px;text-align:center;font-size:18px;font-weight:950;line-height:1;text-transform:uppercase;color:#fff}
+    /* PROMO */
+    .tpl-promo .ua-logo{top:46px;left:48px;width:285px}
+    .promo-offer{position:absolute;left:50px;top:182px;width:395px;height:184px;border:4px solid rgba(255,255,255,.92);border-radius:26px;padding:28px 28px 22px;z-index:4;display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;align-items:end;background:rgba(0,36,71,.10)}
+    .promo-hasta{grid-column:1/3;font-size:40px;font-weight:900;line-height:.9;margin:0 0 6px;color:#fff}
+    .promo-number{font-size:116px;line-height:.82;font-weight:900;letter-spacing:-5px;color:#fff}
+    .promo-off{font-size:48px;line-height:.9;font-weight:900;color:#fff;margin-left:12px;align-self:center;white-space:nowrap}
+    .promo-title{position:absolute;left:50px;top:426px;width:445px;z-index:4;font-size:42px;line-height:.98;font-weight:900;color:#fff;letter-spacing:-.8px;max-height:92px;overflow:hidden;text-shadow:0 4px 10px rgba(0,0,0,.25)}
+    .promo-sub{position:absolute;left:50px;top:560px;width:345px;z-index:4;font-size:24px;line-height:1.12;font-weight:900;color:#fff;max-height:84px;overflow:hidden}
+    .promo-cta{position:absolute;right:54px;top:588px;width:150px;z-index:4;text-align:center;font-size:22px;line-height:.98;font-weight:900;color:#fff;text-transform:uppercase;opacity:.78}
 
-    /* Evento */
-    .flyer.evento .content{top:152px}.flyer.evento .headline{font-size:54px;max-width:380px}.flyer.evento .subline{font-size:21px;font-weight:700;max-width:400px;margin-top:20px}.event-card{position:absolute;left:40px;right:40px;bottom:90px;z-index:5;display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:10px}.event-item{background:rgba(255,255,255,.94);color:var(--ua-dark);border-radius:16px;padding:13px 14px;min-height:70px}.event-item b{display:block;color:var(--ua-blue);font-size:13px;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px}.event-item span{font-weight:850;font-size:15px;line-height:1.12}
+    /* EVENT */
+    .tpl-event .ua-logo{width:260px;top:50px;left:50px}
+    .event-copy{position:absolute;left:50px;top:190px;right:70px;z-index:4}
+    .tpl-event .headline{max-width:470px;font-size:58px;max-height:158px;overflow:hidden}
+    .tpl-event .subline{font-size:22px;max-height:82px;overflow:hidden}
+    .event-details{position:absolute;left:50px;right:50px;bottom:108px;z-index:4;display:grid;grid-template-columns:1fr 1fr 1.35fr;gap:12px}
+    .event-card{background:rgba(255,255,255,.92);color:var(--ua-deep);border-radius:18px;padding:15px 16px;min-height:82px;box-shadow:0 8px 22px rgba(0,0,0,.16)}
+    .event-label{font-size:13px;font-weight:900;color:#577386;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px}.event-value{font-size:18px;line-height:1.08;font-weight:900;max-height:40px;overflow:hidden}
 
-    /* Producto */
-    .flyer.producto .headline{font-size:56px;max-width:420px}.flyer.producto .subline{font-size:22px;font-weight:700;max-width:410px}.benefit-card{position:absolute;left:40px;right:40px;bottom:104px;z-index:5;border-radius:24px;background:rgba(255,255,255,.94);color:var(--ua-dark);padding:24px 26px}.benefit-title{font-size:29px;font-weight:950;color:var(--ua-blue);margin:0 0 10px}.benefits{margin:0;padding-left:22px;font-size:20px;line-height:1.22;font-weight:750}.benefits li{margin:4px 0}
+    /* PRODUCT */
+    .tpl-product .ua-logo{width:250px;top:48px;left:50px}
+    .product-copy{position:absolute;left:50px;top:202px;width:505px;z-index:4}
+    .tpl-product .headline{font-size:58px;max-height:164px;overflow:hidden;max-width:500px}
+    .tpl-product .subline{font-size:22px;max-height:62px;overflow:hidden;max-width:485px;margin-top:18px}
+    .benefits-card{position:absolute;left:50px;right:50px;bottom:112px;background:rgba(255,255,255,.92);color:var(--ua-deep);border-radius:22px;padding:24px 28px;z-index:4;min-height:154px;box-shadow:0 14px 36px rgba(0,0,0,.18)}
+    .benefits-title{font-size:29px;line-height:1;font-weight:900;margin:0 0 13px;color:var(--ua-blue);letter-spacing:.8px}.benefits-list{margin:0;padding-left:22px;font-size:20px;line-height:1.24;font-weight:700;max-height:76px;overflow:hidden}
 
-    /* Conmemorativo */
-    .flyer.conmemorativo:before{background:linear-gradient(135deg,#002447,#00528F 54%,#00C4DF)}.flyer.conmemorativo .overlay{background:linear-gradient(180deg,rgba(0,36,71,.82),rgba(0,82,143,.42))}.flyer.conmemorativo .content{top:185px;text-align:left}.flyer.conmemorativo .kicker{font-size:28px}.flyer.conmemorativo .headline{font-size:54px;max-width:440px}.flyer.conmemorativo .subline{font-weight:700;font-size:24px;max-width:420px}.commemorative-shape{position:absolute;right:-74px;bottom:-62px;width:260px;height:260px;border-radius:58% 42% 48% 52%;background:linear-gradient(135deg,var(--ua-cyan),rgba(255,67,110,.9));z-index:2;opacity:.92}.commemorative-frame{position:absolute;left:40px;right:40px;top:155px;bottom:92px;border:2px solid rgba(255,255,255,.34);z-index:3;border-radius:28px;pointer-events:none}
+    /* COMMEMORATIVE */
+    .tpl-comm .ua-logo{width:255px;top:50px;left:50px}
+    .comm-frame{position:absolute;left:50px;right:50px;top:175px;bottom:92px;z-index:3;border:2px solid rgba(255,255,255,.45);border-radius:30px;background:rgba(0,36,71,.08)}
+    .comm-copy{position:absolute;left:76px;right:74px;top:214px;z-index:4}
+    .tpl-comm .kicker{font-size:31px;max-height:40px;overflow:hidden}.tpl-comm .headline{font-size:54px;line-height:.92;max-height:154px;overflow:hidden}.tpl-comm .subline{font-size:24px;max-height:100px;overflow:hidden;max-width:460px;margin-top:22px}
 
-    @media(max-width:1040px){.app{grid-template-columns:1fr}.side{max-height:none}.work{padding-bottom:10px}.flyer-wrap{transform:scale(.82);transform-origin:top center;height:574px}.toolbar{width:460px}.top-logo{max-width:210px}.topbar-title{font-size:18px}}
-    @media(max-width:620px){.flyer-wrap{transform:scale(.68);height:476px}.toolbar{width:380px}.side{padding:16px}.row{grid-template-columns:1fr}.topbar-title{display:none}}
+    .panel-note{font-size:12px;color:#a8cad9;background:#092238;padding:10px 12px;border-radius:12px;margin-bottom:14px;border:1px solid rgba(255,255,255,.08)}
+    .download{width:100%;margin-top:4px;background:var(--ua-cyan);color:#002447;border:0;border-radius:12px;padding:12px 14px;font-weight:900;cursor:pointer}
+
+    @media(max-width:1100px){.app{grid-template-columns:1fr}.side{height:auto}.workspace{justify-content:flex-start}.stage{width:680px}.flyer{transform:scale(.88);transform-origin:top left;margin-bottom:-90px}}
   </style>
 </head>
 <body>
   <header class="topbar">
-    <img class="top-logo" src="UA%20Logo_Zurich%20-%20Blanco%20(4).png" alt="Universal Assistance" />
+    <img class="topbar-logo" src="UA%20Logo_Zurich%20-%20Blanco%20(4).png" alt="Universal Assistance" onerror="this.style.display='none'">
     <div class="topbar-title">Editor de Flyers</div>
   </header>
 
   <main class="app">
-    <section class="work">
+    <section class="workspace">
       <div class="stage">
-        <div class="toolbar">
+        <div class="stagebar">
           <select id="templateSelect">
             <option value="promo">Flyer Promo</option>
-            <option value="evento">Flyer Eventos</option>
-            <option value="producto">Flyer Producto</option>
-            <option value="conmemorativo">Flyer Conmemorativo</option>
+            <option value="event">Flyer Eventos</option>
+            <option value="product">Flyer Producto</option>
+            <option value="comm">Flyer Conmemorativo</option>
           </select>
           <button class="btn" id="resetBtn">Restaurar</button>
         </div>
 
-        <div class="flyer-wrap">
-          <article id="flyer" class="flyer promo">
-            <img id="bgImg" class="bg-img" alt="" />
-            <div class="overlay"></div>
-            <img class="brand-logo" src="UA%20Logo_Zurich%20-%20Blanco%20(4).png" alt="Universal Assistance" />
-            <img id="partnerLogoPreview" class="partner-logo" alt="Logo partner" />
-            <div id="commShape" class="commemorative-shape" style="display:none"></div>
-            <div id="commFrame" class="commemorative-frame" style="display:none"></div>
+        <div id="flyer" class="flyer tpl-promo">
+          <div id="bgImg" class="bg-img"></div>
+          <div class="shade"></div>
+          <img class="ua-logo" src="UA%20Logo_Zurich%20-%20Blanco%20(4).png" alt="Universal Assistance">
+          <img id="partnerLogoPreview" class="partner-logo" alt="Partner">
 
-            <section class="content">
-              <div id="promoBlock" class="promo-block">
-                <div class="promo-card">
-                  <p class="promo-kicker" id="promoKickerPreview">Hasta</p>
-                  <div class="discount-line">
-                    <span class="discount-number" id="discountPreview">35</span>
-                    <span class="discount-symbol">%</span>
-                    <span class="discount-off">OFF</span>
-                  </div>
-                </div>
-                <p class="promo-main" id="promoMainPreview">en asistencia al viajero</p>
-                <p class="promo-note" id="promoNotePreview">Promoción válida para agencias y partners seleccionados.</p>
-              </div>
-
-              <div id="textBlock" style="display:none">
-                <p class="kicker" id="kickerPreview">Te esperamos en</p>
-                <h1 class="headline" id="headlinePreview">Congreso<br>de Agentes<br>de Viajes</h1>
-                <p class="subline" id="sublinePreview">Una jornada para compartir novedades, herramientas y oportunidades comerciales.</p>
-              </div>
-            </section>
-
-            <div id="eventCard" class="event-card" style="display:none">
-              <div class="event-item"><b>Fecha</b><span id="datePreview">Miércoles 24.06.26</span></div>
-              <div class="event-item"><b>Hora</b><span id="timePreview">23:00 hs</span></div>
-              <div class="event-item"><b>Lugar</b><span id="placePreview">Av. Córdoba 820, CABA</span></div>
+          <div id="promoBlock">
+            <div class="promo-offer">
+              <div class="promo-hasta" id="promoKickerView">Hasta</div>
+              <div class="promo-number" id="discountView">35</div>
+              <div class="promo-off">% OFF</div>
             </div>
+            <div class="promo-title" id="promoTitleView">en asistencia al viajero</div>
+            <div class="promo-sub" id="promoSubView">Promoción válida para agencias y partners seleccionados.</div>
+            <div class="promo-cta" id="promoCtaView">Descargá nuestra app</div>
+          </div>
 
-            <div id="benefitCard" class="benefit-card" style="display:none">
-              <p class="benefit-title" id="benefitTitlePreview">Beneficios destacados</p>
-              <ul class="benefits" id="benefitsPreview"></ul>
+          <div id="eventBlock" class="hide">
+            <div class="event-copy">
+              <p class="kicker" id="eventKickerView">Te esperamos en</p>
+              <h1 class="headline" id="eventTitleView">Congreso<br>de Agentes<br>de Viajes</h1>
+              <p class="subline" id="eventSubView">Una jornada para compartir novedades, herramientas y oportunidades comerciales.</p>
             </div>
+            <div class="event-details">
+              <div class="event-card"><div class="event-label">Fecha</div><div class="event-value" id="eventDateView">Miércoles<br>24.06.26</div></div>
+              <div class="event-card"><div class="event-label">Hora</div><div class="event-value" id="eventTimeView">23:00 hs</div></div>
+              <div class="event-card"><div class="event-label">Lugar</div><div class="event-value" id="eventPlaceView">Av. Córdoba 820,<br>CABA</div></div>
+            </div>
+          </div>
 
-            <div id="appCta" class="app-cta">Descargá<br>nuestra app</div>
-            <div class="legal" id="legalPreview">Promoción válida según condiciones comerciales informadas por Universal Assistance. Consulte términos, vigencia y productos aplicables.</div>
-          </article>
+          <div id="productBlock" class="hide">
+            <div class="product-copy">
+              <p class="kicker" id="productKickerView">Conocé nuestros</p>
+              <h1 class="headline" id="productTitleView">Productos<br>para viajar<br>tranquilo</h1>
+              <p class="subline" id="productSubView">Coberturas diseñadas para acompañar a tus pasajeros antes, durante y después del viaje.</p>
+            </div>
+            <div class="benefits-card">
+              <h2 class="benefits-title" id="benefitsTitleView">Beneficios destacados</h2>
+              <ul class="benefits-list" id="benefitsListView"><li>Asistencia médica internacional</li><li>Teleasistencia incluida</li><li>Coberturas para cada tipo de viaje</li></ul>
+            </div>
+          </div>
+
+          <div id="commBlock" class="hide">
+            <div class="comm-frame"></div>
+            <div class="comm-copy">
+              <p class="kicker" id="commKickerView">Hoy celebramos</p>
+              <h1 class="headline" id="commTitleView">Una fecha<br>para sentirnos<br>más cerca</h1>
+              <p class="subline" id="commSubView">Universal Assistance acompaña cada viaje, cada historia y cada momento especial.</p>
+            </div>
+          </div>
+
+          <div class="legal" id="legalView">Promoción válida según condiciones comerciales informadas por Universal Assistance. Consulte términos, vigencia y productos aplicables.</div>
         </div>
       </div>
     </section>
 
     <aside class="side">
       <h3>Campos editables</h3>
-
-      <div class="field">
-        <label>Tipo de flyer</label>
-        <select id="templateSide">
-          <option value="promo">Flyer Promo</option>
-          <option value="evento">Flyer Eventos</option>
-          <option value="producto">Flyer Producto</option>
-          <option value="conmemorativo">Flyer Conmemorativo</option>
-        </select>
-      </div>
+      <div class="panel-note">Los bloques tienen límites de alto para evitar superposición. Usá textos cortos para que el flyer quede limpio.</div>
 
       <div class="field">
         <label>Logo partner opcional</label>
-        <input id="partnerLogoInput" type="file" accept="image/*" />
-        <div class="mini-actions"><button id="clearPartner" type="button">Quitar partner</button><button id="clearBg" type="button">Quitar fondo</button></div>
-        <p class="hint">El logo se ubica arriba a la derecha. Si no cargás nada, no aparece.</p>
+        <input id="partnerLogoInput" type="file" accept="image/*">
+        <p class="hint">Se ubica arriba a la derecha con tamaño máximo.</p>
       </div>
-
       <div class="field">
         <label>Imagen de fondo opcional</label>
-        <input id="bgInput" type="file" accept="image/*" />
-        <p class="hint">Sirve para promos, eventos o fechas conmemorativas. La app aplica un overlay azul para mantener legibilidad.</p>
+        <input id="bgInput" type="file" accept="image/*">
+        <p class="hint">Se aplica con overlay azul para mantener marca.</p>
       </div>
 
       <div id="promoFields">
-        <div class="row">
-          <div class="field"><label>Texto superior</label><input id="promoKicker" value="Hasta" /></div>
-          <div class="field"><label>Porcentaje</label><input id="discount" type="number" value="35" /></div>
-        </div>
-        <div class="field"><label>Bajada promo</label><input id="promoMain" value="en asistencia al viajero" /></div>
-        <div class="field"><label>Texto secundario</label><textarea id="promoNote">Promoción válida para agencias y partners seleccionados.</textarea></div>
+        <div class="field"><label>Texto superior del descuento</label><input id="promoKicker" value="Hasta"></div>
+        <div class="field"><label>Porcentaje destacado</label><input id="discount" value="35"></div>
+        <div class="field"><label>Título promo</label><textarea id="promoTitle">en asistencia al viajero</textarea></div>
+        <div class="field"><label>Bajada promo</label><textarea id="promoSub">Promoción válida para agencias y partners seleccionados.</textarea></div>
+        <div class="field"><label>CTA</label><input id="promoCta" value="Descargá nuestra app"></div>
       </div>
 
-      <div id="generalFields" style="display:none">
-        <div class="field"><label>Título chico</label><input id="kicker" value="Te esperamos en" /></div>
-        <div class="field"><label>Título principal</label><textarea id="headline">Congreso
+      <div id="eventFields" class="hide">
+        <div class="field"><label>Texto superior</label><input id="eventKicker" value="Te esperamos en"></div>
+        <div class="field"><label>Nombre del evento</label><textarea id="eventTitle">Congreso
 de Agentes
 de Viajes</textarea></div>
-        <div class="field"><label>Bajada / mensaje</label><textarea id="subline">Una jornada para compartir novedades, herramientas y oportunidades comerciales.</textarea></div>
+        <div class="field"><label>Bajada</label><textarea id="eventSub">Una jornada para compartir novedades, herramientas y oportunidades comerciales.</textarea></div>
+        <div class="twocol"><div class="field"><label>Fecha</label><textarea id="eventDate">Miércoles
+24.06.26</textarea></div><div class="field"><label>Hora</label><input id="eventTime" value="23:00 hs"></div></div>
+        <div class="field"><label>Lugar</label><textarea id="eventPlace">Av. Córdoba 820,
+CABA</textarea></div>
       </div>
 
-      <div id="eventFields" style="display:none">
-        <div class="row">
-          <div class="field"><label>Fecha</label><input id="date" value="Miércoles 24.06.26" /></div>
-          <div class="field"><label>Hora</label><input id="time" value="23:00 hs" /></div>
-        </div>
-        <div class="field"><label>Lugar</label><input id="place" value="Av. Córdoba 820, CABA" /></div>
-      </div>
-
-      <div id="productFields" style="display:none">
-        <div class="field"><label>Título caja beneficios</label><input id="benefitTitle" value="Beneficios destacados" /></div>
-        <div class="field"><label>Beneficios, uno por línea</label><textarea id="benefits">Asistencia médica internacional
+      <div id="productFields" class="hide">
+        <div class="field"><label>Texto superior</label><input id="productKicker" value="Conocé nuestros"></div>
+        <div class="field"><label>Título producto</label><textarea id="productTitle">Productos
+para viajar
+tranquilo</textarea></div>
+        <div class="field"><label>Descripción breve</label><textarea id="productSub">Coberturas diseñadas para acompañar a tus pasajeros antes, durante y después del viaje.</textarea></div>
+        <div class="field"><label>Título beneficios</label><input id="benefitsTitle" value="Beneficios destacados"></div>
+        <div class="field"><label>Beneficios, uno por línea</label><textarea id="benefitsList">Asistencia médica internacional
 Teleasistencia incluida
 Coberturas para cada tipo de viaje</textarea></div>
       </div>
 
-      <div class="field">
-        <label>Legal</label>
-        <textarea id="legal">Promoción válida según condiciones comerciales informadas por Universal Assistance. Consulte términos, vigencia y productos aplicables.</textarea>
+      <div id="commFields" class="hide">
+        <div class="field"><label>Texto superior</label><input id="commKicker" value="Hoy celebramos"></div>
+        <div class="field"><label>Título conmemorativo</label><textarea id="commTitle">Una fecha
+para sentirnos
+más cerca</textarea></div>
+        <div class="field"><label>Mensaje</label><textarea id="commSub">Universal Assistance acompaña cada viaje, cada historia y cada momento especial.</textarea></div>
       </div>
 
-      <div class="field">
-        <label>Exportar</label>
-        <button class="btn" style="width:100%" id="downloadSvg">Descargar SVG</button>
-        <p class="hint">Para PNG: descargá SVG y abrilo/exportalo desde navegador, PowerPoint, Illustrator o herramienta online interna.</p>
-      </div>
+      <div class="field"><label>Legal / aclaración inferior</label><textarea id="legal">Promoción válida según condiciones comerciales informadas por Universal Assistance. Consulte términos, vigencia y productos aplicables.</textarea></div>
+      <button class="download" id="downloadSvg">Descargar SVG</button>
+      <button class="ghostbtn" id="clearImages" style="margin-top:10px">Quitar imágenes cargadas</button>
     </aside>
   </main>
 
   <script>
-    const $ = (id) => document.getElementById(id);
+    const $ = id => document.getElementById(id);
     const flyer = $('flyer');
-    const presets = {
-      promo: {
-        promoKicker:'Hasta', discount:'35', promoMain:'en asistencia al viajero', promoNote:'Promoción válida para agencias y partners seleccionados.', legal:'Promoción válida según condiciones comerciales informadas por Universal Assistance. Consulte términos, vigencia y productos aplicables.'
-      },
-      evento: {
-        kicker:'Te esperamos en', headline:'Congreso\nde Agentes\nde Viajes', subline:'Una jornada para compartir novedades, herramientas y oportunidades comerciales.', date:'Miércoles 24.06.26', time:'23:00 hs', place:'Av. Córdoba 820, CABA', legal:'Evento sujeto a confirmación de cupos y condiciones informadas por Universal Assistance.'
-      },
-      producto: {
-        kicker:'Conocé nuestros', headline:'Productos\npara viajar\ntranquilo', subline:'Coberturas diseñadas para acompañar a tus pasajeros antes, durante y después del viaje.', benefitTitle:'Beneficios destacados', benefits:'Asistencia médica internacional\nTeleasistencia incluida\nCoberturas para cada tipo de viaje', legal:'Productos y coberturas sujetos a condiciones generales del servicio contratado.'
-      },
-      conmemorativo: {
-        kicker:'Hoy celebramos', headline:'Una fecha\npara sentirnos\nmás cerca', subline:'Universal Assistance acompaña cada viaje, cada historia y cada momento especial.', legal:'Mensaje institucional de Universal Assistance.'
-      }
+    const blocks = {promo:$('promoBlock'),event:$('eventBlock'),product:$('productBlock'),comm:$('commBlock')};
+    const fieldGroups = {promo:$('promoFields'),event:$('eventFields'),product:$('productFields'),comm:$('commFields')};
+    const defaults = {
+      promo:{promoKicker:'Hasta',discount:'35',promoTitle:'en asistencia al viajero',promoSub:'Promoción válida para agencias y partners seleccionados.',promoCta:'Descargá nuestra app',legal:'Promoción válida según condiciones comerciales informadas por Universal Assistance. Consulte términos, vigencia y productos aplicables.'},
+      event:{eventKicker:'Te esperamos en',eventTitle:'Congreso\nde Agentes\nde Viajes',eventSub:'Una jornada para compartir novedades, herramientas y oportunidades comerciales.',eventDate:'Miércoles\n24.06.26',eventTime:'23:00 hs',eventPlace:'Av. Córdoba 820,\nCABA',legal:'Evento sujeto a confirmación de cupos y condiciones informadas por Universal Assistance.'},
+      product:{productKicker:'Conocé nuestros',productTitle:'Productos\npara viajar\ntranquilo',productSub:'Coberturas diseñadas para acompañar a tus pasajeros antes, durante y después del viaje.',benefitsTitle:'Beneficios destacados',benefitsList:'Asistencia médica internacional\nTeleasistencia incluida\nCoberturas para cada tipo de viaje',legal:'Productos y coberturas sujetos a condiciones generales del servicio contratado.'},
+      comm:{commKicker:'Hoy celebramos',commTitle:'Una fecha\npara sentirnos\nmás cerca',commSub:'Universal Assistance acompaña cada viaje, cada historia y cada momento especial.',legal:'Mensaje institucional de Universal Assistance.'}
     };
-
-    function linesToHtml(v){ return (v || '').split('\n').map(x => x.trim()).filter(Boolean).join('<br>'); }
-    function fillPreset(type){
-      const p = presets[type];
-      Object.keys(p).forEach(k => { if($(k)) $(k).value = p[k]; });
+    function br(txt){return (txt||'').replace(/[&<>]/g, s=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[s])).replace(/\n/g,'<br>')}
+    function setTemplate(t){
+      flyer.className = 'flyer tpl-' + t;
+      Object.keys(blocks).forEach(k=>blocks[k].classList.toggle('hide',k!==t));
+      Object.keys(fieldGroups).forEach(k=>fieldGroups[k].classList.toggle('hide',k!==t));
+      Object.entries(defaults[t]).forEach(([id,val])=>{ if($(id)) $(id).value = val; });
       update();
     }
-    function setTemplate(type, reset=false){
-      $('templateSelect').value = type; $('templateSide').value = type; flyer.className = 'flyer ' + type;
-      const promo = type === 'promo', evento = type === 'evento', producto = type === 'producto', conmemorativo = type === 'conmemorativo';
-      $('promoBlock').style.display = promo ? 'block' : 'none';
-      $('textBlock').style.display = promo ? 'none' : 'block';
-      $('promoFields').style.display = promo ? 'block' : 'none';
-      $('generalFields').style.display = promo ? 'none' : 'block';
-      $('eventFields').style.display = evento ? 'block' : 'none';
-      $('eventCard').style.display = evento ? 'grid' : 'none';
-      $('productFields').style.display = producto ? 'block' : 'none';
-      $('benefitCard').style.display = producto ? 'block' : 'none';
-      $('appCta').style.display = promo ? 'block' : 'none';
-      $('commShape').style.display = conmemorativo ? 'block' : 'none';
-      $('commFrame').style.display = conmemorativo ? 'block' : 'none';
-      if(reset) fillPreset(type); else update();
-    }
     function update(){
-      $('promoKickerPreview').textContent = $('promoKicker')?.value || 'Hasta';
-      $('discountPreview').textContent = $('discount')?.value || '35';
-      $('promoMainPreview').textContent = $('promoMain')?.value || '';
-      $('promoNotePreview').textContent = $('promoNote')?.value || '';
-      $('kickerPreview').textContent = $('kicker')?.value || '';
-      $('headlinePreview').innerHTML = linesToHtml($('headline')?.value || '');
-      $('sublinePreview').textContent = $('subline')?.value || '';
-      $('datePreview').textContent = $('date')?.value || '';
-      $('timePreview').textContent = $('time')?.value || '';
-      $('placePreview').textContent = $('place')?.value || '';
-      $('benefitTitlePreview').textContent = $('benefitTitle')?.value || '';
-      const items = ($('benefits')?.value || '').split('\n').map(x => x.trim()).filter(Boolean);
-      $('benefitsPreview').innerHTML = items.map(x => `<li>${x}</li>`).join('');
-      $('legalPreview').textContent = $('legal')?.value || '';
+      $('promoKickerView').innerHTML=br($('promoKicker').value); $('discountView').textContent=($('discount').value||'35').replace('%','').trim(); $('promoTitleView').innerHTML=br($('promoTitle').value); $('promoSubView').innerHTML=br($('promoSub').value); $('promoCtaView').innerHTML=br($('promoCta').value);
+      $('eventKickerView').innerHTML=br($('eventKicker').value); $('eventTitleView').innerHTML=br($('eventTitle').value); $('eventSubView').innerHTML=br($('eventSub').value); $('eventDateView').innerHTML=br($('eventDate').value); $('eventTimeView').innerHTML=br($('eventTime').value); $('eventPlaceView').innerHTML=br($('eventPlace').value);
+      $('productKickerView').innerHTML=br($('productKicker').value); $('productTitleView').innerHTML=br($('productTitle').value); $('productSubView').innerHTML=br($('productSub').value); $('benefitsTitleView').innerHTML=br($('benefitsTitle').value); $('benefitsListView').innerHTML=($('benefitsList').value||'').split('\n').filter(Boolean).slice(0,4).map(x=>'<li>'+br(x)+'</li>').join('');
+      $('commKickerView').innerHTML=br($('commKicker').value); $('commTitleView').innerHTML=br($('commTitle').value); $('commSubView').innerHTML=br($('commSub').value);
+      $('legalView').innerHTML=br($('legal').value);
     }
-    function readImage(input, target, asPartner=false){
-      const file = input.files && input.files[0]; if(!file) return;
-      const reader = new FileReader();
-      reader.onload = () => { target.src = reader.result; if(asPartner) target.classList.add('show'); };
-      reader.readAsDataURL(file);
-    }
-
-    document.querySelectorAll('input, textarea').forEach(el => el.addEventListener('input', update));
-    $('templateSelect').addEventListener('change', e => setTemplate(e.target.value, true));
-    $('templateSide').addEventListener('change', e => setTemplate(e.target.value, true));
-    $('resetBtn').addEventListener('click', () => setTemplate($('templateSelect').value, true));
-    $('partnerLogoInput').addEventListener('change', e => readImage(e.target, $('partnerLogoPreview'), true));
-    $('bgInput').addEventListener('change', e => readImage(e.target, $('bgImg'), false));
-    $('clearPartner').addEventListener('click', () => { $('partnerLogoPreview').src=''; $('partnerLogoPreview').classList.remove('show'); $('partnerLogoInput').value=''; });
-    $('clearBg').addEventListener('click', () => { $('bgImg').removeAttribute('src'); $('bgInput').value=''; });
-    $('downloadSvg').addEventListener('click', () => {
-      const clone = flyer.cloneNode(true);
-      const css = document.querySelector('style').innerHTML;
-      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="560" height="700"><foreignObject width="100%" height="100%"><div xmlns="http://www.w3.org/1999/xhtml"><style>${css}</style>${clone.outerHTML}</div></foreignObject></svg>`;
-      const blob = new Blob([svg], {type:'image/svg+xml'});
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob); a.download = 'ua-flyer.svg'; a.click(); URL.revokeObjectURL(a.href);
-    });
-    setTemplate('promo', false); update();
+    document.querySelectorAll('input,textarea').forEach(el=>{ if(el.type !== 'file') el.addEventListener('input',update); });
+    $('templateSelect').addEventListener('change',e=>setTemplate(e.target.value));
+    $('resetBtn').addEventListener('click',()=>setTemplate($('templateSelect').value));
+    $('partnerLogoInput').addEventListener('change',e=>{ const file=e.target.files[0]; if(!file) return; const r=new FileReader(); r.onload=()=>{ $('partnerLogoPreview').src=r.result; $('partnerLogoPreview').classList.add('show'); }; r.readAsDataURL(file); });
+    $('bgInput').addEventListener('change',e=>{ const file=e.target.files[0]; if(!file) return; const r=new FileReader(); r.onload=()=>{ $('bgImg').style.backgroundImage=`url(${r.result})`; $('bgImg').classList.add('show'); }; r.readAsDataURL(file); });
+    $('clearImages').addEventListener('click',()=>{ $('partnerLogoPreview').removeAttribute('src'); $('partnerLogoPreview').classList.remove('show'); $('bgImg').style.backgroundImage=''; $('bgImg').classList.remove('show'); $('partnerLogoInput').value=''; $('bgInput').value=''; });
+    $('downloadSvg').addEventListener('click',()=>{ const clone=flyer.cloneNode(true); const css=document.querySelector('style').innerHTML; const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="640" height="800"><foreignObject width="100%" height="100%"><div xmlns="http://www.w3.org/1999/xhtml"><style>${css}</style>${clone.outerHTML}</div></foreignObject></svg>`; const blob=new Blob([svg],{type:'image/svg+xml'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='ua-flyer.svg'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000); });
+    setTemplate('promo');
   </script>
 </body>
 </html>
