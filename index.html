@@ -2,587 +2,79 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>UA Flyer Editor</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&family=Bebas+Neue&display=swap');
+
     :root{
-      --ua-bg:#071a25;
-      --ua-panel:#0b2436;
-      --ua-card:#0e2b3f;
-      --ua-border:rgba(255,255,255,.10);
-      --ua-text:#f8f7f2;
-      --ua-muted:#dbe8f2;
-      --ua-gold:#f4c95c;
-      --ua-gold-2:#ffd873;
-      --ua-teal:#0e5b63;
-      --ua-cyan:#2bc0be;
-      --ua-green:#4fd49b;
-      --ua-shadow:0 16px 40px rgba(0,0,0,.35);
+      --deep:#061824;
+      --deep2:#082437;
+      --blue:#00528f;
+      --navy:#002447;
+      --teal:#008091;
+      --cyan:#00c4df;
+      --mint:#59c982;
+      --pink:#ff436e;
+      --cream:#ffd56b;
+      --cream2:#ffe08c;
+      --white:#ffffff;
+      --panel:#0b2132;
+      --line:rgba(255,255,255,.12);
+      --scale: .43;
     }
+
     *{box-sizing:border-box}
-    html,body{height:100%}
     body{
       margin:0;
-      font-family: Arial, Helvetica, sans-serif;
-      background:radial-gradient(circle at top left,#143450 0%,#08141f 58%,#06121b 100%);
-      color:var(--ua-text);
+      background:radial-gradient(circle at 20% 0%, rgba(0,196,223,.12), transparent 28%), linear-gradient(135deg,#07131e,#0b1c2a 55%,#05101a);
+      color:#fff;
+      font-family:Poppins, Arial, sans-serif;
     }
-    .app-shell{
-      display:grid;
-      grid-template-columns:minmax(320px,1fr) 380px;
-      min-height:100vh;
-    }
-    .left-pane{padding:28px 24px 32px 28px}
-    .right-pane{
-      background:rgba(6,18,27,.72);
-      border-left:1px solid var(--ua-border);
-      padding:22px;
-      overflow:auto;
-      backdrop-filter: blur(12px);
-    }
-    .topbar{
-      display:flex; align-items:center; gap:14px; margin-bottom:18px;
-    }
-    .select, .btn, .field input, .field textarea, .field select{
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.12);
-      background:#102a3b;
-      color:var(--ua-text);
-      font-size:15px;
-    }
-    .select{padding:14px 18px; min-width:230px; font-weight:700; box-shadow:var(--ua-shadow)}
-    .btn{
-      padding:14px 18px; cursor:pointer; font-weight:800; box-shadow:var(--ua-shadow);
-      background:linear-gradient(135deg,#5be2b5,#48c99c); color:#073423;
-    }
-    .btn.secondary{background:#102a3b;color:var(--ua-text)}
-    .btn.small{padding:10px 12px; font-size:14px}
-    .topbar .spacer{flex:1}
-    .canvas-wrap{
-      display:flex; align-items:flex-start; justify-content:center;
-      padding-top:8px;
-    }
-
-    /* flyer size */
-    .flyer{
-      position:relative;
-      width:680px;
-      aspect-ratio:1080 / 1920;
-      overflow:hidden;
-      border-radius:0;
-      box-shadow:0 28px 60px rgba(0,0,0,.45);
-      background:
-        radial-gradient(circle at 85% 18%, rgba(74,184,137,.35) 0, rgba(74,184,137,.18) 16%, rgba(74,184,137,0) 28%),
-        radial-gradient(circle at 14% 88%, rgba(74,184,137,.35) 0, rgba(74,184,137,.12) 18%, rgba(74,184,137,0) 28%),
-        linear-gradient(135deg,#03283e 0%,#07344b 42%,#0b5b60 100%);
-      color:var(--ua-gold-2);
-    }
-    .flyer::before{
-      content:""; position:absolute; inset:0;
-      background:linear-gradient(180deg, rgba(1,10,17,.08), rgba(1,10,17,.18));
-      pointer-events:none;
-    }
-    .flyer::after{
-      content:""; position:absolute; inset:0;
-      background-image:radial-gradient(rgba(255,255,255,.05) 0.7px, transparent 0.7px);
-      background-size: 28px 28px;
-      opacity:.08;
-      pointer-events:none;
-      display:none;
-    }
-    .flyer.use-pattern::after{display:block}
-    .bg-photo{position:absolute; inset:0; background-size:cover; background-position:center; opacity:0; transition:opacity .2s ease}
-    .bg-photo.show{opacity:.22}
-    .overlay{position:absolute; inset:0; background:linear-gradient(135deg,rgba(2,20,31,.84),rgba(7,52,75,.70) 45%,rgba(8,94,96,.52)); pointer-events:none}
-
-    .content{position:relative; z-index:2; width:100%; height:100%; padding:58px 56px 46px}
-    .logo{position:absolute; left:56px; top:50px; width:360px; z-index:4}
-    .logo img{width:100%; height:auto; display:block}
-    .partner{position:absolute; right:56px; top:58px; max-width:140px; max-height:80px; display:none; z-index:4; object-fit:contain; filter: drop-shadow(0 4px 10px rgba(0,0,0,.25));}
-    .partner.show{display:block}
-    .legal{position:absolute; left:56px; right:56px; bottom:46px; font-size:15px; line-height:1.22; color:#fff7d6; opacity:.95; z-index:3}
-
-    /* common typesetting */
-    .eyebrow{font-weight:800; letter-spacing:-.02em; color:var(--ua-gold-2)}
-    .title-main{font-weight:900; letter-spacing:-.045em; line-height:.95; color:var(--ua-gold-2); margin:0}
-    .body-copy{font-weight:800; line-height:1.08; color:var(--ua-gold-2)}
-    .small-copy{font-weight:800; line-height:1.1; color:var(--ua-gold-2)}
-
-    /* PROMO */
-    .promo .discount-box{
-      position:absolute; left:56px; top:372px; width:632px; height:346px;
-      border:5px solid var(--ua-gold-2); border-radius:34px; padding:28px 30px;
-      display:flex; flex-direction:column; justify-content:flex-start;
-    }
-    .promo .promo-top{font-size:74px; line-height:.95; font-weight:900; max-width:240px}
-    .promo .discount-line{display:flex; align-items:flex-end; gap:10px; margin-top:10px; flex-wrap:nowrap}
-    .promo .discount-num{font-size:210px; line-height:.82; font-weight:900; letter-spacing:-.06em}
-    .promo .discount-side{display:flex; align-items:flex-end; gap:10px; padding-bottom:18px}
-    .promo .discount-pct{font-size:88px; line-height:.9; font-weight:900}
-    .promo .discount-off{font-size:74px; line-height:.9; font-weight:900}
-    .promo .promo-headline{
-      position:absolute; left:56px; top:770px; width:510px;
-      font-size:76px; line-height:.98; font-weight:900; letter-spacing:-.04em;
-    }
-    .promo .promo-secondary{
-      position:absolute; left:56px; top:1004px; width:390px;
-      font-size:58px; line-height:1.04; font-weight:900;
-    }
-    .promo .promo-cta{
-      position:absolute; right:72px; top:1040px; width:168px;
-      font-size:36px; line-height:1.02; font-weight:900; text-align:left;
-      display:flex; align-items:center; gap:12px;
-    }
-    .promo .promo-cta::before{
-      content:"↓"; font-size:42px; border:3px solid var(--ua-gold-2); width:46px; height:46px; display:grid; place-items:center; border-radius:50%; flex:0 0 auto;
-    }
-    .promo .promo-circle{position:absolute; left:-58px; bottom:192px; width:220px; height:220px; border-radius:50%; background:rgba(95,204,155,.42)}
-    .promo .dots{position:absolute; right:68px; top:1044px; width:88px; height:124px; display:grid; grid-template-columns:repeat(4,1fr); gap:10px; opacity:.65}
-    .promo .dots span,.events .dots span{width:4px;height:4px;border-radius:50%;background:var(--ua-gold-2);display:block}
-
-    /* EVENTS */
-    .events .dots{position:absolute; right:72px; top:146px; width:98px; height:244px; display:grid; grid-template-columns:repeat(4,1fr); gap:13px; opacity:.7}
-    .events .events-eyebrow{position:absolute; left:56px; top:332px; width:420px; font-size:64px; line-height:1}
-    .events .events-title{position:absolute; left:56px; top:406px; width:580px; font-size:94px; max-height:390px; overflow:hidden}
-    .events .events-copy{position:absolute; left:56px; top:820px; width:540px; font-size:52px; max-height:220px; overflow:hidden}
-    .events .cards{position:absolute; left:56px; right:56px; bottom:202px; display:grid; grid-template-columns:1fr 1fr 1.2fr; gap:16px}
-    .events .card{
-      min-height:205px; background:rgba(17,70,70,.48); border:2px solid rgba(247,211,116,.24); border-radius:24px; padding:20px 18px 18px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
-    }
-    .events .card .icon{font-size:48px; margin-bottom:12px}
-    .events .card .label{font-size:28px; font-weight:900; margin-bottom:10px; letter-spacing:.01em}
-    .events .card .value{font-size:42px; line-height:1.02; font-weight:900}
-    .events .blob{position:absolute; right:-22px; bottom:156px; width:180px; height:180px; border-radius:50%; background:rgba(95,204,155,.28)}
-
-    /* PRODUCT */
-    .product .blob{position:absolute; right:-26px; top:116px; width:220px; height:220px; border-radius:50%; background:rgba(95,204,155,.35)}
-    .product .product-eyebrow{position:absolute; left:56px; top:332px; width:400px; font-size:60px}
-    .product .product-title{position:absolute; left:56px; top:396px; width:530px; font-size:96px; max-height:360px; overflow:hidden}
-    .product .product-copy{position:absolute; left:56px; top:838px; width:520px; font-size:52px; max-height:190px; overflow:hidden}
-    .product .benefits{
-      position:absolute; left:56px; right:56px; bottom:178px; min-height:318px;
-      background:#f4cf77; color:#07293d; border-radius:28px; padding:28px 34px;
-      box-shadow:var(--ua-shadow);
-    }
-    .product .benefits-title{font-size:56px; line-height:1; font-weight:900; margin:0 0 16px}
-    .product .benefits ul{margin:0; padding-left:34px}
-    .product .benefits li{font-size:41px; line-height:1.18; font-weight:800; margin:12px 0}
-
-    /* COMMEMORATIVE */
-    .commemorative .blob{position:absolute; right:-48px; bottom:112px; width:300px; height:300px; border-radius:50%; background:rgba(244,201,92,.38)}
-    .commemorative .frame{
-      position:absolute; left:56px; right:56px; top:358px; bottom:178px; border:4px solid rgba(244,216,115,.86); border-radius:32px;
-    }
-    .commemorative .heart{
-      position:absolute; right:76px; bottom:148px; width:74px; height:74px; border-radius:50%; background:#d29e47; display:grid; place-items:center; font-size:40px; box-shadow:var(--ua-shadow); z-index:3
-    }
-    .commemorative .comm-eyebrow{position:absolute; left:56px; top:410px; width:380px; font-size:60px; z-index:3}
-    .commemorative .comm-title{position:absolute; left:56px; top:486px; width:522px; font-size:92px; max-height:370px; overflow:hidden; z-index:3}
-    .commemorative .comm-copy{position:absolute; left:56px; top:830px; width:490px; font-size:52px; max-height:220px; overflow:hidden; z-index:3}
-
-    /* panel */
-    h1.panel-title{font-size:20px; margin:0 0 4px; font-weight:900}
-    .panel-sub{margin:0 0 18px; color:#b8cddd; font-size:13px; line-height:1.35}
-    .group{border-top:1px solid var(--ua-border); padding-top:16px; margin-top:16px}
-    .grid-two{display:grid; grid-template-columns:1fr 1fr; gap:10px}
-    .field{margin-bottom:12px}
-    .field label{display:block; font-size:12px; font-weight:800; margin:0 0 6px; color:#d9e9f4; text-transform:uppercase; letter-spacing:.04em}
-    .field input,.field textarea,.field select{width:100%; padding:10px 12px}
-    .field textarea{min-height:64px; resize:vertical}
-    .hint{font-size:12px; color:#a9c2d3; line-height:1.35}
-    .actions{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:16px}
-    .file-note{font-size:12px; color:#a9c2d3; margin-top:6px; word-break:break-all}
-    .hidden{display:none !important}
-    .footer-note{font-size:12px; color:#8fa9b9; margin-top:14px; line-height:1.4}
-
-    @media (max-width: 1280px){
-      .app-shell{grid-template-columns:1fr}
-      .right-pane{border-left:0;border-top:1px solid var(--ua-border)}
-      .flyer{width:min(680px, calc(100vw - 46px))}
-    }
-    @media (max-width: 760px){
-      .left-pane{padding:18px}
-      .topbar{flex-wrap:wrap}
-      .select{min-width:100%}
-      .topbar .spacer{display:none}
-      .actions{grid-template-columns:1fr}
-      .logo{left:34px; top:34px; width:260px}
-      .partner{right:34px; top:34px; max-width:90px; max-height:60px}
-      .content{padding:34px 34px 28px}
-      .legal{left:34px; right:34px; bottom:28px; font-size:11px}
-    }
+    .app{min-height:100vh;display:grid;grid-template-columns:minmax(520px,1fr) 390px}
+    .stage{padding:28px;overflow:auto}
+    .stage-top{display:flex;align-items:center;gap:16px;margin:0 auto 22px;width:calc(1080px * var(--scale));min-width:460px}
+    select,button,input,textarea{font-family:Poppins,Arial,sans-serif}
+    .template-select{background:#10283b;color:#ffd56b;border:1px solid rgba(255,255,255,.18);border-radius:18px;padding:15px 20px;font-weight:900;font-size:18px;min-width:250px;box-shadow:0 14px 34px rgba(0,0,0,.28)}
+    .btn{border:0;border-radius:18px;background:linear-gradient(135deg,#67e6ba,#52ca98);color:#062319;padding:15px 22px;font-weight:900;font-size:17px;cursor:pointer;box-shadow:0 14px 34px rgba(0,0,0,.28)}
+    .btn.dark{background:#10283b;color:#fff;border:1px solid rgba(255,255,255,.14)}
+    .stage-spacer{flex:1}
+    .artboard-shell{width:calc(1080px * var(--scale));height:calc(1920px * var(--scale));margin:0 auto;min-width:460px;min-height:818px;position:relative}
+    .artboard{position:absolute;left:0;top:0;width:1080px;height:1920px;transform:scale(var(--scale));transform-origin:top left;overflow:hidden;background:#062638;box-shadow:0 34px 80px rgba(0,0,0,.42)}
+    .art-bg{position:absolute;inset:0;background:radial-gradient(circle at 93% 24%, rgba(79,201,135,.30) 0 0, rgba(79,201,135,.20) 0 125px, transparent 126px),radial-gradient(circle at -4% 82%, rgba(79,201,135,.40) 0 0, rgba(79,201,135,.25) 0 210px, transparent 211px),linear-gradient(135deg,#031b29 0%,#073149 46%,#08756d 100%)}
+    .bg-photo{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;z-index:1}.bg-photo.show{opacity:.24}.photo-overlay{position:absolute;inset:0;z-index:2;background:linear-gradient(135deg,rgba(3,21,32,.90),rgba(5,48,69,.80) 55%,rgba(8,112,100,.58))}
+    .decor{position:absolute;z-index:3;pointer-events:none}.blob-a{width:240px;height:150px;border-radius:50%;background:rgba(79,201,135,.27);right:80px;top:130px;transform:rotate(-25deg)}.blob-b{width:285px;height:285px;border-radius:50%;background:rgba(79,201,135,.28);left:-120px;bottom:245px}.blob-c{width:315px;height:315px;border-radius:50%;background:rgba(79,201,135,.25);right:-120px;bottom:245px}.blob-d{width:370px;height:370px;border-radius:50%;background:linear-gradient(135deg,rgba(255,213,107,.55),rgba(255,67,110,.35));right:-110px;bottom:35px}
+    .dot-grid{display:grid;grid-template-columns:repeat(5,10px);gap:20px;opacity:.65}.dot-grid span{width:6px;height:6px;border-radius:50%;background:var(--cream)}.dot-promo{right:140px;bottom:360px}.dot-events{right:82px;top:125px}
+    .logo-main{position:absolute;z-index:5;left:72px;top:70px;width:430px;height:auto;display:block;object-fit:contain}.partner-logo{position:absolute;z-index:6;right:72px;top:78px;max-width:180px;max-height:92px;object-fit:contain;display:none;filter:drop-shadow(0 8px 16px rgba(0,0,0,.24))}.partner-logo.show{display:block}
+    .legal{position:absolute;z-index:5;left:72px;right:72px;bottom:58px;font-size:24px;line-height:1.25;color:#fff1bd;font-weight:700;max-height:88px;overflow:hidden}
+    .field-area{position:absolute;z-index:5;color:var(--cream);text-shadow:0 6px 10px rgba(0,0,0,.22)}.txt{margin:0;font-weight:900;letter-spacing:-.045em;line-height:.96;white-space:pre-line;overflow:hidden}.txt-copy{margin:0;font-weight:800;letter-spacing:-.025em;line-height:1.12;white-space:pre-line;overflow:hidden}
+    .promo-box{left:72px;top:365px;width:850px;height:320px;border:6px solid var(--cream);border-radius:42px;padding:34px 45px}.promo-kicker{font-size:80px;height:82px}.promo-discount{display:flex;align-items:flex-end;margin-top:6px;height:168px;overflow:visible}.discount-number{font-size:218px;line-height:.78;font-weight:900;letter-spacing:-.08em;margin-right:16px}.discount-percent{font-size:82px;line-height:.92;font-weight:900;margin-bottom:20px;margin-right:14px}.discount-off{font-size:68px;line-height:.92;font-weight:900;margin-bottom:18px}.promo-head{left:72px;top:742px;width:610px;height:190px;font-size:78px}.promo-secondary{left:72px;top:990px;width:470px;height:190px;font-size:48px}.promo-cta{right:76px;top:1125px;width:250px;min-height:90px;display:flex;align-items:flex-start;gap:14px;font-size:34px;line-height:1.05;font-weight:900;text-align:left}.promo-cta .download-icon{width:50px;height:50px;border:4px solid var(--cream);border-radius:50%;display:grid;place-items:center;font-size:34px;flex:0 0 auto;line-height:1}
+    .events-kicker{left:72px;top:365px;width:620px;height:72px;font-size:60px}.events-title{left:72px;top:450px;width:660px;height:375px;font-size:96px}.events-copy{left:72px;top:850px;width:780px;height:150px;font-size:44px}.event-cards{position:absolute;z-index:5;left:72px;right:72px;bottom:205px;display:grid;grid-template-columns:1fr 1fr 1.25fr;gap:18px}.event-card{min-height:190px;border-radius:28px;background:rgba(7,55,61,.58);border:2px solid rgba(255,213,107,.38);padding:26px 22px;color:var(--cream);overflow:hidden}.event-icon{font-size:54px;line-height:1;margin-bottom:14px;color:var(--cream)}.event-label{font-size:25px;line-height:1;font-weight:900;margin-bottom:12px;letter-spacing:.02em}.event-value{font-size:31px;line-height:1.08;font-weight:900;white-space:pre-line;overflow:hidden}
+    .product-kicker{left:72px;top:360px;width:610px;height:72px;font-size:56px}.product-title{left:72px;top:438px;width:690px;height:340px;font-size:92px}.product-copy{left:72px;top:805px;width:685px;height:175px;font-size:42px}.benefit-box{position:absolute;z-index:5;left:72px;right:72px;bottom:205px;height:295px;border-radius:32px;background:var(--cream2);color:#073149;padding:35px 42px;box-shadow:0 22px 45px rgba(0,0,0,.25);overflow:hidden}.benefit-title{font-size:50px;line-height:1;font-weight:900;margin:0 0 22px;letter-spacing:-.03em}.benefit-list{margin:0;padding-left:34px;font-size:31px;line-height:1.25;font-weight:800}.benefit-list li{margin:8px 0}
+    .comm-frame{position:absolute;z-index:4;left:72px;top:345px;right:72px;bottom:205px;border:5px solid rgba(255,213,107,.90);border-radius:44px}.comm-kicker{left:110px;top:430px;width:620px;height:72px;font-size:56px}.comm-title{left:110px;top:520px;width:705px;height:365px;font-size:88px}.comm-copy{left:110px;top:930px;width:670px;height:205px;font-size:39px}.heart{position:absolute;z-index:5;right:80px;bottom:175px;width:82px;height:82px;border-radius:50%;background:#d8a142;display:grid;place-items:center;color:#fff0bd;font-size:44px;box-shadow:0 18px 36px rgba(0,0,0,.30)}
+    .panel h1{font-size:22px;margin:0 0 6px}.panel p{margin:0 0 18px;color:#aac2d1;font-size:13px;line-height:1.4}.group{border-top:1px solid var(--line);padding-top:16px;margin-top:16px}.field{margin-bottom:13px}.field label{display:block;margin-bottom:6px;color:#d8e7ef;font-size:12px;font-weight:900;letter-spacing:.04em;text-transform:uppercase}.field input,.field textarea{width:100%;background:#10283b;color:#fff;border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:10px 12px;font-size:14px}.field textarea{min-height:72px;resize:vertical}.file-name{margin-top:6px;font-size:12px;color:#aac2d1;word-break:break-all}.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}.warning{background:rgba(255,213,107,.10);border:1px solid rgba(255,213,107,.24);color:#ffe8a3;border-radius:14px;padding:12px;font-size:12px;line-height:1.35;margin-bottom:14px}
+    @media(max-width:1180px){:root{--scale:.36}.app{grid-template-columns:1fr}.right-pane{border-top:1px solid var(--line)}}
   </style>
 </head>
 <body>
-  <div class="app-shell">
-    <section class="left-pane">
-      <div class="topbar">
-        <select id="templateSelect" class="select">
-          <option value="promo">Flyer Promo</option>
-          <option value="events">Flyer Eventos</option>
-          <option value="product">Flyer Producto</option>
-          <option value="commemorative">Flyer Conmemorativo</option>
-        </select>
-        <div class="spacer"></div>
-        <button id="resetBtn" class="btn">Restaurar</button>
-      </div>
-
-      <div class="canvas-wrap">
-        <div id="flyer" class="flyer promo">
-          <div id="bgPhoto" class="bg-photo"></div>
-          <div class="overlay"></div>
-          <img id="partnerLogo" class="partner" alt="Partner logo" />
-          <div class="content">
-            <div class="logo"><img src="UA%20Logo_Zurich%20-%20Blanco%20(4).png" alt="Universal Assistance" /></div>
-            <div id="dynamicTemplate"></div>
-            <div id="legalText" class="legal"></div>
-          </div>
-        </div>
-      </div>
+  <main class="app">
+    <section class="stage">
+      <div class="stage-top"><select id="templateSelect" class="template-select"><option value="promo">Flyer Promo</option><option value="events">Flyer Eventos</option><option value="product">Flyer Producto</option><option value="comm">Flyer Conmemorativo</option></select><div class="stage-spacer"></div><button class="btn" id="resetBtn">Restaurar</button></div>
+      <div class="artboard-shell"><section id="artboard" class="artboard"><div class="art-bg"></div><div id="bgPhoto" class="bg-photo"></div><div class="photo-overlay"></div><img class="logo-main" src="UA%20Logo_Zurich%20-%20Blanco%20(4).png" alt="Universal Assistance"><img id="partnerLogo" class="partner-logo" alt="Partner"><div id="templateRoot"></div><div id="legal" class="legal"></div></section></div>
     </section>
-
-    <aside class="right-pane">
-      <h1 class="panel-title">Editor UA</h1>
-      <p class="panel-sub">Templates cerrados de Universal Assistance. Editá texto, fondo y logos sin romper la grilla visual.</p>
-
-      <div class="group">
-        <div class="field">
-          <label>Logo partner opcional</label>
-          <input id="partnerUpload" type="file" accept="image/*" />
-          <div id="partnerFileName" class="file-note">Sin logo cargado</div>
-        </div>
-        <div class="field">
-          <label>Imagen de fondo opcional</label>
-          <input id="bgUpload" type="file" accept="image/*" />
-          <div id="bgFileName" class="file-note">Sin imagen cargada</div>
-        </div>
-      </div>
-
-      <div id="fieldsContainer"></div>
-
-      <div class="actions">
-        <button id="downloadSvgBtn" class="btn secondary">Descargar SVG</button>
-        <button id="downloadPngBtn" class="btn secondary">Descargar PNG</button>
-      </div>
-      <p class="footer-note">El logo principal usa el archivo oficial ya subido al repositorio. Los textos se ajustan automáticamente para ayudar a evitar superposiciones.</p>
-    </aside>
-  </div>
-
+    <aside class="right-pane panel"><h1>Editor de Flyers UA</h1><p>Plantillas cerradas con grilla fija. Editá campos sin romper la identidad visual.</p><div class="warning">La vista previa usa el logo oficial subido al repositorio. Para que se vea correctamente, el archivo debe llamarse exactamente: <b>UA Logo_Zurich - Blanco (4).png</b></div><div class="group"><div class="field"><label>Logo partner opcional</label><input type="file" id="partnerUpload" accept="image/*"><div id="partnerName" class="file-name">Sin logo cargado</div></div><div class="field"><label>Imagen de fondo opcional</label><input type="file" id="bgUpload" accept="image/*"><div id="bgName" class="file-name">Sin fondo cargado</div></div></div><div id="formFields" class="group"></div><div class="actions"><button class="btn dark" id="downloadSvg">Descargar SVG</button><button class="btn dark" id="downloadPng">Descargar PNG</button></div></aside>
+  </main>
   <script>
-    const templates = {
-      promo: {
-        label: 'Flyer Promo',
-        legal: 'Promoción válida según condiciones comerciales informadas por Universal Assistance. Consulte términos, vigencia y productos aplicables.',
-        fields: [
-          { key:'promoTop', label:'Texto superior', type:'text', value:'Hasta' },
-          { key:'promoPercent', label:'Porcentaje', type:'text', value:'35' },
-          { key:'promoOff', label:'Texto OFF', type:'text', value:'OFF' },
-          { key:'promoHeadline', label:'Bajada principal', type:'textarea', value:'en asistencia al viajero' },
-          { key:'promoSecondary', label:'Texto secundario', type:'textarea', value:'Promoción válida para agencias y partners seleccionados.' },
-          { key:'promoCta', label:'CTA', type:'textarea', value:'DESCARGÁ\nNUESTRA APP' },
-          { key:'legal', label:'Legal', type:'textarea', value:'Promoción válida según condiciones comerciales informadas por Universal Assistance. Consulte términos, vigencia y productos aplicables.' }
-        ],
-        render: (d) => `
-          <div class="promo">
-            <div class="promo-circle"></div>
-            <div class="dots">${'<span></span>'.repeat(20)}</div>
-            <div class="discount-box">
-              <div class="promo-top fit-lines" data-min="38" data-max="74">${esc(d.promoTop)}</div>
-              <div class="discount-line">
-                <div class="discount-num fit-text" data-min="96" data-max="210">${esc(d.promoPercent)}</div>
-                <div class="discount-side">
-                  <div class="discount-pct fit-text" data-min="44" data-max="88">%</div>
-                  <div class="discount-off fit-text" data-min="36" data-max="74">${esc(d.promoOff)}</div>
-                </div>
-              </div>
-            </div>
-            <div class="promo-headline fit-lines" data-min="34" data-max="76">${nl2br(d.promoHeadline)}</div>
-            <div class="promo-secondary fit-lines" data-min="22" data-max="58">${nl2br(d.promoSecondary)}</div>
-            <div class="promo-cta fit-lines" data-min="16" data-max="36">${nl2br(d.promoCta)}</div>
-          </div>
-        `
-      },
-      events: {
-        label: 'Flyer Eventos',
-        legal: 'Evento sujeto a confirmación de cupos y condiciones informadas por Universal Assistance.',
-        fields: [
-          { key:'eventsEyebrow', label:'Pre título', type:'text', value:'Te esperamos en' },
-          { key:'eventsTitle', label:'Nombre del evento', type:'textarea', value:'Congreso\nde Agentes\nde Viajes' },
-          { key:'eventsCopy', label:'Bajada', type:'textarea', value:'Una jornada para compartir novedades, herramientas y oportunidades comerciales.' },
-          { key:'eventsDate', label:'Fecha', type:'textarea', value:'Miércoles\n24.06.26' },
-          { key:'eventsTime', label:'Hora', type:'textarea', value:'23:00 hs' },
-          { key:'eventsPlace', label:'Lugar', type:'textarea', value:'Av. Córdoba 820,\nCABA' },
-          { key:'legal', label:'Legal', type:'textarea', value:'Evento sujeto a confirmación de cupos y condiciones informadas por Universal Assistance.' }
-        ],
-        render: (d) => `
-          <div class="events use-pattern">
-            <div class="dots">${'<span></span>'.repeat(28)}</div>
-            <div class="events-eyebrow fit-lines" data-min="26" data-max="64">${esc(d.eventsEyebrow)}</div>
-            <div class="events-title title-main fit-lines" data-min="46" data-max="94">${nl2br(d.eventsTitle)}</div>
-            <div class="events-copy body-copy fit-lines" data-min="24" data-max="52">${nl2br(d.eventsCopy)}</div>
-            <div class="cards">
-              <div class="card">
-                <div class="icon">📅</div>
-                <div class="label">FECHA</div>
-                <div class="value fit-lines" data-min="18" data-max="42">${nl2br(d.eventsDate)}</div>
-              </div>
-              <div class="card">
-                <div class="icon">🕒</div>
-                <div class="label">HORA</div>
-                <div class="value fit-lines" data-min="18" data-max="42">${nl2br(d.eventsTime)}</div>
-              </div>
-              <div class="card">
-                <div class="icon">📍</div>
-                <div class="label">LUGAR</div>
-                <div class="value fit-lines" data-min="18" data-max="42">${nl2br(d.eventsPlace)}</div>
-              </div>
-            </div>
-            <div class="blob"></div>
-          </div>
-        `
-      },
-      product: {
-        label: 'Flyer Producto',
-        legal: 'Productos y coberturas sujetos a condiciones generales del servicio contratado.',
-        fields: [
-          { key:'productEyebrow', label:'Intro', type:'text', value:'Conocé nuestros' },
-          { key:'productTitle', label:'Título principal', type:'textarea', value:'Productos\npara viajar\ntranquilo' },
-          { key:'productCopy', label:'Bajada', type:'textarea', value:'Coberturas diseñadas para acompañar a tus pasajeros antes, durante y después del viaje.' },
-          { key:'productBoxTitle', label:'Título caja beneficios', type:'text', value:'Beneficios destacados' },
-          { key:'benefit1', label:'Beneficio 1', type:'text', value:'Asistencia médica internacional' },
-          { key:'benefit2', label:'Beneficio 2', type:'text', value:'Teleasistencia incluida' },
-          { key:'benefit3', label:'Beneficio 3', type:'text', value:'Coberturas para cada tipo de viaje' },
-          { key:'legal', label:'Legal', type:'textarea', value:'Productos y coberturas sujetos a condiciones generales del servicio contratado.' }
-        ],
-        render: (d) => `
-          <div class="product">
-            <div class="blob"></div>
-            <div class="product-eyebrow fit-lines" data-min="22" data-max="60">${esc(d.productEyebrow)}</div>
-            <div class="product-title title-main fit-lines" data-min="40" data-max="96">${nl2br(d.productTitle)}</div>
-            <div class="product-copy body-copy fit-lines" data-min="24" data-max="52">${nl2br(d.productCopy)}</div>
-            <div class="benefits">
-              <h3 class="benefits-title fit-lines" data-min="24" data-max="56">${esc(d.productBoxTitle)}</h3>
-              <ul>
-                ${d.benefit1 ? `<li class="fit-lines" data-min="18" data-max="41">${esc(d.benefit1)}</li>`:''}
-                ${d.benefit2 ? `<li class="fit-lines" data-min="18" data-max="41">${esc(d.benefit2)}</li>`:''}
-                ${d.benefit3 ? `<li class="fit-lines" data-min="18" data-max="41">${esc(d.benefit3)}</li>`:''}
-              </ul>
-            </div>
-          </div>
-        `
-      },
-      commemorative: {
-        label: 'Flyer Conmemorativo',
-        legal: 'Mensaje institucional de Universal Assistance.',
-        fields: [
-          { key:'commEyebrow', label:'Pre título', type:'text', value:'Hoy celebramos' },
-          { key:'commTitle', label:'Título principal', type:'textarea', value:'Una fecha\npara sentirnos\nmás cerca' },
-          { key:'commCopy', label:'Mensaje institucional', type:'textarea', value:'Universal Assistance acompaña cada viaje, cada historia y cada momento especial.' },
-          { key:'legal', label:'Firma / legal', type:'textarea', value:'Mensaje institucional de Universal Assistance.' }
-        ],
-        render: (d) => `
-          <div class="commemorative">
-            <div class="frame"></div>
-            <div class="blob"></div>
-            <div class="heart">♥</div>
-            <div class="comm-eyebrow fit-lines" data-min="24" data-max="60">${esc(d.commEyebrow)}</div>
-            <div class="comm-title title-main fit-lines" data-min="38" data-max="92">${nl2br(d.commTitle)}</div>
-            <div class="comm-copy body-copy fit-lines" data-min="24" data-max="52">${nl2br(d.commCopy)}</div>
-          </div>
-        `
-      }
-    };
-
-    const state = {
-      template:'promo',
-      partnerUrl:'',
-      bgUrl:'',
-      values:{}
-    };
-
-    const flyer = document.getElementById('flyer');
-    const dynamicTemplate = document.getElementById('dynamicTemplate');
-    const legalText = document.getElementById('legalText');
-    const fieldsContainer = document.getElementById('fieldsContainer');
-    const templateSelect = document.getElementById('templateSelect');
-    const partnerLogo = document.getElementById('partnerLogo');
-    const bgPhoto = document.getElementById('bgPhoto');
-
-    function esc(str=''){
-      return String(str)
-        .replace(/&/g,'&amp;')
-        .replace(/</g,'&lt;')
-        .replace(/>/g,'&gt;')
-        .replace(/"/g,'&quot;')
-        .replace(/'/g,'&#039;');
-    }
-    function nl2br(str=''){ return esc(str).replace(/\n/g,'<br>'); }
-
-    function defaultValues(templateKey){
-      const obj={};
-      templates[templateKey].fields.forEach(f=> obj[f.key]=f.value);
-      return obj;
-    }
-
-    function renderFields(){
-      const tpl=templates[state.template];
-      fieldsContainer.innerHTML = `
-        <div class="group">
-          <h1 class="panel-title">${tpl.label}</h1>
-          <p class="panel-sub">Completá los campos de esta plantilla. La composición es fija para cuidar la grilla y la marca.</p>
-          ${tpl.fields.map(field => `
-            <div class="field">
-              <label for="field-${field.key}">${field.label}</label>
-              ${field.type === 'textarea'
-                ? `<textarea id="field-${field.key}" data-key="${field.key}">${esc(state.values[field.key] ?? '')}</textarea>`
-                : `<input id="field-${field.key}" data-key="${field.key}" type="text" value="${esc(state.values[field.key] ?? '')}" />`}
-            </div>
-          `).join('')}
-        </div>
-      `;
-      fieldsContainer.querySelectorAll('[data-key]').forEach(el=>{
-        el.addEventListener('input',e=>{
-          state.values[e.target.dataset.key]=e.target.value;
-          renderFlyer();
-        });
-      });
-    }
-
-    function renderFlyer(){
-      const tpl = templates[state.template];
-      flyer.className = `flyer ${state.template}`;
-      flyer.classList.toggle('use-pattern', state.template === 'events');
-      dynamicTemplate.innerHTML = tpl.render(state.values);
-      legalText.textContent = state.values.legal || tpl.legal;
-      partnerLogo.src = state.partnerUrl || '';
-      partnerLogo.classList.toggle('show', !!state.partnerUrl);
-      bgPhoto.style.backgroundImage = state.bgUrl ? `url(${state.bgUrl})` : '';
-      bgPhoto.classList.toggle('show', !!state.bgUrl);
-      requestAnimationFrame(fitAllText);
-    }
-
-    function setTemplate(templateKey, preserveUploads=true){
-      state.template = templateKey;
-      state.values = defaultValues(templateKey);
-      if(!preserveUploads){
-        state.partnerUrl='';
-        state.bgUrl='';
-        document.getElementById('partnerUpload').value='';
-        document.getElementById('bgUpload').value='';
-        document.getElementById('partnerFileName').textContent='Sin logo cargado';
-        document.getElementById('bgFileName').textContent='Sin imagen cargada';
-      }
-      renderFields();
-      renderFlyer();
-    }
-
-    function fitAllText(){
-      const els = flyer.querySelectorAll('.fit-text,.fit-lines');
-      els.forEach(el=>fitElement(el));
-    }
-
-    function fitElement(el){
-      const min = Number(el.dataset.min || 14);
-      const max = Number(el.dataset.max || 80);
-      let size = max;
-      el.style.fontSize = size+'px';
-      el.style.lineHeight = el.classList.contains('fit-lines') ? '1.02' : '0.95';
-      const maxIterations=100;
-      let i=0;
-      while ((el.scrollHeight > el.clientHeight + 1 || el.scrollWidth > el.clientWidth + 1) && size > min && i < maxIterations){
-        size -= 1;
-        el.style.fontSize = size + 'px';
-        i++;
-      }
-    }
-
-    function svgMarkup(){
-      const clone = flyer.cloneNode(true);
-      clone.style.width = '1080px';
-      clone.style.height = '1920px';
-      clone.querySelectorAll('.bg-photo').forEach(node=>{
-        if(state.bgUrl){
-          node.style.backgroundImage = `url(${state.bgUrl})`;
-          node.classList.add('show');
-        }
-      });
-      if(state.partnerUrl){
-        clone.querySelectorAll('#partnerLogo, .partner').forEach(node=>{
-          node.setAttribute('src', state.partnerUrl);
-          node.classList.add('show');
-        });
-      }
-      const styles = document.querySelector('style').textContent;
-      return `<?xml version="1.0" encoding="UTF-8"?>
-      <svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
-        <foreignObject width="100%" height="100%">
-          <div xmlns="http://www.w3.org/1999/xhtml" style="width:1080px;height:1920px;">
-            <style>${styles}</style>
-            ${clone.outerHTML}
-          </div>
-        </foreignObject>
-      </svg>`;
-    }
-
-    function downloadFile(blob, filename){
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      setTimeout(()=>URL.revokeObjectURL(a.href),500);
-    }
-
-    document.getElementById('downloadSvgBtn').addEventListener('click',()=>{
-      const blob = new Blob([svgMarkup()],{type:'image/svg+xml;charset=utf-8'});
-      downloadFile(blob, `ua-flyer-${state.template}.svg`);
-    });
-
-    document.getElementById('downloadPngBtn').addEventListener('click',()=>{
-      const svg = svgMarkup();
-      const blob = new Blob([svg], {type:'image/svg+xml;charset=utf-8'});
-      const url = URL.createObjectURL(blob);
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = 1080; canvas.height = 1920;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img,0,0);
-        canvas.toBlob((pngBlob)=>{
-          downloadFile(pngBlob, `ua-flyer-${state.template}.png`);
-          URL.revokeObjectURL(url);
-        }, 'image/png');
-      };
-      img.src = url;
-    });
-
-    document.getElementById('resetBtn').addEventListener('click',()=>{
-      setTemplate(state.template, false);
-    });
-
-    templateSelect.addEventListener('change',e=>setTemplate(e.target.value,true));
-
-    document.getElementById('partnerUpload').addEventListener('change',e=>{
-      const file = e.target.files?.[0];
-      if(!file){ state.partnerUrl=''; document.getElementById('partnerFileName').textContent='Sin logo cargado'; renderFlyer(); return; }
-      const reader = new FileReader();
-      reader.onload = ev => { state.partnerUrl = ev.target.result; document.getElementById('partnerFileName').textContent=file.name; renderFlyer(); };
-      reader.readAsDataURL(file);
-    });
-
-    document.getElementById('bgUpload').addEventListener('change',e=>{
-      const file = e.target.files?.[0];
-      if(!file){ state.bgUrl=''; document.getElementById('bgFileName').textContent='Sin imagen cargada'; renderFlyer(); return; }
-      const reader = new FileReader();
-      reader.onload = ev => { state.bgUrl = ev.target.result; document.getElementById('bgFileName').textContent=file.name; renderFlyer(); };
-      reader.readAsDataURL(file);
-    });
-
-    // init
-    templateSelect.value='promo';
-    setTemplate('promo', false);
+    const defaults={promo:{top:'Hasta',percent:'35',off:'OFF',headline:'en asistencia al viajero',secondary:'Promoción válida para agencias y partners seleccionados.',cta:'DESCARGÁ\nNUESTRA APP',legal:'Promoción válida según condiciones comerciales informadas por Universal Assistance. Consulte términos, vigencia y productos aplicables.'},events:{pre:'Te esperamos en',title:'Congreso\nde Agentes\nde Viajes',copy:'Una jornada para compartir novedades, herramientas y oportunidades comerciales.',date:'Miércoles\n24.06.26',time:'23:00 hs',place:'Av. Córdoba 820,\nCABA',legal:'Evento sujeto a confirmación de cupos y condiciones informadas por Universal Assistance.'},product:{pre:'Conocé nuestros',title:'Productos\npara viajar\ntranquilo',copy:'Coberturas diseñadas para acompañar a tus pasajeros antes, durante y después del viaje.',boxTitle:'Beneficios destacados',b1:'Asistencia médica internacional',b2:'Teleasistencia incluida',b3:'Coberturas para cada tipo de viaje',legal:'Productos y coberturas sujetos a condiciones generales del servicio contratado.'},comm:{pre:'Hoy celebramos',title:'Una fecha\npara sentirnos\nmás cerca',copy:'Universal Assistance acompaña cada viaje, cada historia y cada momento especial.',legal:'Mensaje institucional de Universal Assistance.'}};
+    const labels={promo:[['top','Texto superior','text'],['percent','Porcentaje','text'],['off','Texto OFF','text'],['headline','Bajada principal','textarea'],['secondary','Texto secundario','textarea'],['cta','CTA','textarea'],['legal','Legal','textarea']],events:[['pre','Pre título','text'],['title','Nombre del evento','textarea'],['copy','Bajada','textarea'],['date','Fecha','textarea'],['time','Hora','textarea'],['place','Lugar','textarea'],['legal','Legal','textarea']],product:[['pre','Intro','text'],['title','Título principal','textarea'],['copy','Bajada','textarea'],['boxTitle','Título de beneficios','text'],['b1','Beneficio 1','text'],['b2','Beneficio 2','text'],['b3','Beneficio 3','text'],['legal','Legal','textarea']],comm:[['pre','Pre título','text'],['title','Título principal','textarea'],['copy','Mensaje institucional','textarea'],['legal','Firma / legal','textarea']]};
+    let current='promo', data=JSON.parse(JSON.stringify(defaults)), partnerData='', bgData='';
+    const root=document.getElementById('templateRoot'), legalEl=document.getElementById('legal'), form=document.getElementById('formFields'), artboard=document.getElementById('artboard');
+    function esc(s=''){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))} function br(s=''){return esc(s).replace(/\n/g,'<br>')} function dotGrid(n=25){return `<div class="decor dot-grid dot-${current}">${'<span></span>'.repeat(n)}</div>`}
+    function renderTemplate(){const d=data[current];let html=''; if(current==='promo'){html=`<div class="decor blob-a"></div><div class="decor blob-b"></div>${dotGrid(20)}<div class="field-area promo-box"><p class="txt promo-kicker">${esc(d.top)}</p><div class="promo-discount"><span class="discount-number">${esc(d.percent)}</span><span class="discount-percent">%</span><span class="discount-off">${esc(d.off)}</span></div></div><p class="field-area txt promo-head">${br(d.headline)}</p><p class="field-area txt-copy promo-secondary">${br(d.secondary)}</p><div class="field-area promo-cta"><span class="download-icon">↓</span><span>${br(d.cta)}</span></div>`} if(current==='events'){html=`${dotGrid(35)}<div class="decor blob-c"></div><p class="field-area txt-copy events-kicker">${br(d.pre)}</p><p class="field-area txt events-title">${br(d.title)}</p><p class="field-area txt-copy events-copy">${br(d.copy)}</p><div class="event-cards"><div class="event-card"><div class="event-icon">▦</div><div class="event-label">FECHA</div><div class="event-value">${br(d.date)}</div></div><div class="event-card"><div class="event-icon">◷</div><div class="event-label">HORA</div><div class="event-value">${br(d.time)}</div></div><div class="event-card"><div class="event-icon">●</div><div class="event-label">LUGAR</div><div class="event-value">${br(d.place)}</div></div></div>`} if(current==='product'){html=`<div class="decor blob-a"></div><p class="field-area txt-copy product-kicker">${br(d.pre)}</p><p class="field-area txt product-title">${br(d.title)}</p><p class="field-area txt-copy product-copy">${br(d.copy)}</p><div class="benefit-box"><h2 class="benefit-title">${esc(d.boxTitle)}</h2><ul class="benefit-list">${d.b1?`<li>${esc(d.b1)}</li>`:''}${d.b2?`<li>${esc(d.b2)}</li>`:''}${d.b3?`<li>${esc(d.b3)}</li>`:''}</ul></div>`} if(current==='comm'){html=`<div class="comm-frame"></div><div class="decor blob-d"></div><div class="heart">♥</div><p class="field-area txt-copy comm-kicker">${br(d.pre)}</p><p class="field-area txt comm-title">${br(d.title)}</p><p class="field-area txt-copy comm-copy">${br(d.copy)}</p>`} root.innerHTML=html; legalEl.textContent=d.legal||''; document.getElementById('partnerLogo').src=partnerData||''; document.getElementById('partnerLogo').classList.toggle('show',!!partnerData); document.getElementById('bgPhoto').style.backgroundImage=bgData?`url(${bgData})`:''; document.getElementById('bgPhoto').classList.toggle('show',!!bgData)}
+    function renderForm(){form.innerHTML=labels[current].map(([key,label,type])=>`<div class="field"><label>${label}</label>${type==='textarea'?`<textarea data-key="${key}">${esc(data[current][key]||'')}</textarea>`:`<input data-key="${key}" value="${esc(data[current][key]||'')}">`}</div>`).join(''); form.querySelectorAll('[data-key]').forEach(el=>el.addEventListener('input',e=>{data[current][e.target.dataset.key]=e.target.value;renderTemplate()}))}
+    function switchTemplate(t){current=t;renderForm();renderTemplate()} document.getElementById('templateSelect').addEventListener('change',e=>switchTemplate(e.target.value)); document.getElementById('resetBtn').addEventListener('click',()=>{data[current]=JSON.parse(JSON.stringify(defaults[current]));renderForm();renderTemplate()});
+    document.getElementById('partnerUpload').addEventListener('change',e=>{const file=e.target.files[0]; if(!file){partnerData='';renderTemplate();return} const r=new FileReader(); r.onload=ev=>{partnerData=ev.target.result;document.getElementById('partnerName').textContent=file.name;renderTemplate()}; r.readAsDataURL(file)}); document.getElementById('bgUpload').addEventListener('change',e=>{const file=e.target.files[0]; if(!file){bgData='';renderTemplate();return} const r=new FileReader(); r.onload=ev=>{bgData=ev.target.result;document.getElementById('bgName').textContent=file.name;renderTemplate()}; r.readAsDataURL(file)});
+    function absolutizeImages(clone){clone.querySelectorAll('img').forEach(img=>{const src=img.getAttribute('src'); if(src&&!src.startsWith('data:')&&!src.startsWith('http')) img.setAttribute('src',new URL(src,window.location.href).href)})} function makeSvg(){const clone=artboard.cloneNode(true); clone.style.transform='none'; clone.style.width='1080px'; clone.style.height='1920px'; absolutizeImages(clone); const styles=document.querySelector('style').textContent.replace(/@import[^;]+;/g,''); return `<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920"><foreignObject width="1080" height="1920"><div xmlns="http://www.w3.org/1999/xhtml"><style>${styles}</style>${clone.outerHTML}</div></foreignObject></svg>`} function download(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),800)} document.getElementById('downloadSvg').addEventListener('click',()=>download(new Blob([makeSvg()],{type:'image/svg+xml'}),`ua-${current}.svg`)); document.getElementById('downloadPng').addEventListener('click',()=>{const url=URL.createObjectURL(new Blob([makeSvg()],{type:'image/svg+xml'})); const img=new Image(); img.onload=()=>{const c=document.createElement('canvas');c.width=1080;c.height=1920;c.getContext('2d').drawImage(img,0,0); c.toBlob(blob=>{download(blob,`ua-${current}.png`);URL.revokeObjectURL(url)},'image/png')}; img.src=url}); switchTemplate('promo');
   </script>
 </body>
 </html>
