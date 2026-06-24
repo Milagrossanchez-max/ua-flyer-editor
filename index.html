@@ -54,7 +54,191 @@
     .comm-frame{position:absolute;z-index:4;left:72px;top:345px;right:72px;bottom:205px;border:5px solid rgba(255,213,107,.90);border-radius:44px}.comm-kicker{left:110px;top:430px;width:620px;height:72px;font-size:56px}.comm-title{left:110px;top:520px;width:705px;height:365px;font-size:88px}.comm-copy{left:110px;top:930px;width:670px;height:205px;font-size:39px}.heart{position:absolute;z-index:5;right:80px;bottom:175px;width:82px;height:82px;border-radius:50%;background:#d8a142;display:grid;place-items:center;color:#fff0bd;font-size:44px;box-shadow:0 18px 36px rgba(0,0,0,.30)}
     .panel h1{font-size:22px;margin:0 0 6px}.panel p{margin:0 0 18px;color:#aac2d1;font-size:13px;line-height:1.4}.group{border-top:1px solid var(--line);padding-top:16px;margin-top:16px}.field{margin-bottom:13px}.field label{display:block;margin-bottom:6px;color:#d8e7ef;font-size:12px;font-weight:900;letter-spacing:.04em;text-transform:uppercase}.field input,.field textarea{width:100%;background:#10283b;color:#fff;border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:10px 12px;font-size:14px}.field textarea{min-height:72px;resize:vertical}.file-name{margin-top:6px;font-size:12px;color:#aac2d1;word-break:break-all}.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}.warning{background:rgba(255,213,107,.10);border:1px solid rgba(255,213,107,.24);color:#ffe8a3;border-radius:14px;padding:12px;font-size:12px;line-height:1.35;margin-bottom:14px}
     @media(max-width:1180px){:root{--scale:.36}.app{grid-template-columns:1fr}.right-pane{border-top:1px solid var(--line)}}
-  </style>
+  
+    /* =========================
+       V9 FIX: subtítulos Helvetica light + promo más parecido al mockup
+       ========================= */
+
+    .txt-copy,
+    .promo-head,
+    .promo-secondary,
+    .promo-cta,
+    .events-kicker,
+    .events-copy,
+    .product-kicker,
+    .product-copy,
+    .comm-kicker,
+    .comm-copy,
+    .legal{
+      font-family: Helvetica, Arial, sans-serif !important;
+      font-weight:400 !important;
+      letter-spacing:-.015em !important;
+      text-shadow:none !important;
+    }
+
+    .events-copy,
+    .product-copy,
+    .comm-copy,
+    .promo-secondary{
+      color:#fff3c6 !important;
+    }
+
+    .promo .logo-main{top:58px;left:72px;width:435px}
+
+    .promo-box{
+      left:72px !important;
+      top:348px !important;
+      width:862px !important;
+      height:370px !important;
+      border:7px solid var(--cream) !important;
+      border-radius:42px !important;
+      padding:34px 42px !important;
+      background:rgba(4,34,48,.10);
+    }
+
+    .promo-kicker{
+      font-family:Poppins, Arial, sans-serif !important;
+      font-weight:900 !important;
+      font-size:78px !important;
+      height:78px !important;
+      line-height:.95 !important;
+      text-shadow:0 6px 10px rgba(0,0,0,.22) !important;
+    }
+
+    .promo-discount{
+      height:230px !important;
+      margin-top:0 !important;
+      align-items:flex-end !important;
+    }
+
+    .discount-number{
+      font-size:295px !important;
+      line-height:.76 !important;
+      letter-spacing:-.09em !important;
+      margin-right:22px !important;
+      text-shadow:0 6px 10px rgba(0,0,0,.22) !important;
+    }
+
+    .discount-percent{
+      font-size:125px !important;
+      margin-bottom:30px !important;
+      margin-right:14px !important;
+      text-shadow:0 6px 10px rgba(0,0,0,.22) !important;
+    }
+
+    .discount-off{
+      font-size:82px !important;
+      margin-bottom:32px !important;
+      letter-spacing:-.04em !important;
+      text-shadow:0 6px 10px rgba(0,0,0,.22) !important;
+    }
+
+    .promo-head{
+      left:72px !important;
+      top:805px !important;
+      width:720px !important;
+      height:155px !important;
+      font-size:62px !important;
+      line-height:1.04 !important;
+      color:#fff3c6 !important;
+    }
+
+    .promo-secondary{
+      left:72px !important;
+      top:1012px !important;
+      width:545px !important;
+      height:205px !important;
+      font-size:38px !important;
+      line-height:1.12 !important;
+      color:#fff3c6 !important;
+      overflow:visible !important;
+    }
+
+    .promo-cta{
+      right:82px !important;
+      top:1122px !important;
+      width:255px !important;
+      min-height:100px !important;
+      font-size:31px !important;
+      line-height:1.02 !important;
+      font-weight:700 !important;
+      color:#fff3c6 !important;
+      text-shadow:none !important;
+    }
+
+    .promo-cta .download-icon{
+      width:52px !important;
+      height:52px !important;
+      font-size:34px !important;
+      border-color:#fff3c6 !important;
+    }
+
+    .dot-promo{
+      right:105px !important;
+      bottom:300px !important;
+    }
+
+    .promo .blob-a{
+      right:95px !important;
+      top:130px !important;
+      width:220px !important;
+      height:135px !important;
+      opacity:.80;
+    }
+
+    .promo .blob-b{
+      left:-130px !important;
+      bottom:255px !important;
+      width:300px !important;
+      height:300px !important;
+      opacity:.72;
+    }
+
+    .promo .legal{
+      font-size:22px !important;
+      line-height:1.22 !important;
+      font-weight:400 !important;
+      color:#fff3c6 !important;
+    }
+
+    .events-kicker,
+    .product-kicker,
+    .comm-kicker{
+      color:#fff3c6 !important;
+      font-size:48px !important;
+      line-height:1.08 !important;
+    }
+
+    .events-copy{
+      top:850px !important;
+      font-size:34px !important;
+      line-height:1.18 !important;
+      width:760px !important;
+      height:130px !important;
+    }
+
+    .product-copy{
+      top:805px !important;
+      font-size:34px !important;
+      line-height:1.18 !important;
+      width:700px !important;
+      height:150px !important;
+    }
+
+    .comm-copy{
+      font-size:32px !important;
+      line-height:1.18 !important;
+      width:650px !important;
+      height:180px !important;
+    }
+
+    .events-title,
+    .product-title,
+    .comm-title{
+      text-shadow:0 6px 10px rgba(0,0,0,.22) !important;
+    }
+
+</style>
 </head>
 <body>
   <main class="app">
@@ -74,7 +258,191 @@
     function renderForm(){form.innerHTML=labels[current].map(([key,label,type])=>`<div class="field"><label>${label}</label>${type==='textarea'?`<textarea data-key="${key}">${esc(data[current][key]||'')}</textarea>`:`<input data-key="${key}" value="${esc(data[current][key]||'')}">`}</div>`).join(''); form.querySelectorAll('[data-key]').forEach(el=>el.addEventListener('input',e=>{data[current][e.target.dataset.key]=e.target.value;renderTemplate()}))}
     function switchTemplate(t){current=t;renderForm();renderTemplate()} document.getElementById('templateSelect').addEventListener('change',e=>switchTemplate(e.target.value)); document.getElementById('resetBtn').addEventListener('click',()=>{data[current]=JSON.parse(JSON.stringify(defaults[current]));renderForm();renderTemplate()});
     document.getElementById('partnerUpload').addEventListener('change',e=>{const file=e.target.files[0]; if(!file){partnerData='';renderTemplate();return} const r=new FileReader(); r.onload=ev=>{partnerData=ev.target.result;document.getElementById('partnerName').textContent=file.name;renderTemplate()}; r.readAsDataURL(file)}); document.getElementById('bgUpload').addEventListener('change',e=>{const file=e.target.files[0]; if(!file){bgData='';renderTemplate();return} const r=new FileReader(); r.onload=ev=>{bgData=ev.target.result;document.getElementById('bgName').textContent=file.name;renderTemplate()}; r.readAsDataURL(file)});
-    function absolutizeImages(clone){clone.querySelectorAll('img').forEach(img=>{const src=img.getAttribute('src'); if(src&&!src.startsWith('data:')&&!src.startsWith('http')) img.setAttribute('src',new URL(src,window.location.href).href)})} function makeSvg(){const clone=artboard.cloneNode(true); clone.style.transform='none'; clone.style.width='1080px'; clone.style.height='1920px'; absolutizeImages(clone); const styles=document.querySelector('style').textContent.replace(/@import[^;]+;/g,''); return `<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920"><foreignObject width="1080" height="1920"><div xmlns="http://www.w3.org/1999/xhtml"><style>${styles}</style>${clone.outerHTML}</div></foreignObject></svg>`} function download(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),800)} document.getElementById('downloadSvg').addEventListener('click',()=>download(new Blob([makeSvg()],{type:'image/svg+xml'}),`ua-${current}.svg`)); document.getElementById('downloadPng').addEventListener('click',()=>{const url=URL.createObjectURL(new Blob([makeSvg()],{type:'image/svg+xml'})); const img=new Image(); img.onload=()=>{const c=document.createElement('canvas');c.width=1080;c.height=1920;c.getContext('2d').drawImage(img,0,0); c.toBlob(blob=>{download(blob,`ua-${current}.png`);URL.revokeObjectURL(url)},'image/png')}; img.src=url}); switchTemplate('promo');
+    function absolutizeImages(clone){clone.querySelectorAll('img').forEach(img=>{const src=img.getAttribute('src'); if(src&&!src.startsWith('data:')&&!src.startsWith('http')) img.setAttribute('src',new URL(src,window.location.href).href)})} function makeSvg(){const clone=artboard.cloneNode(true); clone.style.transform='none'; clone.style.width='1080px'; clone.style.height='1920px'; absolutizeImages(clone); const styles=document.querySelector('style').textContent.replace(/@import[^;]+;/g,''); return `<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920"><foreignObject width="1080" height="1920"><div xmlns="http://www.w3.org/1999/xhtml"><style>${styles}
+    /* =========================
+       V9 FIX: subtítulos Helvetica light + promo más parecido al mockup
+       ========================= */
+
+    .txt-copy,
+    .promo-head,
+    .promo-secondary,
+    .promo-cta,
+    .events-kicker,
+    .events-copy,
+    .product-kicker,
+    .product-copy,
+    .comm-kicker,
+    .comm-copy,
+    .legal{
+      font-family: Helvetica, Arial, sans-serif !important;
+      font-weight:400 !important;
+      letter-spacing:-.015em !important;
+      text-shadow:none !important;
+    }
+
+    .events-copy,
+    .product-copy,
+    .comm-copy,
+    .promo-secondary{
+      color:#fff3c6 !important;
+    }
+
+    .promo .logo-main{top:58px;left:72px;width:435px}
+
+    .promo-box{
+      left:72px !important;
+      top:348px !important;
+      width:862px !important;
+      height:370px !important;
+      border:7px solid var(--cream) !important;
+      border-radius:42px !important;
+      padding:34px 42px !important;
+      background:rgba(4,34,48,.10);
+    }
+
+    .promo-kicker{
+      font-family:Poppins, Arial, sans-serif !important;
+      font-weight:900 !important;
+      font-size:78px !important;
+      height:78px !important;
+      line-height:.95 !important;
+      text-shadow:0 6px 10px rgba(0,0,0,.22) !important;
+    }
+
+    .promo-discount{
+      height:230px !important;
+      margin-top:0 !important;
+      align-items:flex-end !important;
+    }
+
+    .discount-number{
+      font-size:295px !important;
+      line-height:.76 !important;
+      letter-spacing:-.09em !important;
+      margin-right:22px !important;
+      text-shadow:0 6px 10px rgba(0,0,0,.22) !important;
+    }
+
+    .discount-percent{
+      font-size:125px !important;
+      margin-bottom:30px !important;
+      margin-right:14px !important;
+      text-shadow:0 6px 10px rgba(0,0,0,.22) !important;
+    }
+
+    .discount-off{
+      font-size:82px !important;
+      margin-bottom:32px !important;
+      letter-spacing:-.04em !important;
+      text-shadow:0 6px 10px rgba(0,0,0,.22) !important;
+    }
+
+    .promo-head{
+      left:72px !important;
+      top:805px !important;
+      width:720px !important;
+      height:155px !important;
+      font-size:62px !important;
+      line-height:1.04 !important;
+      color:#fff3c6 !important;
+    }
+
+    .promo-secondary{
+      left:72px !important;
+      top:1012px !important;
+      width:545px !important;
+      height:205px !important;
+      font-size:38px !important;
+      line-height:1.12 !important;
+      color:#fff3c6 !important;
+      overflow:visible !important;
+    }
+
+    .promo-cta{
+      right:82px !important;
+      top:1122px !important;
+      width:255px !important;
+      min-height:100px !important;
+      font-size:31px !important;
+      line-height:1.02 !important;
+      font-weight:700 !important;
+      color:#fff3c6 !important;
+      text-shadow:none !important;
+    }
+
+    .promo-cta .download-icon{
+      width:52px !important;
+      height:52px !important;
+      font-size:34px !important;
+      border-color:#fff3c6 !important;
+    }
+
+    .dot-promo{
+      right:105px !important;
+      bottom:300px !important;
+    }
+
+    .promo .blob-a{
+      right:95px !important;
+      top:130px !important;
+      width:220px !important;
+      height:135px !important;
+      opacity:.80;
+    }
+
+    .promo .blob-b{
+      left:-130px !important;
+      bottom:255px !important;
+      width:300px !important;
+      height:300px !important;
+      opacity:.72;
+    }
+
+    .promo .legal{
+      font-size:22px !important;
+      line-height:1.22 !important;
+      font-weight:400 !important;
+      color:#fff3c6 !important;
+    }
+
+    .events-kicker,
+    .product-kicker,
+    .comm-kicker{
+      color:#fff3c6 !important;
+      font-size:48px !important;
+      line-height:1.08 !important;
+    }
+
+    .events-copy{
+      top:850px !important;
+      font-size:34px !important;
+      line-height:1.18 !important;
+      width:760px !important;
+      height:130px !important;
+    }
+
+    .product-copy{
+      top:805px !important;
+      font-size:34px !important;
+      line-height:1.18 !important;
+      width:700px !important;
+      height:150px !important;
+    }
+
+    .comm-copy{
+      font-size:32px !important;
+      line-height:1.18 !important;
+      width:650px !important;
+      height:180px !important;
+    }
+
+    .events-title,
+    .product-title,
+    .comm-title{
+      text-shadow:0 6px 10px rgba(0,0,0,.22) !important;
+    }
+
+</style>${clone.outerHTML}</div></foreignObject></svg>`} function download(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),800)} document.getElementById('downloadSvg').addEventListener('click',()=>download(new Blob([makeSvg()],{type:'image/svg+xml'}),`ua-${current}.svg`)); document.getElementById('downloadPng').addEventListener('click',()=>{const url=URL.createObjectURL(new Blob([makeSvg()],{type:'image/svg+xml'})); const img=new Image(); img.onload=()=>{const c=document.createElement('canvas');c.width=1080;c.height=1920;c.getContext('2d').drawImage(img,0,0); c.toBlob(blob=>{download(blob,`ua-${current}.png`);URL.revokeObjectURL(url)},'image/png')}; img.src=url}); switchTemplate('promo');
   </script>
 </body>
 </html>
