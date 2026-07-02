@@ -4,445 +4,1151 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>UA Flyer Editor</title>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&family=Bebas+Neue&display=swap');
 
     :root{
-      --deep:#061824;
-      --deep2:#082437;
-      --blue:#00528f;
-      --navy:#002447;
-      --teal:#008091;
-      --cyan:#00c4df;
-      --mint:#59c982;
-      --pink:#ff436e;
-      --cream:#ffd56b;
-      --cream2:#ffe08c;
-      --white:#ffffff;
-      --panel:#0b2132;
-      --line:rgba(255,255,255,.12);
-      --scale: .43;
+      --ua-blue:#00528F;
+      --ua-navy:#002447;
+      --ua-teal:#008091;
+      --ua-cyan:#00C4DF;
+      --ua-pink:#ff436e;
+      --ua-light:#e6fbff;
+      --ua-white:#ffffff;
+      --ua-bg:#061824;
+      --ua-panel:#0b2233;
+      --ua-line:rgba(255,255,255,.12);
+      --ua-gold:#ffd56b;
+      --scale:.43;
     }
 
     *{box-sizing:border-box}
+
     body{
       margin:0;
-      background:radial-gradient(circle at 20% 0%, rgba(0,196,223,.12), transparent 28%), linear-gradient(135deg,#07131e,#0b1c2a 55%,#05101a);
+      min-height:100vh;
+      background:
+        radial-gradient(circle at 14% 0%, rgba(0,196,223,.12), transparent 32%),
+        radial-gradient(circle at 85% 15%, rgba(255,67,110,.08), transparent 30%),
+        linear-gradient(135deg,#06131f,#0a1d2c 58%,#040d16);
       color:#fff;
       font-family:Poppins, Arial, sans-serif;
     }
-    .app{min-height:100vh;display:grid;grid-template-columns:minmax(520px,1fr) 390px}
-    .stage{padding:28px;overflow:auto}
-    .stage-top{display:flex;align-items:center;gap:16px;margin:0 auto 22px;width:calc(1080px * var(--scale));min-width:460px}
-    select,button,input,textarea{font-family:Poppins,Arial,sans-serif}
-    .template-select{background:#10283b;color:#ffd56b;border:1px solid rgba(255,255,255,.18);border-radius:18px;padding:15px 20px;font-weight:900;font-size:18px;min-width:250px;box-shadow:0 14px 34px rgba(0,0,0,.28)}
-    .btn{border:0;border-radius:18px;background:linear-gradient(135deg,#67e6ba,#52ca98);color:#062319;padding:15px 22px;font-weight:900;font-size:17px;cursor:pointer;box-shadow:0 14px 34px rgba(0,0,0,.28)}
-    .btn.dark{background:#10283b;color:#fff;border:1px solid rgba(255,255,255,.14)}
-    .stage-spacer{flex:1}
-    .artboard-shell{width:calc(1080px * var(--scale));height:calc(1920px * var(--scale));margin:0 auto;min-width:460px;min-height:818px;position:relative}
-    .artboard{position:absolute;left:0;top:0;width:1080px;height:1920px;transform:scale(var(--scale));transform-origin:top left;overflow:hidden;background:#062638;box-shadow:0 34px 80px rgba(0,0,0,.42)}
-    .art-bg{position:absolute;inset:0;background:radial-gradient(circle at 93% 24%, rgba(79,201,135,.30) 0 0, rgba(79,201,135,.20) 0 125px, transparent 126px),radial-gradient(circle at -4% 82%, rgba(79,201,135,.40) 0 0, rgba(79,201,135,.25) 0 210px, transparent 211px),linear-gradient(135deg,#031b29 0%,#073149 46%,#08756d 100%)}
-    .bg-photo{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;z-index:1}.bg-photo.show{opacity:.24}.photo-overlay{position:absolute;inset:0;z-index:2;background:linear-gradient(135deg,rgba(3,21,32,.90),rgba(5,48,69,.80) 55%,rgba(8,112,100,.58))}
-    .decor{position:absolute;z-index:3;pointer-events:none}.blob-a{width:240px;height:150px;border-radius:50%;background:rgba(79,201,135,.27);right:80px;top:130px;transform:rotate(-25deg)}.blob-b{width:285px;height:285px;border-radius:50%;background:rgba(79,201,135,.28);left:-120px;bottom:245px}.blob-c{width:315px;height:315px;border-radius:50%;background:rgba(79,201,135,.25);right:-120px;bottom:245px}.blob-d{width:370px;height:370px;border-radius:50%;background:linear-gradient(135deg,rgba(255,213,107,.55),rgba(255,67,110,.35));right:-110px;bottom:35px}
-    .dot-grid{display:grid;grid-template-columns:repeat(5,10px);gap:20px;opacity:.65}.dot-grid span{width:6px;height:6px;border-radius:50%;background:var(--cream)}.dot-promo{right:140px;bottom:360px}.dot-events{right:82px;top:125px}
-    .logo-main{position:absolute;z-index:5;left:72px;top:70px;width:430px;height:auto;display:block;object-fit:contain}.partner-logo{position:absolute;z-index:6;right:72px;top:78px;max-width:180px;max-height:92px;object-fit:contain;display:none;filter:drop-shadow(0 8px 16px rgba(0,0,0,.24))}.partner-logo.show{display:block}
-    .legal{position:absolute;z-index:5;left:72px;right:72px;bottom:58px;font-size:24px;line-height:1.25;color:#fff1bd;font-weight:700;max-height:88px;overflow:hidden}
-    .field-area{position:absolute;z-index:5;color:var(--cream);text-shadow:0 6px 10px rgba(0,0,0,.22)}.txt{margin:0;font-weight:900;letter-spacing:-.045em;line-height:.96;white-space:pre-line;overflow:hidden}.txt-copy{margin:0;font-weight:800;letter-spacing:-.025em;line-height:1.12;white-space:pre-line;overflow:hidden}
-    .promo-box{left:72px;top:365px;width:850px;height:320px;border:6px solid var(--cream);border-radius:42px;padding:34px 45px}.promo-kicker{font-size:80px;height:82px}.promo-discount{display:flex;align-items:flex-end;margin-top:6px;height:168px;overflow:visible}.discount-number{font-size:218px;line-height:.78;font-weight:900;letter-spacing:-.08em;margin-right:16px}.discount-percent{font-size:82px;line-height:.92;font-weight:900;margin-bottom:20px;margin-right:14px}.discount-off{font-size:68px;line-height:.92;font-weight:900;margin-bottom:18px}.promo-head{left:72px;top:742px;width:610px;height:190px;font-size:78px}.promo-secondary{left:72px;top:990px;width:470px;height:190px;font-size:48px}.promo-cta{right:76px;top:1125px;width:250px;min-height:90px;display:flex;align-items:flex-start;gap:14px;font-size:34px;line-height:1.05;font-weight:900;text-align:left}.promo-cta .download-icon{width:50px;height:50px;border:4px solid var(--cream);border-radius:50%;display:grid;place-items:center;font-size:34px;flex:0 0 auto;line-height:1}
-    .events-kicker{left:72px;top:365px;width:620px;height:72px;font-size:60px}.events-title{left:72px;top:450px;width:660px;height:375px;font-size:96px}.events-copy{left:72px;top:850px;width:780px;height:150px;font-size:44px}.event-cards{position:absolute;z-index:5;left:72px;right:72px;bottom:205px;display:grid;grid-template-columns:1fr 1fr 1.25fr;gap:18px}.event-card{min-height:190px;border-radius:28px;background:rgba(7,55,61,.58);border:2px solid rgba(255,213,107,.38);padding:26px 22px;color:var(--cream);overflow:hidden}.event-icon{font-size:54px;line-height:1;margin-bottom:14px;color:var(--cream)}.event-label{font-size:25px;line-height:1;font-weight:900;margin-bottom:12px;letter-spacing:.02em}.event-value{font-size:31px;line-height:1.08;font-weight:900;white-space:pre-line;overflow:hidden}
-    .product-kicker{left:72px;top:360px;width:610px;height:72px;font-size:56px}.product-title{left:72px;top:438px;width:690px;height:340px;font-size:92px}.product-copy{left:72px;top:805px;width:685px;height:175px;font-size:42px}.benefit-box{position:absolute;z-index:5;left:72px;right:72px;bottom:205px;height:295px;border-radius:32px;background:var(--cream2);color:#073149;padding:35px 42px;box-shadow:0 22px 45px rgba(0,0,0,.25);overflow:hidden}.benefit-title{font-size:50px;line-height:1;font-weight:900;margin:0 0 22px;letter-spacing:-.03em}.benefit-list{margin:0;padding-left:34px;font-size:31px;line-height:1.25;font-weight:800}.benefit-list li{margin:8px 0}
-    .comm-frame{position:absolute;z-index:4;left:72px;top:345px;right:72px;bottom:205px;border:5px solid rgba(255,213,107,.90);border-radius:44px}.comm-kicker{left:110px;top:430px;width:620px;height:72px;font-size:56px}.comm-title{left:110px;top:520px;width:705px;height:365px;font-size:88px}.comm-copy{left:110px;top:930px;width:670px;height:205px;font-size:39px}.heart{position:absolute;z-index:5;right:80px;bottom:175px;width:82px;height:82px;border-radius:50%;background:#d8a142;display:grid;place-items:center;color:#fff0bd;font-size:44px;box-shadow:0 18px 36px rgba(0,0,0,.30)}
-    .panel h1{font-size:22px;margin:0 0 6px}.panel p{margin:0 0 18px;color:#aac2d1;font-size:13px;line-height:1.4}.group{border-top:1px solid var(--line);padding-top:16px;margin-top:16px}.field{margin-bottom:13px}.field label{display:block;margin-bottom:6px;color:#d8e7ef;font-size:12px;font-weight:900;letter-spacing:.04em;text-transform:uppercase}.field input,.field textarea{width:100%;background:#10283b;color:#fff;border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:10px 12px;font-size:14px}.field textarea{min-height:72px;resize:vertical}.file-name{margin-top:6px;font-size:12px;color:#aac2d1;word-break:break-all}.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}.warning{background:rgba(255,213,107,.10);border:1px solid rgba(255,213,107,.24);color:#ffe8a3;border-radius:14px;padding:12px;font-size:12px;line-height:1.35;margin-bottom:14px}
-    @media(max-width:1180px){:root{--scale:.36}.app{grid-template-columns:1fr}.right-pane{border-top:1px solid var(--line)}}
-  
-    /* =========================
-       V9 FIX: subtítulos Helvetica light + promo más parecido al mockup
-       ========================= */
 
-    .txt-copy,
-    .promo-head,
-    .promo-secondary,
-    .promo-cta,
-    .events-kicker,
-    .events-copy,
-    .product-kicker,
-    .product-copy,
-    .comm-kicker,
-    .comm-copy,
-    .legal{
-      font-family: Helvetica, Arial, sans-serif !important;
-      font-weight:400 !important;
-      letter-spacing:-.015em !important;
-      text-shadow:none !important;
+    .app{
+      display:grid;
+      grid-template-columns:minmax(540px,1fr) 410px;
+      min-height:100vh;
     }
 
-    .events-copy,
-    .product-copy,
-    .comm-copy,
-    .promo-secondary{
-      color:#fff3c6 !important;
+    .stage{
+      padding:28px;
+      overflow:auto;
     }
 
-    .promo .logo-main{top:58px;left:72px;width:435px}
-
-    .promo-box{
-      left:72px !important;
-      top:348px !important;
-      width:862px !important;
-      height:370px !important;
-      border:7px solid var(--cream) !important;
-      border-radius:42px !important;
-      padding:34px 42px !important;
-      background:rgba(4,34,48,.10);
+    .stage-top{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      width:calc(1080px * var(--scale));
+      min-width:460px;
+      margin:0 auto 20px;
     }
 
-    .promo-kicker{
-      font-family:Poppins, Arial, sans-serif !important;
-      font-weight:900 !important;
-      font-size:78px !important;
-      height:78px !important;
-      line-height:.95 !important;
-      text-shadow:0 6px 10px rgba(0,0,0,.22) !important;
+    .template-select,
+    .btn,
+    input,
+    textarea{
+      font-family:Poppins, Arial, sans-serif;
     }
 
-    .promo-discount{
-      height:230px !important;
-      margin-top:0 !important;
-      align-items:flex-end !important;
+    .template-select{
+      min-width:270px;
+      padding:14px 18px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.18);
+      background:#10283b;
+      color:#fff;
+      font-size:17px;
+      font-weight:800;
+      box-shadow:0 14px 34px rgba(0,0,0,.28);
     }
 
-    .discount-number{
-      font-size:295px !important;
-      line-height:.76 !important;
-      letter-spacing:-.09em !important;
-      margin-right:22px !important;
-      text-shadow:0 6px 10px rgba(0,0,0,.22) !important;
+    .spacer{flex:1}
+
+    .btn{
+      border:0;
+      border-radius:17px;
+      background:linear-gradient(135deg,#4ee1b1,#35c795);
+      color:#062319;
+      padding:13px 18px;
+      font-weight:900;
+      font-size:15px;
+      cursor:pointer;
+      box-shadow:0 14px 34px rgba(0,0,0,.25);
     }
 
-    .discount-percent{
-      font-size:125px !important;
-      margin-bottom:30px !important;
-      margin-right:14px !important;
-      text-shadow:0 6px 10px rgba(0,0,0,.22) !important;
+    .btn.dark{
+      background:#10283b;
+      color:#fff;
+      border:1px solid rgba(255,255,255,.14);
     }
 
-    .discount-off{
-      font-size:82px !important;
-      margin-bottom:32px !important;
-      letter-spacing:-.04em !important;
-      text-shadow:0 6px 10px rgba(0,0,0,.22) !important;
+    .btn.locked{
+      opacity:.45;
+      cursor:not-allowed;
     }
 
-    .promo-head{
-      left:72px !important;
-      top:805px !important;
-      width:720px !important;
-      height:155px !important;
-      font-size:62px !important;
-      line-height:1.04 !important;
-      color:#fff3c6 !important;
+    .artboard-shell{
+      width:calc(1080px * var(--scale));
+      height:calc(1920px * var(--scale));
+      min-width:460px;
+      min-height:818px;
+      position:relative;
+      margin:0 auto;
     }
 
-    .promo-secondary{
-      left:72px !important;
-      top:1012px !important;
-      width:545px !important;
-      height:205px !important;
-      font-size:38px !important;
-      line-height:1.12 !important;
-      color:#fff3c6 !important;
-      overflow:visible !important;
+    .artboard{
+      position:absolute;
+      left:0;
+      top:0;
+      width:1080px;
+      height:1920px;
+      transform:scale(var(--scale));
+      transform-origin:top left;
+      overflow:hidden;
+      background:#072236;
+      box-shadow:0 34px 80px rgba(0,0,0,.42);
     }
 
-    .promo-cta{
-      right:82px !important;
-      top:1122px !important;
-      width:255px !important;
-      min-height:100px !important;
-      font-size:31px !important;
-      line-height:1.02 !important;
-      font-weight:700 !important;
-      color:#fff3c6 !important;
-      text-shadow:none !important;
+    .art-bg{
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(circle at 92% 18%, rgba(0,196,223,.22) 0 0, rgba(0,196,223,.12) 0 135px, transparent 138px),
+        radial-gradient(circle at -4% 84%, rgba(0,128,145,.44) 0 0, rgba(0,128,145,.24) 0 230px, transparent 234px),
+        linear-gradient(135deg,#002447 0%,#00528F 44%,#008091 100%);
     }
 
-    .promo-cta .download-icon{
-      width:52px !important;
-      height:52px !important;
-      font-size:34px !important;
-      border-color:#fff3c6 !important;
+    .artboard.product .art-bg{
+      background:
+        radial-gradient(circle at 95% 18%, rgba(0,196,223,.30) 0 0, rgba(0,196,223,.15) 0 135px, transparent 138px),
+        radial-gradient(circle at 8% 78%, rgba(0,128,145,.32) 0 0, rgba(0,128,145,.16) 0 225px, transparent 230px),
+        linear-gradient(145deg,#002447 0%,#00528F 38%,#008091 100%);
     }
 
-    .dot-promo{
-      right:105px !important;
-      bottom:300px !important;
+    .artboard.event .art-bg{
+      background:
+        radial-gradient(circle at 99% 74%, rgba(0,196,223,.28) 0 0, rgba(0,196,223,.14) 0 170px, transparent 174px),
+        radial-gradient(circle at 0% 82%, rgba(0,128,145,.32) 0 0, rgba(0,128,145,.18) 0 210px, transparent 215px),
+        linear-gradient(150deg,#002447 0%,#00528F 45%,#008091 100%);
     }
 
-    .promo .blob-a{
-      right:95px !important;
-      top:130px !important;
-      width:220px !important;
-      height:135px !important;
-      opacity:.80;
+    .artboard.comm .art-bg{
+      background:
+        radial-gradient(circle at 89% 84%, rgba(255,67,110,.34) 0 0, rgba(255,67,110,.18) 0 190px, transparent 194px),
+        radial-gradient(circle at 94% 80%, rgba(255,213,107,.42) 0 0, rgba(255,213,107,.25) 0 255px, transparent 260px),
+        linear-gradient(140deg,#002447 0%,#00528F 43%,#008091 100%);
     }
 
-    .promo .blob-b{
-      left:-130px !important;
-      bottom:255px !important;
-      width:300px !important;
-      height:300px !important;
-      opacity:.72;
+    .bg-photo{
+      position:absolute;
+      inset:0;
+      background-size:cover;
+      background-position:center;
+      opacity:0;
+      z-index:1;
     }
 
-    .promo .legal{
-      font-size:22px !important;
-      line-height:1.22 !important;
-      font-weight:400 !important;
-      color:#fff3c6 !important;
+    .bg-photo.show{opacity:.25}
+
+    .overlay{
+      position:absolute;
+      inset:0;
+      z-index:2;
+      background:linear-gradient(135deg,rgba(0,36,71,.88),rgba(0,82,143,.70) 55%,rgba(0,128,145,.56));
     }
 
-    .events-kicker,
-    .product-kicker,
-    .comm-kicker{
-      color:#fff3c6 !important;
-      font-size:48px !important;
-      line-height:1.08 !important;
+    .logo-main{
+      position:absolute;
+      z-index:7;
+      left:72px;
+      top:64px;
+      width:420px;
+      height:auto;
+      object-fit:contain;
     }
 
-    .events-copy{
-      top:850px !important;
-      font-size:34px !important;
-      line-height:1.18 !important;
-      width:760px !important;
-      height:130px !important;
+    .partner-slot{
+      position:absolute;
+      z-index:7;
+      right:72px;
+      bottom:142px;
+      width:230px;
+      height:95px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border:2px dashed rgba(255,255,255,.28);
+      border-radius:14px;
+      background:rgba(0,36,71,.18);
+      color:rgba(255,255,255,.60);
+      font-size:18px;
+      font-family:Helvetica, Arial, sans-serif;
+      text-align:center;
+      padding:10px;
     }
 
-    .product-copy{
-      top:805px !important;
-      font-size:34px !important;
-      line-height:1.18 !important;
-      width:700px !important;
-      height:150px !important;
+    .partner-slot.has-logo{
+      border:0;
+      background:transparent;
     }
 
-    .comm-copy{
-      font-size:32px !important;
-      line-height:1.18 !important;
-      width:650px !important;
-      height:180px !important;
+    .partner-logo{
+      max-width:100%;
+      max-height:100%;
+      object-fit:contain;
+      display:none;
+      filter:drop-shadow(0 8px 16px rgba(0,0,0,.25));
     }
 
-    .events-title,
-    .product-title,
-    .comm-title{
-      text-shadow:0 6px 10px rgba(0,0,0,.22) !important;
+    .partner-slot.has-logo .partner-logo{display:block}
+    .partner-slot.has-logo .partner-placeholder{display:none}
+
+    .legal-fixed,
+    .legal-editable{
+      position:absolute;
+      z-index:7;
+      left:72px;
+      right:72px;
+      bottom:58px;
+      color:#fff;
+      font-family:Helvetica, Arial, sans-serif;
+      font-size:25px;
+      line-height:1.18;
+      font-weight:400;
+      letter-spacing:.02em;
+      max-height:78px;
+      overflow:hidden;
+      opacity:.96;
     }
 
-</style>
+    .legal-fixed{
+      text-transform:uppercase;
+      font-weight:700;
+      letter-spacing:.06em;
+    }
+
+    .field-area{
+      position:absolute;
+      z-index:6;
+      color:#fff;
+    }
+
+    .kicker{
+      margin:0;
+      font-family:Helvetica, Arial, sans-serif;
+      font-weight:400;
+      color:#e6fbff;
+      letter-spacing:-.025em;
+      line-height:1.08;
+      white-space:pre-line;
+      overflow:hidden;
+    }
+
+    .title{
+      margin:0;
+      font-family:Poppins, Arial, sans-serif;
+      font-weight:900;
+      color:#fff;
+      letter-spacing:-.055em;
+      line-height:.94;
+      white-space:pre-line;
+      overflow:hidden;
+      text-shadow:0 7px 12px rgba(0,0,0,.24);
+    }
+
+    .copy{
+      margin:0;
+      font-family:Helvetica, Arial, sans-serif;
+      font-weight:400;
+      color:#e6fbff;
+      letter-spacing:-.018em;
+      line-height:1.16;
+      white-space:pre-line;
+      overflow:hidden;
+    }
+
+    .dot-grid{
+      position:absolute;
+      z-index:5;
+      display:grid;
+      grid-template-columns:repeat(5,9px);
+      gap:18px;
+      opacity:.55;
+      pointer-events:none;
+    }
+
+    .dot-grid span{
+      width:6px;
+      height:6px;
+      border-radius:50%;
+      background:#e6fbff;
+    }
+
+    .shape{
+      position:absolute;
+      z-index:4;
+      pointer-events:none;
+    }
+
+    .shape-a{
+      right:78px;
+      top:152px;
+      width:245px;
+      height:145px;
+      border-radius:50%;
+      background:rgba(230,251,255,.12);
+      transform:rotate(-20deg);
+    }
+
+    .shape-b{
+      left:-125px;
+      bottom:260px;
+      width:300px;
+      height:300px;
+      border-radius:50%;
+      background:rgba(0,196,223,.18);
+    }
+
+    .shape-c{
+      right:-75px;
+      bottom:310px;
+      width:260px;
+      height:260px;
+      border-radius:50%;
+      background:rgba(0,196,223,.16);
+    }
+
+    .shape-d{
+      right:-110px;
+      bottom:70px;
+      width:370px;
+      height:370px;
+      border-radius:50%;
+      background:linear-gradient(135deg,rgba(255,213,107,.42),rgba(255,67,110,.30));
+    }
+
+    /* EVENT TEMPLATE */
+    .event .dot-grid{right:95px;top:140px}
+    .event-pre{left:72px;top:365px;width:650px;height:66px;font-size:52px}
+    .event-title{left:72px;top:435px;width:700px;height:365px;font-size:92px}
+    .event-copy{left:72px;top:825px;width:780px;height:150px;font-size:38px}
+
+    .event-cards{
+      position:absolute;
+      z-index:6;
+      left:72px;
+      right:72px;
+      bottom:240px;
+      display:grid;
+      grid-template-columns:1fr 1fr 1.24fr;
+      gap:18px;
+    }
+
+    .event-card{
+      min-height:185px;
+      border-radius:28px;
+      border:2px solid rgba(255,255,255,.35);
+      background:rgba(0,36,71,.34);
+      color:#fff;
+      padding:25px 22px;
+      overflow:hidden;
+      backdrop-filter:blur(4px);
+    }
+
+    .event-icon{
+      font-size:42px;
+      line-height:1;
+      margin-bottom:16px;
+      color:#fff;
+    }
+
+    .event-label{
+      font-size:24px;
+      font-weight:800;
+      font-family:Poppins, Arial, sans-serif;
+      letter-spacing:.04em;
+      margin-bottom:10px;
+      text-transform:uppercase;
+    }
+
+    .event-value{
+      font-family:Helvetica, Arial, sans-serif;
+      font-size:30px;
+      line-height:1.08;
+      font-weight:400;
+      white-space:pre-line;
+    }
+
+    /* PRODUCT TEMPLATE */
+    .product-pre{left:72px;top:360px;width:620px;height:62px;font-size:50px}
+    .product-title{left:72px;top:430px;width:705px;height:335px;font-size:88px}
+    .product-copy{left:72px;top:800px;width:700px;height:150px;font-size:36px}
+
+    .benefit-box{
+      position:absolute;
+      z-index:6;
+      left:72px;
+      right:72px;
+      bottom:250px;
+      min-height:310px;
+      border-radius:32px;
+      background:#e6fbff;
+      color:#002447;
+      padding:38px 44px;
+      box-shadow:0 24px 54px rgba(0,0,0,.26);
+      overflow:hidden;
+    }
+
+    .benefit-title{
+      font-family:Poppins, Arial, sans-serif;
+      font-weight:900;
+      font-size:52px;
+      line-height:1;
+      margin:0 0 22px;
+      letter-spacing:-.035em;
+      color:#002447;
+    }
+
+    .benefit-list{
+      margin:0;
+      padding-left:32px;
+      font-family:Helvetica, Arial, sans-serif;
+      font-weight:400;
+      font-size:31px;
+      line-height:1.28;
+      color:#002447;
+    }
+
+    .benefit-list li{margin:8px 0}
+
+    /* COMMEMORATIVE TEMPLATE */
+    .comm-frame{
+      position:absolute;
+      z-index:5;
+      left:72px;
+      right:72px;
+      top:360px;
+      bottom:210px;
+      border:4px solid rgba(255,255,255,.80);
+      border-radius:46px;
+    }
+
+    .comm-pre{left:112px;top:435px;width:640px;height:66px;font-size:50px}
+    .comm-title{left:112px;top:515px;width:705px;height:350px;font-size:84px}
+    .comm-copy{left:112px;top:920px;width:690px;height:185px;font-size:35px}
+
+    .heart{
+      position:absolute;
+      z-index:6;
+      right:78px;
+      bottom:182px;
+      width:82px;
+      height:82px;
+      border-radius:50%;
+      background:rgba(255,67,110,.85);
+      display:grid;
+      place-items:center;
+      color:#fff;
+      font-size:44px;
+      box-shadow:0 18px 36px rgba(0,0,0,.30);
+    }
+
+    .watermark{
+      position:absolute;
+      z-index:20;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      pointer-events:none;
+      opacity:.18;
+    }
+
+    .watermark span{
+      transform:rotate(-28deg);
+      font-family:Poppins, Arial, sans-serif;
+      font-weight:900;
+      font-size:98px;
+      line-height:1;
+      letter-spacing:.04em;
+      color:#fff;
+      border:8px solid #fff;
+      padding:34px 46px;
+      border-radius:22px;
+      text-transform:uppercase;
+      text-align:center;
+    }
+
+    .approved .watermark{display:none}
+
+    /* PANEL */
+    .panel{
+      background:rgba(5,17,28,.88);
+      border-left:1px solid var(--ua-line);
+      padding:22px;
+      overflow:auto;
+      backdrop-filter:blur(10px);
+    }
+
+    .panel h1{
+      font-size:22px;
+      line-height:1.1;
+      margin:0 0 6px;
+    }
+
+    .panel p{
+      margin:0 0 16px;
+      font-size:13px;
+      color:#b8cbd8;
+      line-height:1.38;
+    }
+
+    .warning{
+      background:rgba(255,213,107,.10);
+      border:1px solid rgba(255,213,107,.26);
+      border-radius:14px;
+      padding:12px;
+      font-size:12px;
+      color:#ffe8a3;
+      line-height:1.35;
+      margin-bottom:16px;
+    }
+
+    .group{
+      border-top:1px solid var(--ua-line);
+      padding-top:16px;
+      margin-top:16px;
+    }
+
+    .field{
+      margin-bottom:13px;
+    }
+
+    .field label{
+      display:block;
+      margin-bottom:6px;
+      color:#d8e7ef;
+      font-size:12px;
+      font-weight:900;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+    }
+
+    .field input,
+    .field textarea{
+      width:100%;
+      background:#10283b;
+      color:#fff;
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:12px;
+      padding:10px 12px;
+      font-size:14px;
+    }
+
+    .field textarea{
+      min-height:74px;
+      resize:vertical;
+    }
+
+    .fixed-legal-box{
+      background:#0e2b3e;
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:12px;
+      padding:12px;
+      color:#fff;
+      font-size:14px;
+      font-weight:800;
+      letter-spacing:.04em;
+    }
+
+    .file-name{
+      margin-top:6px;
+      font-size:12px;
+      color:#aac2d1;
+      word-break:break-word;
+    }
+
+    .actions{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:10px;
+      margin-top:16px;
+    }
+
+    .approval-row{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:8px;
+      align-items:end;
+    }
+
+    .approval-status{
+      margin-top:8px;
+      font-size:12px;
+      line-height:1.35;
+      color:#ffe8a3;
+    }
+
+    .approval-status.ok{color:#74e4b4}
+
+    @media(max-width:1180px){
+      :root{--scale:.36}
+      .app{grid-template-columns:1fr}
+      .panel{border-left:0;border-top:1px solid var(--ua-line)}
+    }
+  </style>
 </head>
 <body>
   <main class="app">
     <section class="stage">
-      <div class="stage-top"><select id="templateSelect" class="template-select"><option value="promo">Flyer Promo</option><option value="events">Flyer Eventos</option><option value="product">Flyer Producto</option><option value="comm">Flyer Conmemorativo</option></select><div class="stage-spacer"></div><button class="btn" id="resetBtn">Restaurar</button></div>
-      <div class="artboard-shell"><section id="artboard" class="artboard"><div class="art-bg"></div><div id="bgPhoto" class="bg-photo"></div><div class="photo-overlay"></div><img class="logo-main" src="UA%20Logo_Zurich%20-%20Blanco%20(4).png" alt="Universal Assistance"><img id="partnerLogo" class="partner-logo" alt="Partner"><div id="templateRoot"></div><div id="legal" class="legal"></div></section></div>
+      <div class="stage-top">
+        <select id="templateSelect" class="template-select">
+          <option value="event">Flyer Evento</option>
+          <option value="product">Flyer Producto</option>
+          <option value="comm">Flyer Conmemorativo</option>
+        </select>
+        <div class="spacer"></div>
+        <button class="btn" id="resetBtn">Restaurar</button>
+      </div>
+
+      <div class="artboard-shell">
+        <section id="artboard" class="artboard event">
+          <div class="art-bg"></div>
+          <div id="bgPhoto" class="bg-photo"></div>
+          <div class="overlay"></div>
+
+          <img class="logo-main" src="UA%20Logo_Zurich%20-%20Blanco%20(4).png" alt="Universal Assistance">
+
+          <div id="partnerSlot" class="partner-slot">
+            <span class="partner-placeholder">Logo partner<br>opcional</span>
+            <img id="partnerLogo" class="partner-logo" alt="Partner">
+          </div>
+
+          <div id="templateRoot"></div>
+          <div id="legalText" class="legal-fixed">SUJETO A CONDICIONES GENERALES</div>
+
+          <div id="watermark" class="watermark"><span>Pendiente<br>de aprobación</span></div>
+        </section>
+      </div>
     </section>
-    <aside class="right-pane panel"><h1>Editor de Flyers UA</h1><p>Plantillas cerradas con grilla fija. Editá campos sin romper la identidad visual.</p><div class="warning">La vista previa usa el logo oficial subido al repositorio. Para que se vea correctamente, el archivo debe llamarse exactamente: <b>UA Logo_Zurich - Blanco (4).png</b></div><div class="group"><div class="field"><label>Logo partner opcional</label><input type="file" id="partnerUpload" accept="image/*"><div id="partnerName" class="file-name">Sin logo cargado</div></div><div class="field"><label>Imagen de fondo opcional</label><input type="file" id="bgUpload" accept="image/*"><div id="bgName" class="file-name">Sin fondo cargado</div></div></div><div id="formFields" class="group"></div><div class="actions"><button class="btn dark" id="downloadSvg">Descargar SVG</button><button class="btn dark" id="downloadPng">Descargar PNG</button></div></aside>
+
+    <aside class="panel">
+      <h1>Editor de Flyers UA</h1>
+      <p>Sin template promo. Evento y Producto tienen legal fijo y no editable.</p>
+
+      <div class="warning">
+        Importante: en GitHub Pages no se puede hacer una aprobación real por mail sin backend. Esta versión deja marca de agua y bloquea la descarga limpia hasta ingresar un código de aprobación.
+      </div>
+
+      <div class="group">
+        <div class="field">
+          <label>Logo partner opcional</label>
+          <input type="file" id="partnerUpload" accept="image/*">
+          <div id="partnerName" class="file-name">Sin logo cargado</div>
+        </div>
+
+        <div class="field">
+          <label>Imagen de fondo opcional</label>
+          <input type="file" id="bgUpload" accept="image/*">
+          <div id="bgName" class="file-name">Sin fondo cargado</div>
+        </div>
+      </div>
+
+      <div id="prefillNotice" class="warning" style="display:none;">Solicitud precargada desde Microsoft Forms / Power Automate.</div>
+
+      <div id="formFields" class="group"></div>
+
+      <div class="group">
+        <div class="field">
+          <label>Aprobación</label>
+          <div class="approval-row">
+            <input type="text" id="approvalCode" placeholder="Ingresar código de aprobación">
+            <button class="btn dark" id="approveBtn">Validar</button>
+          </div>
+          <div id="approvalStatus" class="approval-status">Estado: pendiente. La pieza se exporta con marca de agua.</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn dark" id="requestApprovalBtn">Solicitar aprobación por mail</button>
+        <button class="btn dark" id="downloadDraftPng">Descargar borrador PNG con marca de agua</button>
+        <button class="btn locked" id="downloadFinalPng">Descargar final PNG aprobado</button>
+        <button class="btn locked" id="downloadFinalSvg">Descargar final SVG aprobado</button>
+      </div>
+    </aside>
   </main>
+
   <script>
-    const defaults={promo:{top:'Hasta',percent:'35',off:'OFF',headline:'en asistencia al viajero',secondary:'Promoción válida para agencias y partners seleccionados.',cta:'DESCARGÁ\nNUESTRA APP',legal:'Promoción válida según condiciones comerciales informadas por Universal Assistance. Consulte términos, vigencia y productos aplicables.'},events:{pre:'Te esperamos en',title:'Congreso\nde Agentes\nde Viajes',copy:'Una jornada para compartir novedades, herramientas y oportunidades comerciales.',date:'Miércoles\n24.06.26',time:'23:00 hs',place:'Av. Córdoba 820,\nCABA',legal:'Evento sujeto a confirmación de cupos y condiciones informadas por Universal Assistance.'},product:{pre:'Conocé nuestros',title:'Productos\npara viajar\ntranquilo',copy:'Coberturas diseñadas para acompañar a tus pasajeros antes, durante y después del viaje.',boxTitle:'Beneficios destacados',b1:'Asistencia médica internacional',b2:'Teleasistencia incluida',b3:'Coberturas para cada tipo de viaje',legal:'Productos y coberturas sujetos a condiciones generales del servicio contratado.'},comm:{pre:'Hoy celebramos',title:'Una fecha\npara sentirnos\nmás cerca',copy:'Universal Assistance acompaña cada viaje, cada historia y cada momento especial.',legal:'Mensaje institucional de Universal Assistance.'}};
-    const labels={promo:[['top','Texto superior','text'],['percent','Porcentaje','text'],['off','Texto OFF','text'],['headline','Bajada principal','textarea'],['secondary','Texto secundario','textarea'],['cta','CTA','textarea'],['legal','Legal','textarea']],events:[['pre','Pre título','text'],['title','Nombre del evento','textarea'],['copy','Bajada','textarea'],['date','Fecha','textarea'],['time','Hora','textarea'],['place','Lugar','textarea'],['legal','Legal','textarea']],product:[['pre','Intro','text'],['title','Título principal','textarea'],['copy','Bajada','textarea'],['boxTitle','Título de beneficios','text'],['b1','Beneficio 1','text'],['b2','Beneficio 2','text'],['b3','Beneficio 3','text'],['legal','Legal','textarea']],comm:[['pre','Pre título','text'],['title','Título principal','textarea'],['copy','Mensaje institucional','textarea'],['legal','Firma / legal','textarea']]};
-    let current='promo', data=JSON.parse(JSON.stringify(defaults)), partnerData='', bgData='';
-    const root=document.getElementById('templateRoot'), legalEl=document.getElementById('legal'), form=document.getElementById('formFields'), artboard=document.getElementById('artboard');
-    function esc(s=''){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))} function br(s=''){return esc(s).replace(/\n/g,'<br>')} function dotGrid(n=25){return `<div class="decor dot-grid dot-${current}">${'<span></span>'.repeat(n)}</div>`}
-    function renderTemplate(){const d=data[current];let html=''; if(current==='promo'){html=`<div class="decor blob-a"></div><div class="decor blob-b"></div>${dotGrid(20)}<div class="field-area promo-box"><p class="txt promo-kicker">${esc(d.top)}</p><div class="promo-discount"><span class="discount-number">${esc(d.percent)}</span><span class="discount-percent">%</span><span class="discount-off">${esc(d.off)}</span></div></div><p class="field-area txt promo-head">${br(d.headline)}</p><p class="field-area txt-copy promo-secondary">${br(d.secondary)}</p><div class="field-area promo-cta"><span class="download-icon">↓</span><span>${br(d.cta)}</span></div>`} if(current==='events'){html=`${dotGrid(35)}<div class="decor blob-c"></div><p class="field-area txt-copy events-kicker">${br(d.pre)}</p><p class="field-area txt events-title">${br(d.title)}</p><p class="field-area txt-copy events-copy">${br(d.copy)}</p><div class="event-cards"><div class="event-card"><div class="event-icon">▦</div><div class="event-label">FECHA</div><div class="event-value">${br(d.date)}</div></div><div class="event-card"><div class="event-icon">◷</div><div class="event-label">HORA</div><div class="event-value">${br(d.time)}</div></div><div class="event-card"><div class="event-icon">●</div><div class="event-label">LUGAR</div><div class="event-value">${br(d.place)}</div></div></div>`} if(current==='product'){html=`<div class="decor blob-a"></div><p class="field-area txt-copy product-kicker">${br(d.pre)}</p><p class="field-area txt product-title">${br(d.title)}</p><p class="field-area txt-copy product-copy">${br(d.copy)}</p><div class="benefit-box"><h2 class="benefit-title">${esc(d.boxTitle)}</h2><ul class="benefit-list">${d.b1?`<li>${esc(d.b1)}</li>`:''}${d.b2?`<li>${esc(d.b2)}</li>`:''}${d.b3?`<li>${esc(d.b3)}</li>`:''}</ul></div>`} if(current==='comm'){html=`<div class="comm-frame"></div><div class="decor blob-d"></div><div class="heart">♥</div><p class="field-area txt-copy comm-kicker">${br(d.pre)}</p><p class="field-area txt comm-title">${br(d.title)}</p><p class="field-area txt-copy comm-copy">${br(d.copy)}</p>`} root.innerHTML=html; legalEl.textContent=d.legal||''; document.getElementById('partnerLogo').src=partnerData||''; document.getElementById('partnerLogo').classList.toggle('show',!!partnerData); document.getElementById('bgPhoto').style.backgroundImage=bgData?`url(${bgData})`:''; document.getElementById('bgPhoto').classList.toggle('show',!!bgData)}
-    function renderForm(){form.innerHTML=labels[current].map(([key,label,type])=>`<div class="field"><label>${label}</label>${type==='textarea'?`<textarea data-key="${key}">${esc(data[current][key]||'')}</textarea>`:`<input data-key="${key}" value="${esc(data[current][key]||'')}">`}</div>`).join(''); form.querySelectorAll('[data-key]').forEach(el=>el.addEventListener('input',e=>{data[current][e.target.dataset.key]=e.target.value;renderTemplate()}))}
-    function switchTemplate(t){current=t;renderForm();renderTemplate()} document.getElementById('templateSelect').addEventListener('change',e=>switchTemplate(e.target.value)); document.getElementById('resetBtn').addEventListener('click',()=>{data[current]=JSON.parse(JSON.stringify(defaults[current]));renderForm();renderTemplate()});
-    document.getElementById('partnerUpload').addEventListener('change',e=>{const file=e.target.files[0]; if(!file){partnerData='';renderTemplate();return} const r=new FileReader(); r.onload=ev=>{partnerData=ev.target.result;document.getElementById('partnerName').textContent=file.name;renderTemplate()}; r.readAsDataURL(file)}); document.getElementById('bgUpload').addEventListener('change',e=>{const file=e.target.files[0]; if(!file){bgData='';renderTemplate();return} const r=new FileReader(); r.onload=ev=>{bgData=ev.target.result;document.getElementById('bgName').textContent=file.name;renderTemplate()}; r.readAsDataURL(file)});
-    function absolutizeImages(clone){clone.querySelectorAll('img').forEach(img=>{const src=img.getAttribute('src'); if(src&&!src.startsWith('data:')&&!src.startsWith('http')) img.setAttribute('src',new URL(src,window.location.href).href)})} function makeSvg(){const clone=artboard.cloneNode(true); clone.style.transform='none'; clone.style.width='1080px'; clone.style.height='1920px'; absolutizeImages(clone); const styles=document.querySelector('style').textContent.replace(/@import[^;]+;/g,''); return `<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920"><foreignObject width="1080" height="1920"><div xmlns="http://www.w3.org/1999/xhtml"><style>${styles}
-    /* =========================
-       V9 FIX: subtítulos Helvetica light + promo más parecido al mockup
-       ========================= */
+    const APPROVER_EMAIL = "milagros.sanchez@universal-assistance.com";
+    const APPROVAL_CODE = "UA-APROBADO";
 
-    .txt-copy,
-    .promo-head,
-    .promo-secondary,
-    .promo-cta,
-    .events-kicker,
-    .events-copy,
-    .product-kicker,
-    .product-copy,
-    .comm-kicker,
-    .comm-copy,
-    .legal{
-      font-family: Helvetica, Arial, sans-serif !important;
-      font-weight:400 !important;
-      letter-spacing:-.015em !important;
-      text-shadow:none !important;
+    const FIXED_LEGAL = "SUJETO A CONDICIONES GENERALES";
+
+    const defaults = {
+      event:{
+        pre:"Te esperamos en",
+        title:"Congreso\\nde Agentes\\nde Viajes",
+        copy:"Una jornada para compartir novedades, herramientas y oportunidades comerciales.",
+        date:"Miércoles\\n24.06.26",
+        time:"23:00 hs",
+        place:"Av. Córdoba 820,\\nCABA"
+      },
+      product:{
+        pre:"Conocé nuestros",
+        title:"Productos\\npara viajar\\ntranquilo",
+        copy:"Coberturas diseñadas para acompañar a tus pasajeros antes, durante y después del viaje.",
+        boxTitle:"Beneficios destacados",
+        b1:"Asistencia médica internacional",
+        b2:"Teleasistencia incluida",
+        b3:"Coberturas para cada tipo de viaje"
+      },
+      comm:{
+        pre:"Hoy celebramos",
+        title:"Una fecha\\npara sentirnos\\nmás cerca",
+        copy:"Universal Assistance acompaña cada viaje, cada historia y cada momento especial.",
+        legal:"Mensaje institucional de Universal Assistance."
+      }
+    };
+
+    const fields = {
+      event:[
+        ["pre","Pre título","text"],
+        ["title","Nombre del evento","textarea"],
+        ["copy","Bajada","textarea"],
+        ["date","Fecha","textarea"],
+        ["time","Hora","textarea"],
+        ["place","Lugar","textarea"]
+      ],
+      product:[
+        ["pre","Intro","text"],
+        ["title","Título principal","textarea"],
+        ["copy","Bajada","textarea"],
+        ["boxTitle","Título caja beneficios","text"],
+        ["b1","Beneficio 1","text"],
+        ["b2","Beneficio 2","text"],
+        ["b3","Beneficio 3","text"]
+      ],
+      comm:[
+        ["pre","Pre título","text"],
+        ["title","Título principal","textarea"],
+        ["copy","Mensaje institucional","textarea"],
+        ["legal","Firma / legal","textarea"]
+      ]
+    };
+
+    let current = "event";
+    let data = JSON.parse(JSON.stringify(defaults));
+    let partnerData = "";
+    let bgData = "";
+    let approved = false;
+
+    const artboard = document.getElementById("artboard");
+    const root = document.getElementById("templateRoot");
+    const form = document.getElementById("formFields");
+    const legalText = document.getElementById("legalText");
+    const partnerLogo = document.getElementById("partnerLogo");
+    const partnerSlot = document.getElementById("partnerSlot");
+    const bgPhoto = document.getElementById("bgPhoto");
+
+    function esc(s=""){
+      return String(s).replace(/[&<>"']/g, m => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;","\\"":"&quot;","'":"&#039;"
+      }[m]));
     }
 
-    .events-copy,
-    .product-copy,
-    .comm-copy,
-    .promo-secondary{
-      color:#fff3c6 !important;
+    function br(s=""){ return esc(s).replace(/\\n/g,"<br>"); }
+
+    function dotGrid(n=30){
+      return `<div class="dot-grid">${"<span></span>".repeat(n)}</div>`;
     }
 
-    .promo .logo-main{top:58px;left:72px;width:435px}
+    function renderTemplate(){
+      artboard.className = "artboard " + current + (approved ? " approved" : "");
+      partnerLogo.src = partnerData || "";
+      partnerSlot.classList.toggle("has-logo", !!partnerData);
+      bgPhoto.style.backgroundImage = bgData ? `url(${bgData})` : "";
+      bgPhoto.classList.toggle("show", !!bgData);
 
-    .promo-box{
-      left:72px !important;
-      top:348px !important;
-      width:862px !important;
-      height:370px !important;
-      border:7px solid var(--cream) !important;
-      border-radius:42px !important;
-      padding:34px 42px !important;
-      background:rgba(4,34,48,.10);
+      const d = data[current];
+
+      if(current === "event"){
+        legalText.className = "legal-fixed";
+        legalText.textContent = FIXED_LEGAL;
+        root.innerHTML = `
+          <div class="shape shape-b"></div>
+          <div class="shape shape-c"></div>
+          ${dotGrid(35)}
+          <p class="field-area kicker event-pre">${br(d.pre)}</p>
+          <p class="field-area title event-title">${br(d.title)}</p>
+          <p class="field-area copy event-copy">${br(d.copy)}</p>
+          <div class="event-cards">
+            <div class="event-card"><div class="event-icon">▦</div><div class="event-label">Fecha</div><div class="event-value">${br(d.date)}</div></div>
+            <div class="event-card"><div class="event-icon">◷</div><div class="event-label">Hora</div><div class="event-value">${br(d.time)}</div></div>
+            <div class="event-card"><div class="event-icon">●</div><div class="event-label">Lugar</div><div class="event-value">${br(d.place)}</div></div>
+          </div>
+        `;
+      }
+
+      if(current === "product"){
+        legalText.className = "legal-fixed";
+        legalText.textContent = FIXED_LEGAL;
+        root.innerHTML = `
+          <div class="shape shape-a"></div>
+          <div class="shape shape-b"></div>
+          <p class="field-area kicker product-pre">${br(d.pre)}</p>
+          <p class="field-area title product-title">${br(d.title)}</p>
+          <p class="field-area copy product-copy">${br(d.copy)}</p>
+          <div class="benefit-box">
+            <h2 class="benefit-title">${esc(d.boxTitle)}</h2>
+            <ul class="benefit-list">
+              ${d.b1 ? `<li>${esc(d.b1)}</li>` : ""}
+              ${d.b2 ? `<li>${esc(d.b2)}</li>` : ""}
+              ${d.b3 ? `<li>${esc(d.b3)}</li>` : ""}
+            </ul>
+          </div>
+        `;
+      }
+
+      if(current === "comm"){
+        legalText.className = "legal-editable";
+        legalText.textContent = d.legal || "";
+        root.innerHTML = `
+          <div class="shape shape-d"></div>
+          <div class="comm-frame"></div>
+          <div class="heart">♥</div>
+          <p class="field-area kicker comm-pre">${br(d.pre)}</p>
+          <p class="field-area title comm-title">${br(d.title)}</p>
+          <p class="field-area copy comm-copy">${br(d.copy)}</p>
+        `;
+      }
     }
 
-    .promo-kicker{
-      font-family:Poppins, Arial, sans-serif !important;
-      font-weight:900 !important;
-      font-size:78px !important;
-      height:78px !important;
-      line-height:.95 !important;
-      text-shadow:0 6px 10px rgba(0,0,0,.22) !important;
+    function renderForm(){
+      let html = "";
+
+      html += fields[current].map(([key,label,type]) => `
+        <div class="field">
+          <label>${label}</label>
+          ${type === "textarea"
+            ? `<textarea data-key="${key}">${esc(data[current][key] || "")}</textarea>`
+            : `<input data-key="${key}" value="${esc(data[current][key] || "")}">`}
+        </div>
+      `).join("");
+
+      if(current === "event" || current === "product"){
+        html += `
+          <div class="field">
+            <label>Legal fijo</label>
+            <div class="fixed-legal-box">${FIXED_LEGAL}</div>
+          </div>
+        `;
+      }
+
+      form.innerHTML = html;
+
+      form.querySelectorAll("[data-key]").forEach(el => {
+        el.addEventListener("input", e => {
+          data[current][e.target.dataset.key] = e.target.value;
+          approved = false;
+          updateApprovalUI();
+          renderTemplate();
+        });
+      });
     }
 
-    .promo-discount{
-      height:230px !important;
-      margin-top:0 !important;
-      align-items:flex-end !important;
+    function switchTemplate(t){
+      current = t;
+      approved = false;
+      updateApprovalUI();
+      renderForm();
+      renderTemplate();
     }
 
-    .discount-number{
-      font-size:295px !important;
-      line-height:.76 !important;
-      letter-spacing:-.09em !important;
-      margin-right:22px !important;
-      text-shadow:0 6px 10px rgba(0,0,0,.22) !important;
+    function updateApprovalUI(){
+      const status = document.getElementById("approvalStatus");
+      const finalPng = document.getElementById("downloadFinalPng");
+      const finalSvg = document.getElementById("downloadFinalSvg");
+
+      if(approved){
+        status.textContent = "Estado: aprobado. La descarga final queda habilitada y sin marca de agua.";
+        status.classList.add("ok");
+        finalPng.classList.remove("locked");
+        finalSvg.classList.remove("locked");
+      }else{
+        status.textContent = "Estado: pendiente. La pieza se exporta con marca de agua.";
+        status.classList.remove("ok");
+        finalPng.classList.add("locked");
+        finalSvg.classList.add("locked");
+      }
     }
 
-    .discount-percent{
-      font-size:125px !important;
-      margin-bottom:30px !important;
-      margin-right:14px !important;
-      text-shadow:0 6px 10px rgba(0,0,0,.22) !important;
+    function getRequestSummary(){
+      const d = data[current];
+      return Object.entries(d).map(([k,v]) => `${k}: ${v}`).join("\\n");
     }
 
-    .discount-off{
-      font-size:82px !important;
-      margin-bottom:32px !important;
-      letter-spacing:-.04em !important;
-      text-shadow:0 6px 10px rgba(0,0,0,.22) !important;
+    document.getElementById("templateSelect").addEventListener("change", e => switchTemplate(e.target.value));
+
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      data[current] = JSON.parse(JSON.stringify(defaults[current]));
+      approved = false;
+      updateApprovalUI();
+      renderForm();
+      renderTemplate();
+    });
+
+    document.getElementById("partnerUpload").addEventListener("change", e => {
+      const file = e.target.files[0];
+      if(!file){
+        partnerData = "";
+        document.getElementById("partnerName").textContent = "Sin logo cargado";
+        renderTemplate();
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = ev => {
+        partnerData = ev.target.result;
+        document.getElementById("partnerName").textContent = file.name;
+        approved = false;
+        updateApprovalUI();
+        renderTemplate();
+      };
+      reader.readAsDataURL(file);
+    });
+
+    document.getElementById("bgUpload").addEventListener("change", e => {
+      const file = e.target.files[0];
+      if(!file){
+        bgData = "";
+        document.getElementById("bgName").textContent = "Sin fondo cargado";
+        renderTemplate();
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = ev => {
+        bgData = ev.target.result;
+        document.getElementById("bgName").textContent = file.name;
+        approved = false;
+        updateApprovalUI();
+        renderTemplate();
+      };
+      reader.readAsDataURL(file);
+    });
+
+    document.getElementById("approveBtn").addEventListener("click", () => {
+      const code = document.getElementById("approvalCode").value.trim();
+      approved = code === APPROVAL_CODE;
+      if(!approved){
+        alert("Código incorrecto. La pieza sigue pendiente de aprobación.");
+      }
+      updateApprovalUI();
+      renderTemplate();
+    });
+
+    document.getElementById("requestApprovalBtn").addEventListener("click", () => {
+      const subject = encodeURIComponent(`Solicitud de aprobación flyer UA - ${current}`);
+      const body = encodeURIComponent(
+        `Hola Mili,\\n\\nTe solicito aprobación para descargar esta pieza sin marca de agua.\\n\\nTemplate: ${current}\\n\\nCampos cargados:\\n${getRequestSummary()}\\n\\nAdjunto/comparto el borrador generado desde el editor.\\n\\nGracias.`
+      );
+      window.location.href = `mailto:${APPROVER_EMAIL}?subject=${subject}&body=${body}`;
+    });
+
+    function download(blob, name){
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 800);
     }
 
-    .promo-head{
-      left:72px !important;
-      top:805px !important;
-      width:720px !important;
-      height:155px !important;
-      font-size:62px !important;
-      line-height:1.04 !important;
-      color:#fff3c6 !important;
+    async function downloadPng(clean=false){
+      const oldApproved = approved;
+      if(clean && !approved){
+        alert("La descarga final está bloqueada. Primero ingresá el código de aprobación.");
+        return;
+      }
+
+      if(!clean){
+        artboard.classList.remove("approved");
+      }else{
+        artboard.classList.add("approved");
+      }
+
+      if(typeof html2canvas === "undefined"){
+        alert("No se pudo cargar el exportador PNG. Probá descargar SVG o revisá si la red bloquea jsDelivr.");
+        approved = oldApproved;
+        renderTemplate();
+        return;
+      }
+
+      const canvas = await html2canvas(artboard, {
+        backgroundColor:null,
+        scale:1,
+        width:1080,
+        height:1920,
+        useCORS:true,
+        allowTaint:true,
+        logging:false
+      });
+
+      canvas.toBlob(blob => {
+        if(!blob){
+          alert("No se pudo generar el PNG.");
+          return;
+        }
+        download(blob, clean ? `ua-${current}-aprobado.png` : `ua-${current}-borrador.png`);
+      }, "image/png");
+
+      approved = oldApproved;
+      renderTemplate();
     }
 
-    .promo-secondary{
-      left:72px !important;
-      top:1012px !important;
-      width:545px !important;
-      height:205px !important;
-      font-size:38px !important;
-      line-height:1.12 !important;
-      color:#fff3c6 !important;
-      overflow:visible !important;
+    function absolutizeImages(clone){
+      clone.querySelectorAll("img").forEach(img => {
+        const src = img.getAttribute("src");
+        if(src && !src.startsWith("data:") && !src.startsWith("http")){
+          img.setAttribute("src", new URL(src, window.location.href).href);
+        }
+      });
     }
 
-    .promo-cta{
-      right:82px !important;
-      top:1122px !important;
-      width:255px !important;
-      min-height:100px !important;
-      font-size:31px !important;
-      line-height:1.02 !important;
-      font-weight:700 !important;
-      color:#fff3c6 !important;
-      text-shadow:none !important;
+    function makeSvg(clean=false){
+      const clone = artboard.cloneNode(true);
+      clone.style.transform = "none";
+      clone.style.width = "1080px";
+      clone.style.height = "1920px";
+      if(clean) clone.classList.add("approved");
+      else clone.classList.remove("approved");
+      absolutizeImages(clone);
+
+      const styles = document.querySelector("style").textContent.replace(/@import[^;]+;/g,"");
+
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
+        <foreignObject width="1080" height="1920">
+          <div xmlns="http://www.w3.org/1999/xhtml">
+            <style>${styles}</style>
+            ${clone.outerHTML}
+          </div>
+        </foreignObject>
+      </svg>`;
     }
 
-    .promo-cta .download-icon{
-      width:52px !important;
-      height:52px !important;
-      font-size:34px !important;
-      border-color:#fff3c6 !important;
+    document.getElementById("downloadDraftPng").addEventListener("click", () => downloadPng(false));
+
+    document.getElementById("downloadFinalPng").addEventListener("click", () => downloadPng(true));
+
+    document.getElementById("downloadFinalSvg").addEventListener("click", () => {
+      if(!approved){
+        alert("La descarga final está bloqueada. Primero ingresá el código de aprobación.");
+        return;
+      }
+      download(new Blob([makeSvg(true)], {type:"image/svg+xml"}), `ua-${current}-aprobado.svg`);
+    });
+
+    function normalizeTemplate(value){
+      if(!value) return "event";
+      const v = String(value).toLowerCase().trim();
+
+      if(["event","evento","flyer evento","flyer_evento"].includes(v)) return "event";
+      if(["product","producto","flyer producto","flyer_producto"].includes(v)) return "product";
+      if(["comm","conmemorativo","flyer conmemorativo","flyer_conmemorativo","fecha","fechas"].includes(v)) return "comm";
+
+      return "event";
     }
 
-    .dot-promo{
-      right:105px !important;
-      bottom:300px !important;
+    function applyPrefillFromUrl(){
+      const params = new URLSearchParams(window.location.search);
+
+      if([...params.keys()].length === 0){
+        switchTemplate("event");
+        updateApprovalUI();
+        return;
+      }
+
+      const templateFromUrl = normalizeTemplate(params.get("template") || params.get("tipo") || params.get("flyer"));
+      switchTemplate(templateFromUrl);
+
+      const allowedKeys = {
+        event:["pre","title","copy","date","time","place"],
+        product:["pre","title","copy","boxTitle","b1","b2","b3"],
+        comm:["pre","title","copy","legal"]
+      };
+
+      allowedKeys[templateFromUrl].forEach(key => {
+        if(params.has(key)){
+          data[templateFromUrl][key] = params.get(key);
+        }
+      });
+
+      const aliases = {
+        event:{
+          titulo:"title",
+          nombreEvento:"title",
+          nombre_evento:"title",
+          bajada:"copy",
+          fecha:"date",
+          hora:"time",
+          lugar:"place",
+          preTitulo:"pre",
+          pre_titulo:"pre"
+        },
+        product:{
+          titulo:"title",
+          tituloPrincipal:"title",
+          titulo_principal:"title",
+          intro:"pre",
+          bajada:"copy",
+          beneficio1:"b1",
+          beneficio2:"b2",
+          beneficio3:"b3",
+          tituloBeneficios:"boxTitle",
+          titulo_beneficios:"boxTitle"
+        },
+        comm:{
+          titulo:"title",
+          tituloPrincipal:"title",
+          titulo_principal:"title",
+          mensaje:"copy",
+          firma:"legal",
+          bajada:"copy",
+          preTitulo:"pre",
+          pre_titulo:"pre"
+        }
+      };
+
+      Object.entries(aliases[templateFromUrl]).forEach(([urlKey, dataKey]) => {
+        if(params.has(urlKey)){
+          data[templateFromUrl][dataKey] = params.get(urlKey);
+        }
+      });
+
+      approved = false;
+      updateApprovalUI();
+      renderForm();
+      renderTemplate();
+
+      const notice = document.getElementById("prefillNotice");
+      if(notice){
+        notice.style.display = "block";
+      }
     }
 
-    .promo .blob-a{
-      right:95px !important;
-      top:130px !important;
-      width:220px !important;
-      height:135px !important;
-      opacity:.80;
-    }
-
-    .promo .blob-b{
-      left:-130px !important;
-      bottom:255px !important;
-      width:300px !important;
-      height:300px !important;
-      opacity:.72;
-    }
-
-    .promo .legal{
-      font-size:22px !important;
-      line-height:1.22 !important;
-      font-weight:400 !important;
-      color:#fff3c6 !important;
-    }
-
-    .events-kicker,
-    .product-kicker,
-    .comm-kicker{
-      color:#fff3c6 !important;
-      font-size:48px !important;
-      line-height:1.08 !important;
-    }
-
-    .events-copy{
-      top:850px !important;
-      font-size:34px !important;
-      line-height:1.18 !important;
-      width:760px !important;
-      height:130px !important;
-    }
-
-    .product-copy{
-      top:805px !important;
-      font-size:34px !important;
-      line-height:1.18 !important;
-      width:700px !important;
-      height:150px !important;
-    }
-
-    .comm-copy{
-      font-size:32px !important;
-      line-height:1.18 !important;
-      width:650px !important;
-      height:180px !important;
-    }
-
-    .events-title,
-    .product-title,
-    .comm-title{
-      text-shadow:0 6px 10px rgba(0,0,0,.22) !important;
-    }
-
-</style>${clone.outerHTML}</div></foreignObject></svg>`} function download(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),800)} document.getElementById('downloadSvg').addEventListener('click',()=>download(new Blob([makeSvg()],{type:'image/svg+xml'}),`ua-${current}.svg`)); document.getElementById('downloadPng').addEventListener('click',()=>{const url=URL.createObjectURL(new Blob([makeSvg()],{type:'image/svg+xml'})); const img=new Image(); img.onload=()=>{const c=document.createElement('canvas');c.width=1080;c.height=1920;c.getContext('2d').drawImage(img,0,0); c.toBlob(blob=>{download(blob,`ua-${current}.png`);URL.revokeObjectURL(url)},'image/png')}; img.src=url}); switchTemplate('promo');
+    applyPrefillFromUrl();
   </script>
 </body>
 </html>
