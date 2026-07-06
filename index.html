@@ -667,8 +667,6 @@
         </div>
       </div>
 
-      <div id="prefillNotice" class="warning" style="display:none;">Solicitud precargada desde Microsoft Forms / Power Automate.</div>
-
       <div id="formFields" class="group"></div>
 
       <div class="group">
@@ -1060,95 +1058,8 @@
       download(new Blob([makeSvg(true)], {type:"image/svg+xml"}), `ua-${current}-aprobado.svg`);
     });
 
-    function normalizeTemplate(value){
-      if(!value) return "event";
-      const v = String(value).toLowerCase().trim();
-
-      if(["event","evento","flyer evento","flyer_evento"].includes(v)) return "event";
-      if(["product","producto","flyer producto","flyer_producto"].includes(v)) return "product";
-      if(["comm","conmemorativo","flyer conmemorativo","flyer_conmemorativo","fecha","fechas"].includes(v)) return "comm";
-
-      return "event";
-    }
-
-    function applyPrefillFromUrl(){
-      const params = new URLSearchParams(window.location.search);
-
-      if([...params.keys()].length === 0){
-        switchTemplate("event");
-        updateApprovalUI();
-        return;
-      }
-
-      const templateFromUrl = normalizeTemplate(params.get("template") || params.get("tipo") || params.get("flyer"));
-      switchTemplate(templateFromUrl);
-
-      const allowedKeys = {
-        event:["pre","title","copy","date","time","place"],
-        product:["pre","title","copy","boxTitle","b1","b2","b3"],
-        comm:["pre","title","copy","legal"]
-      };
-
-      allowedKeys[templateFromUrl].forEach(key => {
-        if(params.has(key)){
-          data[templateFromUrl][key] = params.get(key);
-        }
-      });
-
-      const aliases = {
-        event:{
-          titulo:"title",
-          nombreEvento:"title",
-          nombre_evento:"title",
-          bajada:"copy",
-          fecha:"date",
-          hora:"time",
-          lugar:"place",
-          preTitulo:"pre",
-          pre_titulo:"pre"
-        },
-        product:{
-          titulo:"title",
-          tituloPrincipal:"title",
-          titulo_principal:"title",
-          intro:"pre",
-          bajada:"copy",
-          beneficio1:"b1",
-          beneficio2:"b2",
-          beneficio3:"b3",
-          tituloBeneficios:"boxTitle",
-          titulo_beneficios:"boxTitle"
-        },
-        comm:{
-          titulo:"title",
-          tituloPrincipal:"title",
-          titulo_principal:"title",
-          mensaje:"copy",
-          firma:"legal",
-          bajada:"copy",
-          preTitulo:"pre",
-          pre_titulo:"pre"
-        }
-      };
-
-      Object.entries(aliases[templateFromUrl]).forEach(([urlKey, dataKey]) => {
-        if(params.has(urlKey)){
-          data[templateFromUrl][dataKey] = params.get(urlKey);
-        }
-      });
-
-      approved = false;
-      updateApprovalUI();
-      renderForm();
-      renderTemplate();
-
-      const notice = document.getElementById("prefillNotice");
-      if(notice){
-        notice.style.display = "block";
-      }
-    }
-
-    applyPrefillFromUrl();
+    switchTemplate("event");
+    updateApprovalUI();
   </script>
 </body>
 </html>
