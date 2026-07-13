@@ -105,6 +105,23 @@
       font-weight:800;
     }
 
+    .mini-button{
+      border:none;
+      padding:8px 12px;
+      border-radius:999px;
+      background:#E7F6FA;
+      color:var(--ua-blue);
+      font-size:12px;
+      font-weight:900;
+      transition:.18s ease;
+    }
+
+    .mini-button:hover{
+      background:#D8F1F8;
+      transform:translateY(-1px);
+    }
+
+
     .workspace{
       height:calc(100vh - 78px);
       max-width:none;
@@ -293,7 +310,7 @@
 
     .flyer-canvas{
       position:relative;
-      width:min(520px,52vw);
+      width:min(590px,56vw);
       aspect-ratio:1080 / 1530;
       border-radius:34px;
       overflow:hidden;
@@ -423,8 +440,8 @@
     }
 
     .flyer-content h2{
-      max-width:82%;
-      font-size:clamp(34px,3.4vw,52px);
+      max-width:86%;
+      font-size:clamp(38px,3.7vw,58px);
       line-height:.96;
       letter-spacing:-.06em;
     }
@@ -432,7 +449,7 @@
     .flyer-content p{
       max-width:88%;
       color:rgba(255,255,255,.88);
-      font-size:clamp(13px,1.05vw,16px);
+      font-size:clamp(14px,1.1vw,17px);
       line-height:1.42;
     }
 
@@ -529,7 +546,7 @@
         gap:14px;
       }
 
-      .flyer-canvas{width:min(470px,48vw);}
+      .flyer-canvas{width:min(520px,50vw);}
 
       .section-card{padding:15px;}
       .topbar-meta{display:none;}
@@ -581,8 +598,9 @@
       </div>
 
       <div class="topbar-meta">
-        <span>Editor interno</span>
+        <span>Herramienta interna UA</span>
         <span>Vista previa en tiempo real</span>
+        <button class="mini-button" id="clearBtn" type="button">Limpiar formulario</button>
       </div>
 
       <span id="statusText" style="display:none;">Borrador</span>
@@ -592,8 +610,8 @@
       <section class="form-panel">
         <div class="panel-title">
           <p class="eyebrow">Nueva solicitud</p>
-          <h2>Solicitud de pieza</h2>
-          <p>Completá el brief comercial y revisá la vista previa antes de enviarlo al flujo interno.</p>
+          <h2>Crear nuevo flyer</h2>
+          <p>Completá la información comercial, revisá la vista previa y enviá la solicitud.</p>
         </div>
 
         <form id="requestForm">
@@ -701,7 +719,7 @@
           <div class="section-card">
             <div class="section-heading">
               <span>04</span>
-              <h3>Recursos y comentarios</h3>
+              <h3>Assets opcionales</h3>
             </div>
 
             <label for="logoPartner">Logo partner</label>
@@ -753,9 +771,9 @@
 
         <div class="submit-card">
           <div>
-            <p class="eyebrow">Solicitud lista</p>
-            <h3 id="submitTitle">Flyer listo para enviar</h3>
-            <p id="submitDescription">Revisá los datos y enviá la solicitud al flujo interno.</p>
+            <p class="eyebrow">Solicitud preparada</p>
+            <h3 id="submitTitle">Información lista para enviar</h3>
+            <p id="submitDescription">Se genera el pedido con toda la información cargada.</p>
           </div>
 
           <button class="primary-button" id="sendBtn" type="button">Enviar solicitud</button>
@@ -806,6 +824,7 @@
     const resultBox = document.getElementById("resultBox");
     const sendBtn = document.getElementById("sendBtn");
     const downloadPngBtn = document.getElementById("downloadPngBtn");
+    const clearBtn = document.getElementById("clearBtn");
     const tituloCount = document.getElementById("tituloCount");
     const bajadaCount = document.getElementById("bajadaCount");
 
@@ -1004,8 +1023,8 @@
       resultBox.style.borderColor = "#ABEFC6";
       resultBox.style.color = "#067647";
       resultBox.innerHTML = `
-        ✅ Brief listo para enviar a Power Automate.<br>
-        Número de solicitud: <strong>${requestId}</strong>
+        ✅ Solicitud generada correctamente.<br>
+        N° de solicitud: <strong>${requestId}</strong>
         <code>${JSON.stringify(payload, null, 2)}</code>
       `;
     }
@@ -1213,6 +1232,32 @@
       reader.readAsDataURL(file);
     }
 
+
+    function clearForm() {
+      const keepSelectDefaults = ["tipo", "formato", "pais"];
+
+      Object.entries(fields).forEach(([key, field]) => {
+        if (!field) return;
+
+        if (field.type === "file") {
+          field.value = "";
+          return;
+        }
+
+        if (keepSelectDefaults.includes(key)) return;
+
+        field.value = "";
+      });
+
+      preview.partnerLogo.classList.add("hidden");
+      preview.partnerLogo.removeAttribute("src");
+      preview.partnerBadge.classList.remove("hidden");
+      preview.bg.style.backgroundImage = "";
+      resultBox.classList.add("hidden");
+
+      updatePreview();
+    }
+
     Object.values(fields).forEach((field) => {
       if (!field || field.type === "file") return;
       field.addEventListener("input", updatePreview);
@@ -1224,6 +1269,7 @@
 
     sendBtn.addEventListener("click", simulateSend);
     downloadPngBtn.addEventListener("click", downloadPng);
+    clearBtn.addEventListener("click", clearForm);
 
     loadFromUrl();
     updatePreview();
