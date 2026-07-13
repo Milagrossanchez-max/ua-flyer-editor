@@ -310,7 +310,7 @@
 
     .flyer-canvas{
       position:relative;
-      height:min(100%, 720px);
+      height:min(100%, 700px);
       max-height:100%;
       max-width:100%;
       width:auto;
@@ -359,11 +359,11 @@
 
     .ua-logo-img{
       position:absolute;
-      top:5.1%;
+      top:5.2%;
       left:6%;
-      width:32% !important;
-      max-width:190px !important;
-      min-width:118px;
+      width:30% !important;
+      max-width:176px !important;
+      min-width:112px;
       height:auto !important;
       object-fit:contain;
       z-index:3;
@@ -385,11 +385,11 @@
 
     .brand-divider{
       position:absolute;
-      top:5.8%;
-      left:40.5%;
+      top:5.9%;
+      left:39%;
       width:1px;
-      height:54px;
-      background:rgba(255,255,255,.34);
+      height:52px;
+      background:rgba(255,255,255,.38);
       z-index:4;
     }
 
@@ -417,12 +417,13 @@
       position:absolute;
       top:5.2%;
       right:6%;
-      max-width:25%;
-      max-height:54px;
+      width:25%;
+      max-width:154px;
+      height:54px;
       object-fit:contain;
-      background:linear-gradient(135deg, rgba(0,36,71,.26), rgba(255,255,255,.10));
-      border:1px solid rgba(255,255,255,.22);
-      box-shadow:0 10px 24px rgba(0,0,0,.16);
+      background:linear-gradient(135deg, rgba(0,36,71,.34), rgba(255,255,255,.12));
+      border:1px solid rgba(255,255,255,.24);
+      box-shadow:0 10px 24px rgba(0,0,0,.18);
       padding:10px 12px;
       border-radius:16px;
       z-index:4;
@@ -434,10 +435,11 @@
       position:absolute;
       left:7%;
       right:7%;
-      bottom:13%;
+      top:34%;
+      bottom:auto;
       display:flex;
       flex-direction:column;
-      gap:17px;
+      gap:16px;
       z-index:3;
     }
 
@@ -446,10 +448,10 @@
     }
 
     .flyer-content h2{
-      max-width:90%;
-      font-size:clamp(38px,3.7vw,58px);
-      line-height:.96;
-      letter-spacing:-.06em;
+      max-width:92%;
+      font-size:clamp(34px,3.25vw,50px);
+      line-height:.98;
+      letter-spacing:-.055em;
       overflow-wrap:anywhere;
       word-break:break-word;
       hyphens:auto;
@@ -458,11 +460,15 @@
     .flyer-content p{
       max-width:92%;
       color:rgba(255,255,255,.88);
-      font-size:clamp(14px,1.1vw,17px);
-      line-height:1.42;
+      font-size:clamp(12px,1vw,15px);
+      line-height:1.38;
       overflow-wrap:anywhere;
       word-break:break-word;
       hyphens:auto;
+      display:-webkit-box;
+      -webkit-line-clamp:4;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
     }
 
     .details-box{
@@ -486,6 +492,10 @@
       background:white;
       color:var(--ua-blue);
       font-weight:900;
+    }
+
+    .flyer-content button.hidden-cta{
+      display:none;
     }
 
     .legal{
@@ -597,6 +607,18 @@
       .canvas-wrap{min-height:640px;}
       .flyer-canvas{width:min(520px,92vw);}
     }
+  
+    /* Fix v3.8 */
+    select#formato{
+      pointer-events:none;
+      background:#F8FAFC;
+      color:#64748B;
+    }
+
+    #ctaCustomWrap{
+      margin-top:8px;
+    }
+
   </style>
 </head>
 
@@ -640,6 +662,7 @@
               <option value="evento">Flyer de evento</option>
               <option value="producto">Flyer de producto</option>
               <option value="conmemorativo">Pieza conmemorativa</option>
+              <option value="otro">Otro tipo de pieza</option>
             </select>
 
             <label for="formato">Formato</label>
@@ -681,8 +704,21 @@
             <label for="bajada">Bajada / mensaje secundario <span id="bajadaCount">0/130</span></label>
             <textarea id="bajada" name="bajada" rows="4" maxlength="130" placeholder="Ej: Soluciones de asistencia al viajero pensadas para cada pasajero."></textarea>
 
-            <label for="cta">CTA</label>
-            <input id="cta" name="cta" type="text" placeholder="Ej: Conocé más" />
+            <label for="ctaTipo">CTA</label>
+            <select id="ctaTipo" name="ctaTipo">
+              <option value="Conocé más">Conocé más</option>
+              <option value="Reservá tu lugar">Reservá tu lugar</option>
+              <option value="Solicitá más info">Solicitá más info</option>
+              <option value="Cotizá ahora">Cotizá ahora</option>
+              <option value="Ver productos">Ver productos</option>
+              <option value="Sin CTA">Sin CTA</option>
+              <option value="otro">Otro CTA</option>
+            </select>
+
+            <div id="ctaCustomWrap" class="hidden">
+              <label for="cta">CTA personalizado</label>
+              <input id="cta" name="cta" type="text" placeholder="Escribí el CTA exacto" />
+            </div>
 
             <label for="objetivo">Objetivo de la pieza</label>
             <textarea id="objetivo" name="objetivo" rows="3" placeholder="Ej: Comunicar una capacitación para agencias."></textarea>
@@ -725,6 +761,14 @@
 
               <label for="motivo">Motivo</label>
               <textarea id="motivo" name="motivo" rows="3" placeholder="Ej: Mensaje institucional de saludo y reconocimiento."></textarea>
+            </div>
+
+            <div data-group="otro">
+              <label for="tipoOtro">¿Qué pieza necesita?</label>
+              <input id="tipoOtro" name="tipoOtro" type="text" placeholder="Ej: banner, placa, aviso interno, mail header" />
+
+              <label for="detalleOtro">Detalle del pedido</label>
+              <textarea id="detalleOtro" name="detalleOtro" rows="3" placeholder="Contá brevemente qué necesitás comunicar."></textarea>
             </div>
           </div>
 
@@ -806,7 +850,9 @@
       solicitante: document.getElementById("solicitante"),
       titulo: document.getElementById("titulo"),
       bajada: document.getElementById("bajada"),
+      ctaTipo: document.getElementById("ctaTipo"),
       cta: document.getElementById("cta"),
+      ctaCustomWrap: document.getElementById("ctaCustomWrap"),
       objetivo: document.getElementById("objetivo"),
       fechaEvento: document.getElementById("fechaEvento"),
       horaEvento: document.getElementById("horaEvento"),
@@ -817,6 +863,8 @@
       beneficio3: document.getElementById("beneficio3"),
       dia: document.getElementById("dia"),
       motivo: document.getElementById("motivo"),
+      tipoOtro: document.getElementById("tipoOtro"),
+      detalleOtro: document.getElementById("detalleOtro"),
       logoPartner: document.getElementById("logoPartner"),
       imagenFondo: document.getElementById("imagenFondo"),
     };
@@ -846,6 +894,7 @@
       evento: "Flyer de evento",
       producto: "Flyer de producto",
       conmemorativo: "Pieza conmemorativa",
+      otro: "Otro tipo de pieza",
     };
 
     function normalizeParam(value) {
@@ -867,6 +916,7 @@
         bajada: "bajada",
         copy: "bajada",
         cta: "cta",
+        ctaTipo: "ctaTipo",
         objetivo: "objetivo",
         fecha: "fechaEvento",
         date: "fechaEvento",
@@ -883,6 +933,8 @@
         b3: "beneficio3",
         dia: "dia",
         motivo: "motivo",
+        tipoOtro: "tipoOtro",
+        detalleOtro: "detalleOtro",
       };
 
       params.forEach((value, key) => {
@@ -938,12 +990,21 @@
         return benefits.length ? benefits.join(" · ") : "Completá producto y beneficios principales.";
       }
 
+      if (tipo === "conmemorativo") {
+        const parts = [
+          fields.dia.value && `Día: ${fields.dia.value}`,
+          fields.motivo.value,
+        ].filter(Boolean);
+
+        return parts.length ? parts.join(" · ") : "Completá día o motivo conmemorativo.";
+      }
+
       const parts = [
-        fields.dia.value && `Día: ${fields.dia.value}`,
-        fields.motivo.value,
+        fields.tipoOtro.value && `Pieza: ${fields.tipoOtro.value}`,
+        fields.detalleOtro.value,
       ].filter(Boolean);
 
-      return parts.length ? parts.join(" · ") : "Completá día o motivo conmemorativo.";
+      return parts.length ? parts.join(" · ") : "Completá el detalle del pedido.";
     }
 
     function adaptDefaultTitle() {
@@ -953,8 +1014,17 @@
       if (fields.titulo.value.trim()) return fields.titulo.value;
       if (tipo === "evento") return "Una invitación para potenciar tus ventas";
       if (tipo === "producto") return "Soluciones para viajar con respaldo";
-      if (pais === "Uruguay") return "Celebrá cada viaje con nosotros";
-      return "Un mensaje para seguir viajando juntos";
+      if (tipo === "conmemorativo") return "Un mensaje para seguir viajando juntos";
+      return "Nueva pieza comercial UA";
+    }
+
+    function getCtaText() {
+      const selected = fields.ctaTipo.value;
+
+      if (selected === "Sin CTA") return "";
+      if (selected === "otro") return fields.cta.value.trim();
+
+      return selected || "Conocé más";
     }
 
     function updatePreview() {
@@ -962,14 +1032,17 @@
       const partner = fields.partner.value.trim() || "Partner";
       const titulo = adaptDefaultTitle();
       const bajada = fields.bajada.value.trim() || "La bajada de la pieza se verá acá, con el tono comercial definido para la pieza.";
-      const cta = fields.cta.value.trim() || "Conocé más";
+      const cta = getCtaText();
+
+      fields.ctaCustomWrap.classList.toggle("hidden", fields.ctaTipo.value !== "otro");
 
       preview.name.textContent = typeLabels[tipo];
-      preview.market.textContent = fields.pais.value;
+      preview.market.textContent = "";
       preview.partnerBadge.textContent = partner;
       preview.title.textContent = titulo;
       preview.subtitle.textContent = bajada;
-      preview.cta.textContent = cta;
+      preview.cta.textContent = cta || "";
+      preview.cta.classList.toggle("hidden-cta", !cta);
       preview.details.textContent = getDetailsText();
 
       updateDynamicFields();
@@ -979,13 +1052,13 @@
     function getRequestData() {
       return {
         tipo: fields.tipo.value,
-        formato: fields.formato.value,
+        formato: "A4 vertical",
         pais: fields.pais.value,
         partner: fields.partner.value,
         solicitante: fields.solicitante.value,
         titulo: fields.titulo.value,
         bajada: fields.bajada.value,
-        cta: fields.cta.value,
+        cta: getCtaText(),
         objetivo: fields.objetivo.value,
         evento: {
           fecha: fields.fechaEvento.value,
@@ -1002,6 +1075,10 @@
           dia: fields.dia.value,
           motivo: fields.motivo.value,
         },
+        otro: {
+          tipo: fields.tipoOtro.value,
+          detalle: fields.detalleOtro.value,
+        },
         creadoEn: new Date().toISOString(),
       };
     }
@@ -1012,7 +1089,6 @@
         ["tipo de pieza", data.tipo],
         ["título", data.titulo],
         ["bajada", data.bajada],
-        ["CTA", data.cta],
       ];
 
       const missing = required.filter(([, value]) => !String(value || "").trim());
@@ -1231,12 +1307,15 @@
       drawWrappedText(ctx, details, 102, y + 76, 750, 29, 2);
 
       // CTA
-      ctx.fillStyle = "#FFFFFF";
-      roundRect(ctx, 76, y + 135, 220, 70, 35);
-      ctx.fill();
-      ctx.fillStyle = "#00528F";
-      ctx.font = "900 24px Poppins, Arial";
-      ctx.fillText(fields.cta.value.trim() || "Conocé más", 105, y + 179);
+      const ctaText = getCtaText();
+      if (ctaText) {
+        ctx.fillStyle = "#FFFFFF";
+        roundRect(ctx, 76, y + 135, 240, 70, 35);
+        ctx.fill();
+        ctx.fillStyle = "#00528F";
+        ctx.font = "900 24px Poppins, Arial";
+        ctx.fillText(ctaText, 105, y + 179);
+      }
 
       // Legal
       ctx.fillStyle = "rgba(255,255,255,.72)";
@@ -1280,7 +1359,7 @@
 
 
     function clearForm() {
-      const keepSelectDefaults = ["tipo", "formato", "pais"];
+      const keepSelectDefaults = ["tipo", "formato", "pais", "ctaTipo"];
 
       Object.entries(fields).forEach(([key, field]) => {
         if (!field) return;
@@ -1300,6 +1379,8 @@
       preview.partnerBadge.classList.remove("hidden");
       preview.brandDivider.classList.add("hidden");
       preview.bg.style.backgroundImage = "";
+      fields.ctaTipo.value = "Conocé más";
+      fields.ctaCustomWrap.classList.add("hidden");
       resultBox.classList.add("hidden");
 
       updatePreview();
@@ -1318,7 +1399,9 @@
     downloadPngBtn.addEventListener("click", downloadPng);
     clearBtn.addEventListener("click", clearForm);
 
+    fields.formato.value = "a4";
     loadFromUrl();
+    fields.formato.value = "a4";
     updatePreview();
   </script>
 </body>
