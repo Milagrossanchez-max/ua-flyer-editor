@@ -3,6 +3,1690 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UA Flyer Studio v4.5</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap');
+
+    :root{
+      --ua-blue:#00528F;
+      --ua-dark:#002447;
+      --ua-teal:#008091;
+      --ua-cyan:#00C4DF;
+      --ua-pink:#ff436e;
+      --bg:#F4F7FB;
+      --card:#FFFFFF;
+      --text:#14213D;
+      --muted:#6B7280;
+      --border:#DCE5EF;
+      --shadow:0 18px 45px rgba(0,36,71,.12);
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html,body{height:100%;}
+    body{
+      overflow:auto;
+      font-family:"Poppins",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 8% 0%, rgba(0,196,223,.13), transparent 30%),
+        radial-gradient(circle at 88% 18%, rgba(0,82,143,.11), transparent 32%),
+        linear-gradient(135deg,#f7fafc 0%,#eef4f8 100%);
+    }
+
+    button,input,select,textarea{font:inherit;}
+    button{cursor:pointer;}
+
+    .app-shell{min-height:100vh;}
+
+    .topbar{
+      height:78px;
+      padding:0 28px;
+      background:rgba(255,255,255,.96);
+      border-bottom:1px solid rgba(0,82,143,.12);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+      box-shadow:0 8px 28px rgba(0,36,71,.08);
+      position:sticky;
+      top:0;
+      z-index:20;
+    }
+
+    .brand{
+      display:flex;
+      gap:15px;
+      align-items:center;
+    }
+
+    .brand-mark{
+      width:50px;
+      height:50px;
+      border-radius:15px;
+      background:linear-gradient(135deg,var(--ua-blue),var(--ua-teal));
+      color:white;
+      display:grid;
+      place-items:center;
+      font-size:25px;
+      font-weight:900;
+      letter-spacing:-2px;
+      text-transform:lowercase;
+      box-shadow:0 14px 26px rgba(0,82,143,.24);
+    }
+
+    .eyebrow{
+      color:var(--ua-blue);
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.13em;
+      font-weight:900;
+    }
+
+    h1{
+      font-size:23px;
+      letter-spacing:-.045em;
+      color:var(--ua-dark);
+    }
+
+    .topbar-meta{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .topbar-meta span{
+      padding:8px 12px;
+      border-radius:999px;
+      background:#EEF6FC;
+      color:var(--ua-blue);
+      font-size:12px;
+      font-weight:800;
+    }
+
+    .mini-button{
+      border:none;
+      padding:8px 12px;
+      border-radius:999px;
+      background:#E7F6FA;
+      color:var(--ua-blue);
+      font-size:12px;
+      font-weight:900;
+      transition:.18s ease;
+    }
+
+    .mini-button:hover{
+      background:#D8F1F8;
+      transform:translateY(-1px);
+    }
+
+
+    .workspace{
+      min-height:calc(100vh - 78px);
+      max-width:none;
+      padding:18px 22px;
+      display:grid;
+      grid-template-columns:430px minmax(620px,1fr);
+      gap:20px;
+      overflow:visible;
+      align-items:start;
+    }
+
+    .form-panel{
+      min-height:0;
+      height:calc(100vh - 114px);
+      overflow-y:auto;
+      padding-right:6px;
+      position:sticky;
+      top:96px;
+    }
+
+    .form-panel::-webkit-scrollbar,
+    .canvas-wrap::-webkit-scrollbar,
+    .result-box::-webkit-scrollbar{width:8px;}
+
+    .form-panel::-webkit-scrollbar-thumb,
+    .canvas-wrap::-webkit-scrollbar-thumb,
+    .result-box::-webkit-scrollbar-thumb{
+      background:rgba(0,82,143,.28);
+      border-radius:999px;
+    }
+
+    .panel-title{
+      position:sticky;
+      top:0;
+      z-index:5;
+      padding:19px 21px;
+      border-radius:24px;
+      margin-bottom:14px;
+      background:linear-gradient(135deg,var(--ua-dark),var(--ua-blue));
+      color:white;
+      box-shadow:var(--shadow);
+    }
+
+    .panel-title .eyebrow{color:rgba(255,255,255,.76);}
+    .panel-title h2{margin-top:4px;font-size:25px;letter-spacing:-.04em;}
+    .panel-title p:last-child{
+      margin-top:7px;
+      color:rgba(255,255,255,.78);
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .section-card{
+      margin-bottom:14px;
+      padding:18px;
+      background:rgba(255,255,255,.94);
+      border:1px solid rgba(0,82,143,.10);
+      border-radius:22px;
+      box-shadow:0 10px 26px rgba(0,36,71,.06);
+    }
+
+    .section-heading{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-bottom:13px;
+    }
+
+    .section-heading span{
+      width:28px;
+      height:28px;
+      border-radius:10px;
+      display:grid;
+      place-items:center;
+      background:#E7F6FA;
+      color:var(--ua-blue);
+      font-size:11px;
+      font-weight:900;
+    }
+
+    .section-heading h3{
+      font-size:16px;
+      color:var(--ua-dark);
+    }
+
+    label{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin:12px 0 6px;
+      color:#24364B;
+      font-size:12px;
+      font-weight:800;
+    }
+
+    label span{
+      color:var(--muted);
+      font-weight:700;
+    }
+
+    input,select,textarea{
+      width:100%;
+      min-height:44px;
+      padding:11px 13px;
+      border:1px solid var(--border);
+      border-radius:14px;
+      background:white;
+      color:var(--text);
+      outline:none;
+      font-size:13px;
+      transition:.18s ease;
+    }
+
+    input::placeholder,textarea::placeholder{color:#A1AAB7;}
+
+    input:focus,select:focus,textarea:focus{
+      border-color:var(--ua-cyan);
+      box-shadow:0 0 0 4px rgba(0,196,223,.14);
+    }
+
+    textarea{
+      resize:vertical;
+      min-height:86px;
+    }
+
+    .dynamic-fields [data-group]{display:none;}
+    .dynamic-fields [data-group].active{display:block;}
+
+    .preview-panel{
+      min-height:0;
+      height:auto;
+      overflow:visible;
+      display:grid;
+      grid-template-rows:76px minmax(620px, auto) 92px auto;
+      gap:14px;
+    }
+
+    .preview-toolbar,.submit-card{
+      background:rgba(255,255,255,.96);
+      border:1px solid rgba(0,82,143,.12);
+      border-radius:24px;
+      box-shadow:0 10px 30px rgba(0,36,71,.06);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+    }
+
+    .preview-toolbar{
+      height:76px;
+      padding:15px 18px;
+    }
+
+    .preview-toolbar h2{
+      font-size:21px;
+      color:var(--ua-dark);
+      letter-spacing:-.035em;
+    }
+
+    .ghost-button,.primary-button{
+      border:none;
+      border-radius:16px;
+      padding:13px 18px;
+      font-weight:900;
+      transition:.18s ease;
+    }
+
+    .ghost-button{
+      background:#EEF6FC;
+      color:var(--ua-blue);
+    }
+
+    .ghost-button:hover{background:#DDF1FB;}
+
+    .canvas-wrap{
+      min-height:620px;
+      height:620px;
+      overflow:hidden;
+      padding:20px;
+      border-radius:30px;
+      display:grid;
+      place-items:center;
+      background:
+        radial-gradient(circle at 50% 20%, rgba(0,196,223,.32), transparent 28%),
+        linear-gradient(150deg,#061d36 0%,#07375e 52%,#004d63 100%);
+      box-shadow:var(--shadow);
+    }
+
+    .flyer-canvas{
+      position:relative;
+      height:560px;
+      max-height:calc(100vh - 250px);
+      min-height:520px;
+      max-width:100%;
+      width:auto;
+      aspect-ratio:1080 / 1530;
+      border-radius:34px;
+      overflow:hidden;
+      isolation:isolate;
+      color:white;
+      background:linear-gradient(160deg,#00528F 0%,#008091 68%,#00C4DF 100%);
+      box-shadow:0 28px 70px rgba(0,0,0,.32);
+      margin:auto;
+    }
+
+    .flyer-canvas::before{
+      content:"";
+      position:absolute;
+      width:52%;
+      aspect-ratio:1;
+      border-radius:50%;
+      right:-18%;
+      top:-8%;
+      background:rgba(255,255,255,.13);
+      z-index:-1;
+    }
+
+    .flyer-canvas::after{
+      content:"";
+      position:absolute;
+      width:34%;
+      aspect-ratio:1;
+      border-radius:48%;
+      left:-10%;
+      bottom:-4%;
+      background:rgba(255,67,110,.16);
+      z-index:-1;
+    }
+
+    .flyer-bg{
+      position:absolute;
+      inset:0;
+      background-size:cover;
+      background-position:center;
+      opacity:.2;
+      mix-blend-mode:screen;
+    }
+
+    .ua-logo-img{
+      position:absolute;
+      top:5.2%;
+      left:50%;
+      transform:translateX(-50%);
+      width:34% !important;
+      max-width:205px !important;
+      min-width:128px;
+      height:auto !important;
+      object-fit:contain;
+      z-index:3;
+      display:block;
+    }
+
+    .flyer-has-partner .ua-logo-img{
+      left:6%;
+      transform:none;
+      width:30% !important;
+      max-width:176px !important;
+      min-width:112px;
+    }
+
+    .ua-wordmark-fallback{
+      display:none;
+      position:absolute;
+      top:5.5%;
+      left:50%;
+      transform:translateX(-50%);
+      font-size:20px;
+      line-height:.86;
+      letter-spacing:-.05em;
+      font-weight:800;
+      text-transform:lowercase;
+      z-index:3;
+    }
+
+    .flyer-has-partner .ua-wordmark-fallback{
+      left:6%;
+      transform:none;
+    }
+
+    .brand-divider{
+      position:absolute;
+      top:5.8%;
+      left:50%;
+      width:1px;
+      height:50px;
+      background:rgba(255,255,255,.42);
+      z-index:4;
+    }
+
+    .partner-badge{
+      display:none;
+      position:absolute;
+      top:5.9%;
+      right:6%;
+      max-width:28%;
+      padding:9px 13px;
+      border-radius:999px;
+      background:rgba(255,255,255,.16);
+      border:1px solid rgba(255,255,255,.26);
+      color:white;
+      font-size:11px;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      z-index:3;
+    }
+
+    .partner-logo{
+      position:absolute;
+      top:5.2%;
+      right:6%;
+      width:28%;
+      max-width:165px;
+      height:56px;
+      object-fit:contain;
+      border:1px solid rgba(255,255,255,.34);
+      box-shadow:0 12px 26px rgba(0,0,0,.22);
+      padding:10px 14px;
+      border-radius:18px;
+      z-index:4;
+    }
+
+    .partner-logo.mode-claro{
+      background:rgba(255,255,255,.94);
+      border-color:rgba(255,255,255,.70);
+    }
+
+    .partner-logo.mode-oscuro{
+      background:linear-gradient(135deg, rgba(0,36,71,.78), rgba(0,128,145,.46));
+      border-color:rgba(255,255,255,.34);
+    }
+
+    .partner-logo.mode-sin-fondo{
+      background:transparent;
+      border-color:transparent;
+      box-shadow:none;
+      padding:0;
+    }
+
+    .hidden{display:none !important;}
+
+    .flyer-content{
+      position:absolute;
+      left:7%;
+      right:7%;
+      top:34%;
+      bottom:auto;
+      display:flex;
+      flex-direction:column;
+      gap:13px;
+      z-index:3;
+    }
+
+    .market{
+      display:none;
+    }
+
+    .flyer-content h2{
+      max-width:94%;
+      font-size:clamp(30px,2.75vw,43px);
+      line-height:1;
+      letter-spacing:-.052em;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+      hyphens:none;
+      display:-webkit-box;
+      -webkit-line-clamp:5;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+
+    .flyer-title-long .flyer-content h2{
+      font-size:clamp(25px,2.25vw,35px);
+      line-height:1.02;
+      -webkit-line-clamp:6;
+    }
+
+    .flyer-title-xlong .flyer-content h2{
+      font-size:clamp(22px,1.95vw,30px);
+      line-height:1.04;
+      -webkit-line-clamp:7;
+    }
+
+    .flyer-content p{
+      max-width:92%;
+      color:rgba(255,255,255,.88);
+      font-size:clamp(11px,.9vw,14px);
+      line-height:1.35;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+      hyphens:none;
+      display:-webkit-box;
+      -webkit-line-clamp:3;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+
+    .details-box{
+      max-width:94%;
+      padding:11px 13px;
+      border-radius:20px;
+      background:rgba(0,36,71,.32);
+      border:1px solid rgba(255,255,255,.22);
+      color:white;
+      font-size:clamp(10px,.82vw,12px);
+      line-height:1.55;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+    }
+
+    .flyer-content button{
+      align-self:flex-start;
+      border:none;
+      border-radius:999px;
+      padding:11px 19px;
+      background:white;
+      color:var(--ua-blue);
+      font-weight:900;
+    }
+
+    .flyer-content button.hidden-cta{
+      display:none;
+    }
+
+    .flyer-content button.linked{
+      box-shadow:0 12px 28px rgba(255,255,255,.16);
+      cursor:pointer;
+    }
+
+    .legal{
+      position:absolute;
+      left:7%;
+      right:7%;
+      bottom:4%;
+      color:rgba(255,255,255,.72);
+      font-size:clamp(8px,.68vw,10px);
+      line-height:1.35;
+      text-align:center;
+      z-index:3;
+    }
+
+    .submit-card{
+      height:92px;
+      padding:15px 19px;
+      background:linear-gradient(135deg,rgba(255,255,255,.98),rgba(239,247,251,.96));
+    }
+
+    .submit-card h3{
+      margin-top:3px;
+      font-size:18px;
+      letter-spacing:-.03em;
+      color:var(--ua-dark);
+    }
+
+    .submit-card p:last-child{
+      margin-top:3px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .primary-button{
+      min-width:172px;
+      height:52px;
+      background:linear-gradient(135deg,var(--ua-teal),var(--ua-cyan));
+      color:white;
+      box-shadow:0 16px 28px rgba(0,128,145,.22);
+    }
+
+    .primary-button:hover{transform:translateY(-1px);}
+
+    .result-box{
+      max-height:170px;
+      overflow:auto;
+      background:#ECFDF3;
+      border:1px solid #ABEFC6;
+      color:#067647;
+      border-radius:22px;
+      padding:16px;
+      font-weight:700;
+      line-height:1.5;
+    }
+
+    .result-box code{
+      display:block;
+      margin-top:10px;
+      padding:12px;
+      border:1px solid #DCE5EF;
+      border-radius:14px;
+      background:white;
+      color:#24364B;
+      font-size:12px;
+      overflow:auto;
+    }
+
+
+    .check-row{
+      justify-content:flex-start;
+      gap:10px;
+      padding:11px 12px;
+      border:1px solid var(--border);
+      border-radius:14px;
+      background:#FFFFFF;
+      margin-top:10px;
+      cursor:pointer;
+    }
+
+    .check-row input{
+      width:18px;
+      min-height:18px;
+      height:18px;
+      accent-color:var(--ua-teal);
+    }
+
+    .check-row span{
+      color:#24364B;
+      font-weight:800;
+      font-size:12px;
+      text-transform:none;
+      letter-spacing:0;
+    }
+
+    .qr-preview{
+      position:absolute;
+      right:7%;
+      bottom:10%;
+      width:21%;
+      max-width:98px;
+      aspect-ratio:1;
+      background:#FFFFFF;
+      border-radius:16px;
+      padding:8px;
+      box-shadow:0 12px 26px rgba(0,0,0,.22);
+      z-index:5;
+    }
+
+    .flyer-has-qr .details-box{
+      max-width:66%;
+    }
+
+    .flyer-has-qr .legal{
+      right:30%;
+    }
+
+    .helper-text{
+      margin:-2px 0 12px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.45;
+      font-weight:600;
+    }
+
+    @media (max-width:1220px){
+      .preview-panel{
+        grid-template-rows:76px minmax(580px, auto) 92px auto;
+      }
+
+      .canvas-wrap{
+        min-height:580px;
+        height:580px;
+      }
+
+      .flyer-canvas{
+        height:530px;
+        min-height:500px;
+      }
+    }
+
+    @media (max-width:1220px){
+      .workspace{
+        grid-template-columns:390px minmax(560px,1fr);
+        padding:14px;
+        gap:14px;
+      }
+
+      .flyer-canvas{width:min(520px,50vw);}
+
+      .section-card{padding:15px;}
+      .topbar-meta{display:none;}
+    }
+
+    @media (max-width:950px){
+      body{overflow:auto;}
+      .app-shell{height:auto;}
+
+      .topbar{
+        height:auto;
+        padding:18px;
+        align-items:flex-start;
+        flex-direction:column;
+      }
+
+      .workspace{
+        height:auto;
+        overflow:visible;
+        grid-template-columns:1fr;
+        padding:14px;
+      }
+
+      .form-panel,.preview-panel{
+        height:auto;
+        overflow:visible;
+        position:static;
+      }
+
+      .preview-panel{
+        display:flex;
+        flex-direction:column;
+      }
+
+      .canvas-wrap{min-height:640px;}
+      .flyer-canvas{width:min(520px,92vw);}
+    }
+  
+    /* Fix v3.8 */
+    select#formato{
+      pointer-events:none;
+      background:#F8FAFC;
+      color:#64748B;
+    }
+
+    #ctaCustomWrap{
+      margin-top:8px;
+    }
+
+  
+    /* Fix v4.5: mostrar datos específicos sin romper layout */
+    .dynamic-fields [data-group]{
+      display:none;
+    }
+
+    .dynamic-fields [data-group].active{
+      display:block;
+    }
+
+    body.tipo-evento .dynamic-fields [data-group="evento"],
+    body.tipo-producto .dynamic-fields [data-group="producto"],
+    body.tipo-conmemorativo .dynamic-fields [data-group="conmemorativo"],
+    body.tipo-otro .dynamic-fields [data-group="otro"]{
+      display:block;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">ua</div>
+        <div>
+          <p class="eyebrow">Canal Comercial LATAM</p>
+          <h1>UA Flyer Studio</h1>
+        </div>
+      </div>
+
+      <div class="topbar-meta">
+        <span>Herramienta interna UA</span>
+        <span>Vista previa en tiempo real</span>
+        <button class="mini-button" id="clearBtn" type="button">Limpiar formulario</button>
+      </div>
+
+      <span id="statusText" style="display:none;">Borrador</span>
+    </header>
+
+    <main class="workspace">
+      <section class="form-panel">
+        <div class="panel-title">
+          <p class="eyebrow">Nueva solicitud</p>
+          <h2>Crear nuevo flyer</h2>
+          <p>Completá la información comercial, revisá la vista previa y enviá la solicitud.</p>
+        </div>
+
+        <form id="requestForm">
+          <div class="section-card">
+            <div class="section-heading">
+              <span>01</span>
+              <h3>Información general</h3>
+            </div>
+
+            <label for="tipo">Tipo de pieza</label>
+            <select id="tipo" name="tipo">
+              <option value="evento">Flyer de evento</option>
+              <option value="producto">Flyer de producto</option>
+              <option value="conmemorativo">Pieza conmemorativa</option>
+              <option value="otro">Otro tipo de pieza</option>
+            </select>
+
+            <label for="formato">Formato</label>
+            <select id="formato" name="formato">
+              <option value="a4" selected>A4 vertical</option>
+            </select>
+
+            <label for="pais">País / mercado</label>
+            <select id="pais" name="pais">
+              <option>Uruguay</option>
+              <option>Paraguay</option>
+              <option>Ecuador</option>
+              <option>República Dominicana</option>
+              <option>El Salvador</option>
+              <option>Bolivia</option>
+              <option>Costa Rica</option>
+              <option>Guatemala</option>
+              <option>Honduras</option>
+              <option>Nicaragua</option>
+              <option>Perú</option>
+            </select>
+
+            <label for="partner">Partner / agencia</label>
+            <input id="partner" name="partner" type="text" placeholder="Ej: HotelDO, Tivoli, Despegar" />
+
+            <label for="solicitante">Solicitante</label>
+            <input id="solicitante" name="solicitante" type="text" placeholder="Nombre de quien solicita" />
+          </div>
+
+          <div class="section-card">
+            <div class="section-heading">
+              <span>02</span>
+              <h3>Contenido</h3>
+            </div>
+
+            <label for="titulo">Título principal <span id="tituloCount">0/64</span></label>
+            <input id="titulo" name="titulo" type="text" maxlength="90" placeholder="Ej: Potenciá tus ventas con UA" />
+
+            <label for="bajada">Bajada / mensaje secundario <span id="bajadaCount">0/130</span></label>
+            <textarea id="bajada" name="bajada" rows="4" maxlength="130" placeholder="Ej: Soluciones de asistencia al viajero pensadas para cada pasajero."></textarea>
+
+            <label for="ctaTipo">CTA</label>
+            <select id="ctaTipo" name="ctaTipo">
+              <option value="Conocé más">Conocé más</option>
+              <option value="Reservá tu lugar">Reservá tu lugar</option>
+              <option value="Solicitá más info">Solicitá más info</option>
+              <option value="Cotizá ahora">Cotizá ahora</option>
+              <option value="Ver productos">Ver productos</option>
+              <option value="Sin CTA">Sin CTA</option>
+              <option value="otro">Otro CTA</option>
+            </select>
+
+            <div id="ctaCustomWrap" class="hidden">
+              <label for="cta">CTA personalizado</label>
+              <input id="cta" name="cta" type="text" placeholder="Escribí el CTA exacto" />
+            </div>
+
+            <div id="ctaLinkWrap">
+              <label for="ctaLink">Link del CTA</label>
+              <input id="ctaLink" name="ctaLink" type="url" placeholder="https://..." />
+            </div>
+
+            <label for="objetivo">Objetivo de la pieza</label>
+            <textarea id="objetivo" name="objetivo" rows="3" placeholder="Ej: Comunicar una capacitación para agencias."></textarea>
+          </div>
+
+          <div class="section-card dynamic-fields" id="dynamicFields">
+            <div class="section-heading">
+              <span>03</span>
+              <h3>Datos específicos</h3>
+            </div>
+
+            <div data-group="evento">
+              <label for="fechaEvento">Fecha del evento</label>
+              <input id="fechaEvento" name="fechaEvento" type="text" placeholder="Ej: Martes 7/7" />
+
+              <label for="horaEvento">Hora</label>
+              <input id="horaEvento" name="horaEvento" type="text" placeholder="Ej: 9.30 hs" />
+
+              <label for="lugarEvento">Lugar / modalidad</label>
+              <input id="lugarEvento" name="lugarEvento" type="text" placeholder="Ej: Online / Applebee's Zona 10" />
+            </div>
+
+            <div data-group="producto">
+              <label for="producto">Producto a comunicar</label>
+              <input id="producto" name="producto" type="text" placeholder="Ej: Anual Multiviaje, Platinum, Maximum" />
+
+              <label for="beneficio1">Beneficio 1</label>
+              <input id="beneficio1" name="beneficio1" type="text" placeholder="Ej: Cobertura internacional" />
+
+              <label for="beneficio2">Beneficio 2</label>
+              <input id="beneficio2" name="beneficio2" type="text" placeholder="Ej: Asistencia 24/7" />
+
+              <label for="beneficio3">Beneficio 3</label>
+              <input id="beneficio3" name="beneficio3" type="text" placeholder="Ej: Respaldo antes y durante el viaje" />
+            </div>
+
+            <div data-group="conmemorativo">
+              <label for="dia">Día / efeméride</label>
+              <input id="dia" name="dia" type="text" placeholder="Ej: Día del Agente de Viajes" />
+
+              <label for="motivo">Motivo</label>
+              <textarea id="motivo" name="motivo" rows="3" placeholder="Ej: Mensaje institucional de saludo y reconocimiento."></textarea>
+            </div>
+
+            <div data-group="otro">
+              <label for="tipoOtro">¿Qué pieza necesita?</label>
+              <input id="tipoOtro" name="tipoOtro" type="text" placeholder="Ej: banner, placa, aviso interno, mail header" />
+
+              <label for="detalleOtro">Detalle del pedido</label>
+              <textarea id="detalleOtro" name="detalleOtro" rows="3" placeholder="Contá brevemente qué necesitás comunicar."></textarea>
+            </div>
+          </div>
+
+          <div class="section-card hidden" id="qrSection">
+            <div class="section-heading">
+              <span>04</span>
+              <h3>QR opcional</h3>
+            </div>
+
+            <p class="helper-text">Usalo cuando el flyer no lleve botón de CTA.</p>
+
+            <label for="qrLink">Link para generar QR</label>
+            <input id="qrLink" name="qrLink" type="url" placeholder="https://..." />
+
+            <label class="check-row" for="usarQr">
+              <input id="usarQr" name="usarQr" type="checkbox" />
+              <span>Mostrar QR en el flyer</span>
+            </label>
+          </div>
+
+          <div class="section-card">
+            <div class="section-heading">
+              <span>04</span>
+              <h3>Assets opcionales</h3>
+            </div>
+
+            <label for="logoPartner">Logo partner</label>
+            <input id="logoPartner" name="logoPartner" type="file" accept="image/*" />
+
+            <label for="partnerLogoMode">Fondo del logo partner</label>
+            <select id="partnerLogoMode" name="partnerLogoMode">
+              <option value="claro" selected>Claro, para logos en color</option>
+              <option value="oscuro">Oscuro, para logos blancos</option>
+              <option value="sin-fondo">Sin fondo</option>
+            </select>
+
+            <label for="imagenFondo">Imagen / fondo opcional</label>
+            <input id="imagenFondo" name="imagenFondo" type="file" accept="image/*" />
+          </div>
+        </form>
+      </section>
+
+      <section class="preview-panel">
+        <div class="preview-toolbar">
+          <div>
+            <p class="eyebrow">Vista previa</p>
+            <h2 id="previewName">Flyer de evento</h2>
+          </div>
+
+          <button class="ghost-button" id="downloadPngBtn" type="button">Descargar PNG</button>
+        </div>
+
+        <div class="canvas-wrap">
+          <article class="flyer-canvas" id="flyerCanvas">
+            <div class="flyer-bg" id="flyerBg"></div>
+
+            <img
+              class="ua-logo-img"
+              src="UA%20Logo_Zurich%20-%20Blanco%20(4).png"
+              alt="Universal Assistance"
+              onerror="this.style.display='none';document.querySelector('.ua-wordmark-fallback').style.display='block';"
+            />
+
+            <div class="ua-wordmark-fallback">universal<br><strong>assistance</strong></div>
+
+            <div class="brand-divider hidden" id="brandDivider"></div>
+            <div class="partner-badge" id="partnerBadge">Partner</div>
+            <img id="partnerLogoPreview" class="partner-logo hidden" alt="Logo partner" />
+
+            <div class="flyer-content">
+              <h2 id="titlePreview">Título del flyer</h2>
+              <p id="subtitlePreview">La bajada de la pieza se verá acá, con el tono comercial definido para la pieza.</p>
+              <div class="details-box" id="detailsPreview">Completá los datos específicos para verlos acá.</div>
+              <button id="ctaPreview" type="button">CTA</button>
+            </div>
+
+            <img id="qrPreview" class="qr-preview hidden" alt="QR del CTA" />
+            <p class="legal" id="legalPreview">SUJETO A CONDICIONES GENERALES</p>
+          </article>
+        </div>
+
+        <div class="submit-card">
+          <div>
+            <p class="eyebrow">Solicitud preparada</p>
+            <h3 id="submitTitle">Información lista para enviar</h3>
+            <p id="submitDescription">Se genera el pedido con toda la información cargada.</p>
+          </div>
+
+          <button class="primary-button" id="sendBtn" type="button">Enviar solicitud</button>
+        </div>
+
+        <div class="result-box hidden" id="resultBox"></div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const fields = {
+      tipo: document.getElementById("tipo"),
+      formato: document.getElementById("formato"),
+      pais: document.getElementById("pais"),
+      partner: document.getElementById("partner"),
+      solicitante: document.getElementById("solicitante"),
+      titulo: document.getElementById("titulo"),
+      bajada: document.getElementById("bajada"),
+      ctaTipo: document.getElementById("ctaTipo"),
+      cta: document.getElementById("cta"),
+      ctaCustomWrap: document.getElementById("ctaCustomWrap"),
+      ctaLink: document.getElementById("ctaLink"),
+      qrLink: document.getElementById("qrLink"),
+      usarQr: document.getElementById("usarQr"),
+      objetivo: document.getElementById("objetivo"),
+      fechaEvento: document.getElementById("fechaEvento"),
+      horaEvento: document.getElementById("horaEvento"),
+      lugarEvento: document.getElementById("lugarEvento"),
+      producto: document.getElementById("producto"),
+      beneficio1: document.getElementById("beneficio1"),
+      beneficio2: document.getElementById("beneficio2"),
+      beneficio3: document.getElementById("beneficio3"),
+      dia: document.getElementById("dia"),
+      motivo: document.getElementById("motivo"),
+      tipoOtro: document.getElementById("tipoOtro"),
+      detalleOtro: document.getElementById("detalleOtro"),
+      logoPartner: document.getElementById("logoPartner"),
+      partnerLogoMode: document.getElementById("partnerLogoMode"),
+      imagenFondo: document.getElementById("imagenFondo"),
+    };
+
+    const preview = {
+      name: document.getElementById("previewName"),
+      partnerBadge: document.getElementById("partnerBadge"),
+      partnerLogo: document.getElementById("partnerLogoPreview"),
+      brandDivider: document.getElementById("brandDivider"),
+      bg: document.getElementById("flyerBg"),
+      title: document.getElementById("titlePreview"),
+      subtitle: document.getElementById("subtitlePreview"),
+      cta: document.getElementById("ctaPreview"),
+      details: document.getElementById("detailsPreview"),
+      canvas: document.getElementById("flyerCanvas"),
+      qr: document.getElementById("qrPreview"),
+    };
+
+    const resultBox = document.getElementById("resultBox");
+    const sendBtn = document.getElementById("sendBtn");
+    const downloadPngBtn = document.getElementById("downloadPngBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const tituloCount = document.getElementById("tituloCount");
+    const bajadaCount = document.getElementById("bajadaCount");
+
+    const typeLabels = {
+      evento: "Flyer de evento",
+      producto: "Flyer de producto",
+      conmemorativo: "Pieza conmemorativa",
+      otro: "Otro tipo de pieza",
+    };
+
+    function normalizeParam(value) {
+      return value ? decodeURIComponent(value.replace(/\+/g, " ")) : "";
+    }
+
+    function loadFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+
+      const map = {
+        template: "tipo",
+        tipo: "tipo",
+        formato: "formato",
+        pais: "pais",
+        partner: "partner",
+        solicitante: "solicitante",
+        titulo: "titulo",
+        title: "titulo",
+        bajada: "bajada",
+        copy: "bajada",
+        cta: "cta",
+        ctaTipo: "ctaTipo",
+        ctaLink: "ctaLink",
+        qrLink: "qrLink",
+        partnerLogoMode: "partnerLogoMode",
+        objetivo: "objetivo",
+        fecha: "fechaEvento",
+        date: "fechaEvento",
+        hora: "horaEvento",
+        time: "horaEvento",
+        lugar: "lugarEvento",
+        place: "lugarEvento",
+        producto: "producto",
+        beneficio1: "beneficio1",
+        b1: "beneficio1",
+        beneficio2: "beneficio2",
+        b2: "beneficio2",
+        beneficio3: "beneficio3",
+        b3: "beneficio3",
+        dia: "dia",
+        motivo: "motivo",
+        tipoOtro: "tipoOtro",
+        detalleOtro: "detalleOtro",
+      };
+
+      params.forEach((value, key) => {
+        const fieldName = map[key];
+        if (!fieldName || !fields[fieldName]) return;
+        const cleanValue = normalizeParam(value);
+
+        if (fieldName === "tipo") {
+          fields[fieldName].value = cleanValue.toLowerCase();
+        } else if (fieldName === "formato") {
+          fields[fieldName].value = "a4";
+        } else {
+          fields[fieldName].value = cleanValue;
+        }
+      });
+    }
+
+    function updateDynamicFields() {
+      const tipo = fields.tipo.value || "evento";
+
+      document.body.classList.remove("tipo-evento", "tipo-producto", "tipo-conmemorativo", "tipo-otro");
+      document.body.classList.add(`tipo-${tipo}`);
+
+      document.querySelectorAll(".dynamic-fields [data-group]").forEach((group) => {
+        group.classList.toggle("active", group.dataset.group === tipo);
+      });
+    }
+
+    function updateCounters() {
+      const titleLength = (fields.titulo.value || "").length;
+      const bajadaLength = (fields.bajada.value || "").length;
+
+      tituloCount.textContent = `${titleLength}/64`;
+      bajadaCount.textContent = `${bajadaLength}/130`;
+
+      tituloCount.style.color = titleLength > 64 ? "#ff436e" : "#6B7280";
+      bajadaCount.style.color = bajadaLength > 130 ? "#ff436e" : "#6B7280";
+    }
+
+    function getDetailsText() {
+      const tipo = fields.tipo.value;
+
+      if (tipo === "evento") {
+        const parts = [
+          fields.fechaEvento.value && `Fecha: ${fields.fechaEvento.value}`,
+          fields.horaEvento.value && `Hora: ${fields.horaEvento.value}`,
+          fields.lugarEvento.value && `Lugar: ${fields.lugarEvento.value}`,
+        ].filter(Boolean);
+
+        return parts.length ? parts.join(" · ") : "Completá fecha, hora y lugar del evento.";
+      }
+
+      if (tipo === "producto") {
+        const benefits = [
+          fields.producto.value && `Producto: ${fields.producto.value}`,
+          fields.beneficio1.value,
+          fields.beneficio2.value,
+          fields.beneficio3.value,
+        ].filter(Boolean);
+
+        return benefits.length ? benefits.join(" · ") : "Completá producto y beneficios principales.";
+      }
+
+      if (tipo === "conmemorativo") {
+        const parts = [
+          fields.dia.value && `Día: ${fields.dia.value}`,
+          fields.motivo.value,
+        ].filter(Boolean);
+
+        return parts.length ? parts.join(" · ") : "Completá día o motivo conmemorativo.";
+      }
+
+      const parts = [
+        fields.tipoOtro.value && `Pieza: ${fields.tipoOtro.value}`,
+        fields.detalleOtro.value,
+      ].filter(Boolean);
+
+      return parts.length ? parts.join(" · ") : "Completá el detalle del pedido.";
+    }
+
+    function adaptDefaultTitle() {
+      const tipo = fields.tipo.value;
+      const pais = fields.pais.value;
+
+      if (fields.titulo.value.trim()) return fields.titulo.value;
+      if (tipo === "evento") return "Una invitación para potenciar tus ventas";
+      if (tipo === "producto") return "Soluciones para viajar con respaldo";
+      if (tipo === "conmemorativo") return "Un mensaje para seguir viajando juntos";
+      return "Nueva pieza comercial UA";
+    }
+
+    function getCtaText() {
+      const selected = fields.ctaTipo.value;
+
+      if (selected === "Sin CTA") return "";
+      if (selected === "otro") return (fields.cta.value || "").trim() || "CTA";
+
+      return selected || "Conocé más";
+    }
+
+    function updatePreview() {
+      const tipo = fields.tipo.value || "evento";
+      const partner = (fields.partner.value || "").trim() || "Partner";
+      const titulo = (fields.titulo.value || "").trim() || adaptDefaultTitle();
+      const bajada = (fields.bajada.value || "").trim() || "La bajada de la pieza se verá acá, con el tono comercial definido para la pieza.";
+      const cta = getCtaText();
+
+      fields.ctaCustomWrap.classList.toggle("hidden", fields.ctaTipo.value !== "otro");
+      document.getElementById("ctaLinkWrap").classList.toggle("hidden", fields.ctaTipo.value === "Sin CTA");
+      document.getElementById("qrSection").classList.toggle("hidden", fields.ctaTipo.value !== "Sin CTA");
+
+      if (fields.ctaTipo.value !== "Sin CTA") {
+        fields.usarQr.checked = false;
+      }
+
+      const qrUrl = getQrUrl();
+
+      preview.name.textContent = typeLabels[tipo] || "Otro tipo de pieza";
+      preview.partnerBadge.textContent = partner;
+      preview.title.textContent = titulo;
+      preview.subtitle.textContent = bajada;
+      preview.cta.textContent = cta || "";
+      preview.cta.classList.toggle("hidden-cta", !cta);
+      preview.cta.classList.toggle("linked", !!cta && !!normalizeUrl(fields.ctaLink.value));
+      preview.details.textContent = getDetailsText();
+
+      preview.canvas.classList.toggle("flyer-title-long", titulo.length > 48);
+      preview.canvas.classList.toggle("flyer-title-xlong", titulo.length > 72 || /\S{18,}/.test(titulo));
+
+      if (qrUrl) {
+        preview.qr.src = qrUrl;
+        preview.qr.classList.remove("hidden");
+        preview.canvas.classList.add("flyer-has-qr");
+      } else {
+        preview.qr.classList.add("hidden");
+        preview.qr.removeAttribute("src");
+        preview.canvas.classList.remove("flyer-has-qr");
+      }
+
+      updateDynamicFields();
+      updateCounters();
+      applyPartnerLogoMode();
+    }
+
+    function getRequestData() {
+      return {
+        tipo: fields.tipo.value,
+        formato: "A4 vertical",
+        pais: fields.pais.value,
+        partner: fields.partner.value,
+        partnerLogoMode: fields.partnerLogoMode.value,
+        solicitante: fields.solicitante.value,
+        titulo: fields.titulo.value,
+        bajada: fields.bajada.value,
+        cta: getCtaText(),
+        ctaLink: fields.ctaLink.value,
+        qrLink: fields.qrLink.value,
+        agregarQr: fields.usarQr.checked && fields.ctaTipo.value === "Sin CTA",
+        objetivo: fields.objetivo.value,
+        evento: {
+          fecha: fields.fechaEvento.value,
+          hora: fields.horaEvento.value,
+          lugar: fields.lugarEvento.value,
+        },
+        producto: {
+          nombre: fields.producto.value,
+          beneficio1: fields.beneficio1.value,
+          beneficio2: fields.beneficio2.value,
+          beneficio3: fields.beneficio3.value,
+        },
+        conmemorativo: {
+          dia: fields.dia.value,
+          motivo: fields.motivo.value,
+        },
+        otro: {
+          tipo: fields.tipoOtro.value,
+          detalle: fields.detalleOtro.value,
+        },
+        creadoEn: new Date().toISOString(),
+      };
+    }
+
+    function validateRequest(data) {
+      const required = [
+        ["país", data.pais],
+        ["tipo de pieza", data.tipo],
+        ["título", data.titulo],
+        ["bajada", data.bajada],
+      ];
+
+      const missing = required.filter(([, value]) => !String(value || "").trim());
+      return missing.length ? `Falta completar: ${missing.map(([label]) => label).join(", ")}.` : "";
+    }
+
+    function simulateSend() {
+      const data = getRequestData();
+      const error = validateRequest(data);
+      resultBox.classList.remove("hidden");
+
+      if (error) {
+        resultBox.style.background = "#FFF1F3";
+        resultBox.style.borderColor = "#FECDD6";
+        resultBox.style.color = "#B42318";
+        resultBox.innerHTML = `⚠️ ${error}`;
+        return;
+      }
+
+      const requestId = `UA-${Date.now().toString().slice(-6)}`;
+      const payload = { id: requestId, ...data };
+
+      resultBox.style.background = "#ECFDF3";
+      resultBox.style.borderColor = "#ABEFC6";
+      resultBox.style.color = "#067647";
+      resultBox.innerHTML = `
+        ✅ Solicitud generada correctamente.<br>
+        N° de solicitud: <strong>${requestId}</strong>
+        <code>${JSON.stringify(payload, null, 2)}</code>
+      `;
+    }
+
+    function loadImage(src) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = src;
+      });
+    }
+
+    function roundRect(ctx, x, y, w, h, r) {
+      const radius = Math.min(r, w / 2, h / 2);
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.arcTo(x + w, y, x + w, y + h, radius);
+      ctx.arcTo(x + w, y + h, x, y + h, radius);
+      ctx.arcTo(x, y + h, x, y, radius);
+      ctx.arcTo(x, y, x + w, y, radius);
+      ctx.closePath();
+    }
+
+    function wrapLines(ctx, text, maxWidth) {
+      const words = String(text || "").split(/\s+/).filter(Boolean);
+      const lines = [];
+      let line = "";
+
+      function splitLongWord(word) {
+        const parts = [];
+        let chunk = "";
+        [...word].forEach((char) => {
+          const test = chunk + char;
+          if (ctx.measureText(test).width > maxWidth && chunk) {
+            parts.push(chunk);
+            chunk = char;
+          } else {
+            chunk = test;
+          }
+        });
+        if (chunk) parts.push(chunk);
+        return parts;
+      }
+
+      words.forEach((word) => {
+        const wordParts = ctx.measureText(word).width > maxWidth ? splitLongWord(word) : [word];
+
+        wordParts.forEach((part) => {
+          const testLine = line ? `${line} ${part}` : part;
+          if (ctx.measureText(testLine).width > maxWidth && line) {
+            lines.push(line);
+            line = part;
+          } else {
+            line = testLine;
+          }
+        });
+      });
+
+      if (line) lines.push(line);
+      return lines;
+    }
+
+    function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
+      const lines = wrapLines(ctx, text, maxWidth).slice(0, maxLines);
+      lines.forEach((line, index) => ctx.fillText(line, x, y + index * lineHeight));
+      return y + lines.length * lineHeight;
+    }
+
+    function drawCoverImage(ctx, img, x, y, w, h) {
+      const scale = Math.max(w / img.width, h / img.height);
+      const sw = w / scale;
+      const sh = h / scale;
+      const sx = (img.width - sw) / 2;
+      const sy = (img.height - sh) / 2;
+      ctx.drawImage(img, sx, sy, sw, sh, x, y, w, h);
+    }
+
+    async function downloadPng() {
+      const canvasEl = preview.canvas;
+      const scale = 3;
+      const rect = canvasEl.getBoundingClientRect();
+
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.round(rect.width * scale);
+      canvas.height = Math.round(rect.height * scale);
+
+      const ctx = canvas.getContext("2d");
+      ctx.scale(scale, scale);
+
+      const computed = getComputedStyle(canvasEl);
+      const radius = parseFloat(computed.borderRadius) || 34;
+
+      ctx.save();
+      roundRect(ctx, 0, 0, rect.width, rect.height, radius);
+      ctx.clip();
+
+      const bg = ctx.createLinearGradient(0, 0, rect.width, rect.height);
+      bg.addColorStop(0, "#00528F");
+      bg.addColorStop(0.68, "#008091");
+      bg.addColorStop(1, "#00C4DF");
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, rect.width, rect.height);
+
+      // Fondo opcional cargado por la usuaria
+      if (fields.imagenFondo.files && fields.imagenFondo.files[0]) {
+        try {
+          const imgUrl = URL.createObjectURL(fields.imagenFondo.files[0]);
+          const bgImg = await loadImage(imgUrl);
+          ctx.save();
+          ctx.globalAlpha = 0.22;
+          drawCoverImage(ctx, bgImg, 0, 0, rect.width, rect.height);
+          ctx.restore();
+          URL.revokeObjectURL(imgUrl);
+        } catch(e) {}
+      }
+
+      // Elementos gráficos circulares iguales al preview
+      ctx.save();
+      ctx.fillStyle = "rgba(255,255,255,.13)";
+      ctx.beginPath();
+      ctx.arc(rect.width * .84, rect.height * .08, rect.width * .24, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = "rgba(255,67,110,.16)";
+      ctx.beginPath();
+      ctx.arc(rect.width * .02, rect.height * .96, rect.width * .17, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      const hasPartnerLogo = !preview.partnerLogo.classList.contains("hidden") && preview.partnerLogo.src;
+
+      // Logo UA: centrado si no hay partner, a la izquierda si hay partner
+      try {
+        const logo = await loadImage("UA%20Logo_Zurich%20-%20Blanco%20(4).png");
+        const logoW = hasPartnerLogo ? rect.width * .30 : rect.width * .34;
+        const logoH = logo.height * (logoW / logo.width);
+        const logoX = hasPartnerLogo ? rect.width * .06 : (rect.width - logoW) / 2;
+        const logoY = rect.height * .052;
+        ctx.drawImage(logo, logoX, logoY, logoW, logoH);
+      } catch(e) {
+        ctx.fillStyle = "#FFFFFF";
+        ctx.font = `900 ${rect.width * .04}px Poppins, Arial`;
+        const x = hasPartnerLogo ? rect.width * .06 : rect.width * .40;
+        ctx.fillText("universal", x, rect.height * .08);
+        ctx.fillText("assistance", x, rect.height * .115);
+      }
+
+      // Partner real o badge
+      if (hasPartnerLogo) {
+        try {
+          ctx.fillStyle = "rgba(255,255,255,.42)";
+          ctx.fillRect(rect.width * .50, rect.height * .058, 1.5, rect.height * .055);
+
+          const pLogo = await loadImage(preview.partnerLogo.src);
+          const chipX = rect.width * .66;
+          const chipY = rect.height * .052;
+          const chipW = rect.width * .28;
+          const chipH = rect.height * .055;
+          const mode = fields.partnerLogoMode.value || "claro";
+
+          if (mode !== "sin-fondo") {
+            roundRect(ctx, chipX, chipY, chipW, chipH, rect.width * .018);
+            if (mode === "claro") {
+              ctx.fillStyle = "rgba(255,255,255,.94)";
+              ctx.fill();
+              ctx.strokeStyle = "rgba(255,255,255,.70)";
+              ctx.stroke();
+            } else {
+              const chipBg = ctx.createLinearGradient(chipX, chipY, chipX + chipW, chipY + chipH);
+              chipBg.addColorStop(0, "rgba(0,36,71,.78)");
+              chipBg.addColorStop(1, "rgba(0,128,145,.46)");
+              ctx.fillStyle = chipBg;
+              ctx.fill();
+              ctx.strokeStyle = "rgba(255,255,255,.34)";
+              ctx.stroke();
+            }
+          }
+
+          const maxW = chipW * .74;
+          const maxH = chipH * .64;
+          const ratio = Math.min(maxW / pLogo.width, maxH / pLogo.height);
+          const w = pLogo.width * ratio;
+          const h = pLogo.height * ratio;
+          ctx.drawImage(pLogo, chipX + (chipW - w) / 2, chipY + (chipH - h) / 2, w, h);
+        } catch(e) {}
+      } else {
+        ctx.fillStyle = "rgba(255,255,255,.16)";
+        const bx = rect.width * .79;
+        const by = rect.height * .058;
+        const bw = rect.width * .16;
+        const bh = rect.height * .044;
+        roundRect(ctx, bx, by, bw, bh, bh / 2);
+        ctx.fill();
+        ctx.strokeStyle = "rgba(255,255,255,.26)";
+        ctx.stroke();
+        ctx.fillStyle = "#FFFFFF";
+        ctx.font = `900 ${rect.width * .016}px Poppins, Arial`;
+        ctx.textAlign = "center";
+        ctx.fillText("PARTNER", bx + bw / 2, by + bh * .62);
+        ctx.textAlign = "left";
+      }
+
+      // Contenido. Mismas reglas del preview.
+      const title = fields.titulo.value.trim() || adaptDefaultTitle();
+      const isXLong = title.length > 72 || /\S{18,}/.test(title);
+      const isLong = title.length > 48;
+
+      const startX = rect.width * .07;
+      let y = rect.height * .35;
+      const maxTextW = rect.width * .86;
+
+      ctx.fillStyle = "#FFFFFF";
+      const titleSize = isXLong ? rect.width * .052 : isLong ? rect.width * .062 : rect.width * .078;
+      const titleLineHeight = isXLong ? titleSize * 1.07 : titleSize * 1.05;
+      const titleMaxLines = isXLong ? 7 : isLong ? 6 : 5;
+      ctx.font = `900 ${titleSize}px Poppins, Arial`;
+      y = drawWrappedText(ctx, title, startX, y, maxTextW, titleLineHeight, titleMaxLines);
+
+      ctx.fillStyle = "rgba(255,255,255,.88)";
+      const bajada = fields.bajada.value.trim() || "La bajada de la pieza se verá acá, con el tono comercial definido para la pieza.";
+      const bajadaSize = rect.width * .026;
+      ctx.font = `500 ${bajadaSize}px Poppins, Arial`;
+      y = drawWrappedText(ctx, bajada, startX, y + rect.height * .025, maxTextW, bajadaSize * 1.38, 3);
+
+      const qrUrl = getQrUrl();
+      const detailsMaxW = qrUrl ? rect.width * .60 : rect.width * .86;
+
+      ctx.fillStyle = "rgba(0,36,71,.32)";
+      const detailY = y + rect.height * .025;
+      const detailH = rect.height * .052;
+      roundRect(ctx, startX, detailY, detailsMaxW, detailH, detailH / 2);
+      ctx.fill();
+      ctx.strokeStyle = "rgba(255,255,255,.22)";
+      ctx.stroke();
+
+      ctx.fillStyle = "#FFFFFF";
+      ctx.font = `700 ${rect.width * .022}px Poppins, Arial`;
+      drawWrappedText(ctx, getDetailsText(), startX + rect.width * .025, detailY + detailH * .62, detailsMaxW - rect.width * .05, rect.width * .029, 2);
+
+      const ctaText = getCtaText();
+      if (ctaText) {
+        const ctaY = detailY + detailH + rect.height * .025;
+        const ctaW = Math.min(rect.width * .30, Math.max(rect.width * .20, ctaText.length * rect.width * .014 + rect.width * .09));
+        const ctaH = rect.height * .055;
+        ctx.fillStyle = "#FFFFFF";
+        roundRect(ctx, startX, ctaY, ctaW, ctaH, ctaH / 2);
+        ctx.fill();
+        ctx.fillStyle = "#00528F";
+        ctx.font = `900 ${rect.width * .026}px Poppins, Arial`;
+        ctx.fillText(ctaText, startX + rect.width * .03, ctaY + ctaH * .63);
+      }
+
+      if (qrUrl) {
+        try {
+          const qrImg = await loadImage(qrUrl);
+          const qrSize = rect.width * .19;
+          const qrX = rect.width * .74;
+          const qrY = rect.height * .75;
+          ctx.fillStyle = "#FFFFFF";
+          roundRect(ctx, qrX, qrY, qrSize, qrSize, rect.width * .022);
+          ctx.fill();
+          ctx.drawImage(qrImg, qrX + qrSize * .09, qrY + qrSize * .09, qrSize * .82, qrSize * .82);
+        } catch(e) {}
+      }
+
+      ctx.fillStyle = "rgba(255,255,255,.72)";
+      ctx.font = `700 ${rect.width * .013}px Poppins, Arial`;
+      ctx.textAlign = "center";
+      ctx.fillText("SUJETO A CONDICIONES GENERALES", rect.width / 2, rect.height * .95);
+      ctx.textAlign = "left";
+
+      ctx.restore();
+
+      const link = document.createElement("a");
+      link.download = `UA_Flyer_${Date.now()}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    }
+
+    function clearForm() {
+      const keepSelectDefaults = ["tipo", "formato", "pais", "ctaTipo"];
+
+      Object.entries(fields).forEach(([key, field]) => {
+        if (!field) return;
+
+        if (field.type === "file") {
+          field.value = "";
+          return;
+        }
+
+        if (field.type === "checkbox") {
+          field.checked = false;
+          return;
+        }
+
+        if (keepSelectDefaults.includes(key)) return;
+
+        field.value = "";
+      });
+
+      preview.partnerLogo.classList.add("hidden");
+      preview.partnerLogo.removeAttribute("src");
+      preview.partnerBadge.classList.add("hidden");
+      preview.brandDivider.classList.add("hidden");
+      preview.canvas.classList.remove("flyer-has-partner");
+      preview.bg.style.backgroundImage = "";
+      fields.ctaTipo.value = "Conocé más";
+      fields.partnerLogoMode.value = "claro";
+      fields.ctaCustomWrap.classList.add("hidden");
+      preview.qr.classList.add("hidden");
+      preview.qr.removeAttribute("src");
+      preview.canvas.classList.remove("flyer-has-qr");
+      preview.canvas.classList.remove("flyer-title-long", "flyer-title-xlong");
+      document.getElementById("qrSection").classList.add("hidden");
+      resultBox.classList.add("hidden");
+
+      updatePreview();
+    }
+
+    Object.values(fields).forEach((field) => {
+      if (!field || field.type === "file") return;
+      field.addEventListener("input", updatePreview);
+      field.addEventListener("keyup", updatePreview);
+      field.addEventListener("change", updatePreview);
+    });
+
+    document.getElementById("requestForm").addEventListener("input", updatePreview);
+    document.getElementById("requestForm").addEventListener("change", updatePreview);
+
+    fields.logoPartner.addEventListener("change", () => previewImage(fields.logoPartner, preview.partnerLogo));
+    fields.imagenFondo.addEventListener("change", () => previewImage(fields.imagenFondo, preview.bg, true));
+
+    sendBtn.addEventListener("click", simulateSend);
+    downloadPngBtn.addEventListener("click", downloadPng);
+    clearBtn.addEventListener("click", clearForm);
+    preview.cta.addEventListener("click", openCtaLink);
+
+    fields.formato.value = "a4";
+    loadFromUrl();
+    fields.formato.value = "a4";
+    updateDynamicFields();
+    updatePreview();
+  </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>UA Flyer Studio v4.4</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap');
