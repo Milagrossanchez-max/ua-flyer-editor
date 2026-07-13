@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UA Flyer Studio v3</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">ua</div>
+        <div>
+          <p class="eyebrow">Universal Assistance</p>
+          <h1>Flyer Request Studio</h1>
+        </div>
+      </div>
+      <div class="status-pill" id="statusPill">
+        <span class="status-dot"></span>
+        <span id="statusText">Borrador</span>
+      </div>
+    </header>
+    <main class="workspace">
+      <section class="form-panel">
+        <div class="panel-title">
+          <h2>Solicitud de pieza</h2>
+          <p>Completá la información para generar el brief y la vista previa.</p>
+        </div>
+        <form id="requestForm">
+          <div class="section-card">
+            <h3>Información general</h3>
+            <label for="tipo">Tipo de pieza</label>
+            <select id="tipo" name="tipo">
+              <option value="evento">Flyer de evento</option>
+              <option value="producto">Flyer de producto</option>
+              <option value="conmemorativo">Pieza conmemorativa</option>
+            </select>
+            <label for="formato">Formato</label>
+            <select id="formato" name="formato">
+              <option value="feed">Instagram / LinkedIn Feed</option>
+              <option value="story">Historia / Story</option>
+              <option value="a4">A4 vertical</option>
+            </select>
+            <label for="pais">País / mercado</label>
+            <select id="pais" name="pais">
+              <option>Uruguay</option><option>Paraguay</option><option>Ecuador</option><option>República Dominicana</option><option>El Salvador</option><option>Bolivia</option><option>Costa Rica</option><option>Guatemala</option><option>Honduras</option><option>Nicaragua</option><option>Perú</option>
+            </select>
+            <label for="partner">Partner / agencia</label>
+            <input id="partner" name="partner" type="text" placeholder="Ej: HotelDO, Tivoli, Despegar" />
+            <label for="solicitante">Solicitante</label>
+            <input id="solicitante" name="solicitante" type="text" placeholder="Nombre de quien solicita" />
+          </div>
+          <div class="section-card">
+            <h3>Contenido</h3>
+            <label for="titulo">Título principal <span id="tituloCount">0/64</span></label>
+            <input id="titulo" name="titulo" type="text" maxlength="90" placeholder="Ej: Potenciá tus ventas con UA" />
+            <label for="bajada">Bajada / mensaje secundario <span id="bajadaCount">0/130</span></label>
+            <textarea id="bajada" name="bajada" rows="4" maxlength="190" placeholder="Ej: Soluciones de asistencia al viajero pensadas para cada pasajero."></textarea>
+            <label for="cta">CTA</label>
+            <input id="cta" name="cta" type="text" placeholder="Ej: Conocé más" />
+            <label for="objetivo">Objetivo de la pieza</label>
+            <textarea id="objetivo" name="objetivo" rows="3" placeholder="Ej: Comunicar una capacitación para agencias."></textarea>
+          </div>
+          <div class="section-card dynamic-fields" id="dynamicFields">
+            <h3>Datos específicos</h3>
+            <div data-group="evento">
+              <label for="fechaEvento">Fecha del evento</label>
+              <input id="fechaEvento" name="fechaEvento" type="text" placeholder="Ej: Martes 7/7" />
+              <label for="horaEvento">Hora</label>
+              <input id="horaEvento" name="horaEvento" type="text" placeholder="Ej: 9.30 hs" />
+              <label for="lugarEvento">Lugar / modalidad</label>
+              <input id="lugarEvento" name="lugarEvento" type="text" placeholder="Ej: Online / Applebee's Zona 10" />
+            </div>
+            <div data-group="producto">
+              <label for="producto">Producto a comunicar</label>
+              <input id="producto" name="producto" type="text" placeholder="Ej: Anual Multiviaje, Platinum, Maximum" />
+              <label for="beneficio1">Beneficio 1</label>
+              <input id="beneficio1" name="beneficio1" type="text" placeholder="Ej: Cobertura internacional" />
+              <label for="beneficio2">Beneficio 2</label>
+              <input id="beneficio2" name="beneficio2" type="text" placeholder="Ej: Asistencia 24/7" />
+              <label for="beneficio3">Beneficio 3</label>
+              <input id="beneficio3" name="beneficio3" type="text" placeholder="Ej: Respaldo antes y durante el viaje" />
+            </div>
+            <div data-group="conmemorativo">
+              <label for="dia">Día / efeméride</label>
+              <input id="dia" name="dia" type="text" placeholder="Ej: Día del Agente de Viajes" />
+              <label for="motivo">Motivo</label>
+              <textarea id="motivo" name="motivo" rows="3" placeholder="Ej: Mensaje institucional de saludo y reconocimiento."></textarea>
+            </div>
+          </div>
+          <div class="section-card">
+            <h3>Recursos y comentarios</h3>
+            <label for="logoPartner">Logo partner</label>
+            <input id="logoPartner" name="logoPartner" type="file" accept="image/*" />
+            <label for="imagenFondo">Imagen / fondo opcional</label>
+            <input id="imagenFondo" name="imagenFondo" type="file" accept="image/*" />
+            <label for="comentarios">Observaciones para Marketing</label>
+            <textarea id="comentarios" name="comentarios" rows="4" placeholder="Ej: Usar tono formal, priorizar beneficios, revisar logo partner."></textarea>
+          </div>
+        </form>
+      </section>
+      <section class="preview-panel">
+        <div class="preview-toolbar">
+          <div>
+            <p class="eyebrow">Vista previa</p>
+            <h2 id="previewName">Flyer de evento</h2>
+          </div>
+          <button class="ghost-button" id="copyJsonBtn" type="button">Copiar JSON</button>
+        </div>
+        <div class="canvas-wrap">
+          <article class="flyer-canvas" id="flyerCanvas">
+            <div class="flyer-bg" id="flyerBg"></div>
+            <div class="ua-logo">universal<br><strong>assistance</strong></div>
+            <div class="partner-badge" id="partnerBadge">Partner</div>
+            <img id="partnerLogoPreview" class="partner-logo hidden" alt="Logo partner" />
+            <div class="flyer-content">
+              <p class="market" id="marketPreview">Perú</p>
+              <h2 id="titlePreview">Título del flyer</h2>
+              <p id="subtitlePreview">La bajada de la pieza se verá acá, con el tono comercial adaptado al país.</p>
+              <div class="details-box" id="detailsPreview">Completá los datos específicos para verlos acá.</div>
+              <button id="ctaPreview">CTA</button>
+            </div>
+            <p class="legal" id="legalPreview">SUJETO A CONDICIONES GENERALES</p>
+          </article>
+        </div>
+        <div class="submit-card">
+          <div>
+            <p class="eyebrow">Estado de solicitud</p>
+            <h3 id="submitTitle">Borrador listo para revisar</h3>
+            <p id="submitDescription">Cuando esté completo, enviá la solicitud para que llegue al flujo de Marketing.</p>
+          </div>
+          <button class="primary-button" id="sendBtn" type="button">Enviar solicitud</button>
+        </div>
+        <div class="result-box hidden" id="resultBox"></div>
+      </section>
+    </main>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
