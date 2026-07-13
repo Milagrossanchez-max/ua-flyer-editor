@@ -1,120 +1,17 @@
-<!doctype html>
-<html lang="es">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>UA Flyer Editor</title>
-  <link rel="stylesheet" href="styles.css" />
-  <script src="config.js"></script>
-  <script src="https://alcdn.msauth.net/browser/2.38.3/js/msal-browser.min.js"></script>
-</head>
-<body>
-  <section id="loginScreen" class="login-screen hidden">
-    <div class="login-card">
-      <div class="brand-mark">ua</div>
-      <h1>Editor de Flyers</h1>
-      <p>Ingreso exclusivo para usuarios autorizados de Universal Assistance.</p>
-      <button id="loginBtn" class="primary-btn">Ingresar con mail UA</button>
-      <p id="loginError" class="error-text"></p>
-      <small>Autenticación mediante Microsoft Entra ID.</small>
-    </div>
-  </section>
-
-  <main id="app" class="hidden">
-    <header class="topbar">
-      <div class="brand">
-        <div class="ua-icon">ua</div>
-        <div>
-          <strong>universal<br/>assistance</strong>
-          <span>A company of Zurich</span>
-        </div>
-      </div>
-      <div class="top-title">Editor de Flyers Comerciales</div>
-      <div class="user-box">
-        <span id="userEmail"></span>
-        <button id="logoutBtn" class="ghost-btn">Salir</button>
-      </div>
-    </header>
-
-    <nav class="subbar">
-      <button id="backBtn" class="ghost-btn">← Volver</button>
-      <strong id="templateName">Invitación</strong>
-      <span>Seleccioná un campo para editar · Templates cerrados UA</span>
-    </nav>
-
-    <section class="workspace">
-      <aside class="left-panel">
-        <h3>Templates</h3>
-        <button class="template-btn active" data-template="invitation">Invitación</button>
-        <button class="template-btn" data-template="incentive">Incentivo</button>
-        <button class="template-btn" data-template="product">Producto</button>
-
-        <h3>Acciones</h3>
-        <button id="exportPngBtn" class="primary-btn">Descargar PNG</button>
-        <button id="exportSvgBtn" class="secondary-btn">Descargar SVG</button>
-        <button id="resetBtn" class="secondary-btn">Restaurar template</button>
-
-        <div class="note">
-          <strong>Idea MVP:</strong> Copilot genera el texto y este editor garantiza la maquetación.
-        </div>
-      </aside>
-
-      <section class="canvas-zone">
-        <div id="flyer" class="flyer invitation">
-          <div class="photo-overlay"></div>
-          <div class="flyer-logo">ua <span>universal<br/>assistance</span></div>
-          <div class="zurich">A company of Zurich</div>
-          <div id="fieldSubtitle" class="editable subtitle" contenteditable="true">Te esperamos en</div>
-          <div id="fieldTitle" class="editable title" contenteditable="true">Congreso<br/>de Agentes<br/>de Viajes.</div>
-          <div class="info-card">
-            <div class="info-line"><span>▣</span><div id="fieldDate" class="editable" contenteditable="true">Fecha:<br/>Miércoles 24.06.26</div></div>
-            <div class="info-line"><span>◷</span><div id="fieldTime" class="editable" contenteditable="true">Hora:<br/>23:00 hs</div></div>
-            <div class="info-line"><span>⌖</span><div id="fieldPlace" class="editable" contenteditable="true">Lugar:<br/>Av. Córdoba 820<br/>CABA</div></div>
-          </div>
-          <div id="fieldLegal" class="editable legal" contenteditable="true">Válido para agencias participantes. Sujeto a condiciones comerciales vigentes.</div>
-          <div id="partnerLogo" class="partner-logo editable" contenteditable="true">logo<br/>partner</div>
-        </div>
-      </section>
-
-      <aside class="right-panel">
-        <h3>Campos editables</h3>
-
-        <label>Subtítulo</label>
-        <textarea data-target="fieldSubtitle">Te esperamos en</textarea>
-        <div class="controls" data-target="fieldSubtitle"></div>
-
-        <label>Nombre / título</label>
-        <textarea data-target="fieldTitle">Congreso&#10;de Agentes&#10;de Viajes.</textarea>
-        <div class="controls" data-target="fieldTitle"></div>
-
-        <label>Fecha</label>
-        <textarea data-target="fieldDate">Fecha:&#10;Miércoles 24.06.26</textarea>
-        <div class="controls" data-target="fieldDate"></div>
-
-        <label>Hora</label>
-        <textarea data-target="fieldTime">Hora:&#10;23:00 hs</textarea>
-        <div class="controls" data-target="fieldTime"></div>
-
-        <label>Lugar</label>
-        <textarea data-target="fieldPlace">Lugar:&#10;Av. Córdoba 820&#10;CABA</textarea>
-        <div class="controls" data-target="fieldPlace"></div>
-
-        <label>Legal</label>
-        <textarea data-target="fieldLegal">Válido para agencias participantes. Sujeto a condiciones comerciales vigentes.</textarea>
-        <div class="controls" data-target="fieldLegal"></div>
-
-        <label>Logo partner / texto corto</label>
-        <textarea data-target="partnerLogo">logo&#10;partner</textarea>
-        <div class="controls" data-target="partnerLogo"></div>
-
-        <label>Imagen de fondo URL</label>
-        <input id="bgInput" type="url" placeholder="https://..." />
-        <button id="applyBgBtn" class="secondary-btn">Aplicar fondo</button>
-      </aside>
-    </section>
-  </main>
-
-  <script src="auth.js"></script>
-  <script src="script.js"></script>
-</body>
-</html>
+const fields={tipo:document.getElementById("tipo"),formato:document.getElementById("formato"),pais:document.getElementById("pais"),partner:document.getElementById("partner"),solicitante:document.getElementById("solicitante"),titulo:document.getElementById("titulo"),bajada:document.getElementById("bajada"),cta:document.getElementById("cta"),objetivo:document.getElementById("objetivo"),fechaEvento:document.getElementById("fechaEvento"),horaEvento:document.getElementById("horaEvento"),lugarEvento:document.getElementById("lugarEvento"),producto:document.getElementById("producto"),beneficio1:document.getElementById("beneficio1"),beneficio2:document.getElementById("beneficio2"),beneficio3:document.getElementById("beneficio3"),dia:document.getElementById("dia"),motivo:document.getElementById("motivo"),comentarios:document.getElementById("comentarios"),logoPartner:document.getElementById("logoPartner"),imagenFondo:document.getElementById("imagenFondo")};
+const preview={name:document.getElementById("previewName"),market:document.getElementById("marketPreview"),partnerBadge:document.getElementById("partnerBadge"),partnerLogo:document.getElementById("partnerLogoPreview"),bg:document.getElementById("flyerBg"),title:document.getElementById("titlePreview"),subtitle:document.getElementById("subtitlePreview"),cta:document.getElementById("ctaPreview"),details:document.getElementById("detailsPreview"),canvas:document.getElementById("flyerCanvas")};
+const resultBox=document.getElementById("resultBox"),sendBtn=document.getElementById("sendBtn"),copyJsonBtn=document.getElementById("copyJsonBtn"),tituloCount=document.getElementById("tituloCount"),bajadaCount=document.getElementById("bajadaCount");
+const typeLabels={evento:"Flyer de evento",producto:"Flyer de producto",conmemorativo:"Pieza conmemorativa"};
+function normalizeParam(value){return value?decodeURIComponent(value.replace(/\+/g," ")):""}
+function loadFromUrl(){const params=new URLSearchParams(window.location.search);const map={template:"tipo",tipo:"tipo",formato:"formato",pais:"pais",partner:"partner",solicitante:"solicitante",titulo:"titulo",title:"titulo",bajada:"bajada",copy:"bajada",cta:"cta",objetivo:"objetivo",fecha:"fechaEvento",date:"fechaEvento",hora:"horaEvento",time:"horaEvento",lugar:"lugarEvento",place:"lugarEvento",producto:"producto",beneficio1:"beneficio1",b1:"beneficio1",beneficio2:"beneficio2",b2:"beneficio2",beneficio3:"beneficio3",b3:"beneficio3",dia:"dia",motivo:"motivo",comentarios:"comentarios"};params.forEach((value,key)=>{const fieldName=map[key];if(!fieldName||!fields[fieldName])return;const cleanValue=normalizeParam(value);if(fieldName==="tipo"){fields[fieldName].value=cleanValue.toLowerCase()}else{fields[fieldName].value=cleanValue}})}
+function updateDynamicFields(){document.querySelectorAll("[data-group]").forEach(group=>{group.classList.toggle("active",group.dataset.group===fields.tipo.value)})}
+function updateCounters(){tituloCount.textContent=`${fields.titulo.value.length}/64`;bajadaCount.textContent=`${fields.bajada.value.length}/130`;tituloCount.style.color=fields.titulo.value.length>64?"#ff436e":"#6B7280";bajadaCount.style.color=fields.bajada.value.length>130?"#ff436e":"#6B7280"}
+function getDetailsText(){const tipo=fields.tipo.value;if(tipo==="evento"){const parts=[fields.fechaEvento.value&&`Fecha: ${fields.fechaEvento.value}`,fields.horaEvento.value&&`Hora: ${fields.horaEvento.value}`,fields.lugarEvento.value&&`Lugar: ${fields.lugarEvento.value}`].filter(Boolean);return parts.length?parts.join(" · "):"Completá fecha, hora y lugar del evento."}if(tipo==="producto"){const benefits=[fields.producto.value&&`Producto: ${fields.producto.value}`,fields.beneficio1.value,fields.beneficio2.value,fields.beneficio3.value].filter(Boolean);return benefits.length?benefits.join(" · "):"Completá producto y beneficios principales."}const parts=[fields.dia.value&&`Día: ${fields.dia.value}`,fields.motivo.value].filter(Boolean);return parts.length?parts.join(" · "):"Completá día o motivo conmemorativo."}
+function adaptDefaultTitle(){const tipo=fields.tipo.value,pais=fields.pais.value;if(fields.titulo.value.trim())return fields.titulo.value;if(tipo==="evento")return"Una invitación para potenciar tus ventas";if(tipo==="producto")return"Soluciones para viajar con respaldo";if(pais==="Uruguay")return"Celebrá cada viaje con nosotros";return"Un mensaje para seguir viajando juntos"}
+function updatePreview(){const tipo=fields.tipo.value,partner=fields.partner.value.trim()||"Partner",titulo=adaptDefaultTitle(),bajada=fields.bajada.value.trim()||"La bajada de la pieza se verá acá, con el tono comercial adaptado al país.",cta=fields.cta.value.trim()||"Conocé más";preview.name.textContent=typeLabels[tipo];preview.market.textContent=fields.pais.value;preview.partnerBadge.textContent=partner;preview.title.textContent=titulo;preview.subtitle.textContent=bajada;preview.cta.textContent=cta;preview.details.textContent=getDetailsText();preview.canvas.dataset.type=tipo;updateDynamicFields();updateCounters()}
+function getRequestData(){return{estado:"Borrador",tipo:fields.tipo.value,formato:fields.formato.value,pais:fields.pais.value,partner:fields.partner.value,solicitante:fields.solicitante.value,titulo:fields.titulo.value,bajada:fields.bajada.value,cta:fields.cta.value,objetivo:fields.objetivo.value,evento:{fecha:fields.fechaEvento.value,hora:fields.horaEvento.value,lugar:fields.lugarEvento.value},producto:{nombre:fields.producto.value,beneficio1:fields.beneficio1.value,beneficio2:fields.beneficio2.value,beneficio3:fields.beneficio3.value},conmemorativo:{dia:fields.dia.value,motivo:fields.motivo.value},comentarios:fields.comentarios.value,creadoEn:new Date().toISOString()}}
+function validateRequest(data){const required=[["país",data.pais],["tipo de pieza",data.tipo],["título",data.titulo],["bajada",data.bajada],["CTA",data.cta]];const missing=required.filter(([,value])=>!String(value||"").trim());return missing.length?`Falta completar: ${missing.map(([label])=>label).join(", ")}.`:""}
+function simulateSend(){const data=getRequestData(),error=validateRequest(data);resultBox.classList.remove("hidden");if(error){resultBox.style.background="#FFF1F3";resultBox.style.borderColor="#FECDD6";resultBox.style.color="#B42318";resultBox.innerHTML=`⚠️ ${error}`;return}const requestId=`UA-${Date.now().toString().slice(-6)}`,payload={id:requestId,...data};resultBox.style.background="#ECFDF3";resultBox.style.borderColor="#ABEFC6";resultBox.style.color="#067647";resultBox.innerHTML=`✅ Solicitud lista para enviar a Power Automate.<br>Número de solicitud: <strong>${requestId}</strong><code>${JSON.stringify(payload,null,2)}</code>`;document.getElementById("statusText").textContent="Listo para enviar";document.getElementById("submitTitle").textContent="Solicitud preparada";document.getElementById("submitDescription").textContent="Este JSON será el que luego viaje a Power Automate."}
+function copyJson(){const data=getRequestData();navigator.clipboard.writeText(JSON.stringify(data,null,2)).then(()=>{copyJsonBtn.textContent="JSON copiado";setTimeout(()=>copyJsonBtn.textContent="Copiar JSON",1800)})}
+function previewImage(input,target,isBackground=false){const file=input.files&&input.files[0];if(!file)return;const reader=new FileReader();reader.onload=event=>{if(isBackground){target.style.backgroundImage=`url(${event.target.result})`}else{target.src=event.target.result;target.classList.remove("hidden");preview.partnerBadge.classList.add("hidden")}};reader.readAsDataURL(file)}
+Object.values(fields).forEach(field=>{if(!field||field.type==="file")return;field.addEventListener("input",updatePreview);field.addEventListener("change",updatePreview)});fields.logoPartner.addEventListener("change",()=>previewImage(fields.logoPartner,preview.partnerLogo));fields.imagenFondo.addEventListener("change",()=>previewImage(fields.imagenFondo,preview.bg,true));sendBtn.addEventListener("click",simulateSend);copyJsonBtn.addEventListener("click",copyJson);loadFromUrl();updatePreview();

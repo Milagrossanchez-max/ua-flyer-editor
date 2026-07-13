@@ -1,1065 +1,141 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>UA Flyer Editor</title>
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&family=Bebas+Neue&display=swap');
-
-    :root{
-      --ua-blue:#00528F;
-      --ua-navy:#002447;
-      --ua-teal:#008091;
-      --ua-cyan:#00C4DF;
-      --ua-pink:#ff436e;
-      --ua-light:#e6fbff;
-      --ua-white:#ffffff;
-      --ua-bg:#061824;
-      --ua-panel:#0b2233;
-      --ua-line:rgba(255,255,255,.12);
-      --ua-gold:#ffd56b;
-      --scale:.43;
-    }
-
-    *{box-sizing:border-box}
-
-    body{
-      margin:0;
-      min-height:100vh;
-      background:
-        radial-gradient(circle at 14% 0%, rgba(0,196,223,.12), transparent 32%),
-        radial-gradient(circle at 85% 15%, rgba(255,67,110,.08), transparent 30%),
-        linear-gradient(135deg,#06131f,#0a1d2c 58%,#040d16);
-      color:#fff;
-      font-family:Poppins, Arial, sans-serif;
-    }
-
-    .app{
-      display:grid;
-      grid-template-columns:minmax(540px,1fr) 410px;
-      min-height:100vh;
-    }
-
-    .stage{
-      padding:28px;
-      overflow:auto;
-    }
-
-    .stage-top{
-      display:flex;
-      align-items:center;
-      gap:16px;
-      width:calc(1080px * var(--scale));
-      min-width:460px;
-      margin:0 auto 20px;
-    }
-
-    .template-select,
-    .btn,
-    input,
-    textarea{
-      font-family:Poppins, Arial, sans-serif;
-    }
-
-    .template-select{
-      min-width:270px;
-      padding:14px 18px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.18);
-      background:#10283b;
-      color:#fff;
-      font-size:17px;
-      font-weight:800;
-      box-shadow:0 14px 34px rgba(0,0,0,.28);
-    }
-
-    .spacer{flex:1}
-
-    .btn{
-      border:0;
-      border-radius:17px;
-      background:linear-gradient(135deg,#4ee1b1,#35c795);
-      color:#062319;
-      padding:13px 18px;
-      font-weight:900;
-      font-size:15px;
-      cursor:pointer;
-      box-shadow:0 14px 34px rgba(0,0,0,.25);
-    }
-
-    .btn.dark{
-      background:#10283b;
-      color:#fff;
-      border:1px solid rgba(255,255,255,.14);
-    }
-
-    .btn.locked{
-      opacity:.45;
-      cursor:not-allowed;
-    }
-
-    .artboard-shell{
-      width:calc(1080px * var(--scale));
-      height:calc(1920px * var(--scale));
-      min-width:460px;
-      min-height:818px;
-      position:relative;
-      margin:0 auto;
-    }
-
-    .artboard{
-      position:absolute;
-      left:0;
-      top:0;
-      width:1080px;
-      height:1920px;
-      transform:scale(var(--scale));
-      transform-origin:top left;
-      overflow:hidden;
-      background:#072236;
-      box-shadow:0 34px 80px rgba(0,0,0,.42);
-    }
-
-    .art-bg{
-      position:absolute;
-      inset:0;
-      background:
-        radial-gradient(circle at 92% 18%, rgba(0,196,223,.22) 0 0, rgba(0,196,223,.12) 0 135px, transparent 138px),
-        radial-gradient(circle at -4% 84%, rgba(0,128,145,.44) 0 0, rgba(0,128,145,.24) 0 230px, transparent 234px),
-        linear-gradient(135deg,#002447 0%,#00528F 44%,#008091 100%);
-    }
-
-    .artboard.product .art-bg{
-      background:
-        radial-gradient(circle at 95% 18%, rgba(0,196,223,.30) 0 0, rgba(0,196,223,.15) 0 135px, transparent 138px),
-        radial-gradient(circle at 8% 78%, rgba(0,128,145,.32) 0 0, rgba(0,128,145,.16) 0 225px, transparent 230px),
-        linear-gradient(145deg,#002447 0%,#00528F 38%,#008091 100%);
-    }
-
-    .artboard.event .art-bg{
-      background:
-        radial-gradient(circle at 99% 74%, rgba(0,196,223,.28) 0 0, rgba(0,196,223,.14) 0 170px, transparent 174px),
-        radial-gradient(circle at 0% 82%, rgba(0,128,145,.32) 0 0, rgba(0,128,145,.18) 0 210px, transparent 215px),
-        linear-gradient(150deg,#002447 0%,#00528F 45%,#008091 100%);
-    }
-
-    .artboard.comm .art-bg{
-      background:
-        radial-gradient(circle at 89% 84%, rgba(255,67,110,.34) 0 0, rgba(255,67,110,.18) 0 190px, transparent 194px),
-        radial-gradient(circle at 94% 80%, rgba(255,213,107,.42) 0 0, rgba(255,213,107,.25) 0 255px, transparent 260px),
-        linear-gradient(140deg,#002447 0%,#00528F 43%,#008091 100%);
-    }
-
-    .bg-photo{
-      position:absolute;
-      inset:0;
-      background-size:cover;
-      background-position:center;
-      opacity:0;
-      z-index:1;
-    }
-
-    .bg-photo.show{opacity:.25}
-
-    .overlay{
-      position:absolute;
-      inset:0;
-      z-index:2;
-      background:linear-gradient(135deg,rgba(0,36,71,.88),rgba(0,82,143,.70) 55%,rgba(0,128,145,.56));
-    }
-
-    .logo-main{
-      position:absolute;
-      z-index:7;
-      left:72px;
-      top:64px;
-      width:420px;
-      height:auto;
-      object-fit:contain;
-    }
-
-    .partner-slot{
-      position:absolute;
-      z-index:7;
-      right:72px;
-      bottom:142px;
-      width:230px;
-      height:95px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      border:2px dashed rgba(255,255,255,.28);
-      border-radius:14px;
-      background:rgba(0,36,71,.18);
-      color:rgba(255,255,255,.60);
-      font-size:18px;
-      font-family:Helvetica, Arial, sans-serif;
-      text-align:center;
-      padding:10px;
-    }
-
-    .partner-slot.has-logo{
-      border:0;
-      background:transparent;
-    }
-
-    .partner-logo{
-      max-width:100%;
-      max-height:100%;
-      object-fit:contain;
-      display:none;
-      filter:drop-shadow(0 8px 16px rgba(0,0,0,.25));
-    }
-
-    .partner-slot.has-logo .partner-logo{display:block}
-    .partner-slot.has-logo .partner-placeholder{display:none}
-
-    .legal-fixed,
-    .legal-editable{
-      position:absolute;
-      z-index:7;
-      left:72px;
-      right:72px;
-      bottom:58px;
-      color:#fff;
-      font-family:Helvetica, Arial, sans-serif;
-      font-size:25px;
-      line-height:1.18;
-      font-weight:400;
-      letter-spacing:.02em;
-      max-height:78px;
-      overflow:hidden;
-      opacity:.96;
-    }
-
-    .legal-fixed{
-      text-transform:uppercase;
-      font-weight:700;
-      letter-spacing:.06em;
-    }
-
-    .field-area{
-      position:absolute;
-      z-index:6;
-      color:#fff;
-    }
-
-    .kicker{
-      margin:0;
-      font-family:Helvetica, Arial, sans-serif;
-      font-weight:400;
-      color:#e6fbff;
-      letter-spacing:-.025em;
-      line-height:1.08;
-      white-space:pre-line;
-      overflow:hidden;
-    }
-
-    .title{
-      margin:0;
-      font-family:Poppins, Arial, sans-serif;
-      font-weight:900;
-      color:#fff;
-      letter-spacing:-.055em;
-      line-height:.94;
-      white-space:pre-line;
-      overflow:hidden;
-      text-shadow:0 7px 12px rgba(0,0,0,.24);
-    }
-
-    .copy{
-      margin:0;
-      font-family:Helvetica, Arial, sans-serif;
-      font-weight:400;
-      color:#e6fbff;
-      letter-spacing:-.018em;
-      line-height:1.16;
-      white-space:pre-line;
-      overflow:hidden;
-    }
-
-    .dot-grid{
-      position:absolute;
-      z-index:5;
-      display:grid;
-      grid-template-columns:repeat(5,9px);
-      gap:18px;
-      opacity:.55;
-      pointer-events:none;
-    }
-
-    .dot-grid span{
-      width:6px;
-      height:6px;
-      border-radius:50%;
-      background:#e6fbff;
-    }
-
-    .shape{
-      position:absolute;
-      z-index:4;
-      pointer-events:none;
-    }
-
-    .shape-a{
-      right:78px;
-      top:152px;
-      width:245px;
-      height:145px;
-      border-radius:50%;
-      background:rgba(230,251,255,.12);
-      transform:rotate(-20deg);
-    }
-
-    .shape-b{
-      left:-125px;
-      bottom:260px;
-      width:300px;
-      height:300px;
-      border-radius:50%;
-      background:rgba(0,196,223,.18);
-    }
-
-    .shape-c{
-      right:-75px;
-      bottom:310px;
-      width:260px;
-      height:260px;
-      border-radius:50%;
-      background:rgba(0,196,223,.16);
-    }
-
-    .shape-d{
-      right:-110px;
-      bottom:70px;
-      width:370px;
-      height:370px;
-      border-radius:50%;
-      background:linear-gradient(135deg,rgba(255,213,107,.42),rgba(255,67,110,.30));
-    }
-
-    /* EVENT TEMPLATE */
-    .event .dot-grid{right:95px;top:140px}
-    .event-pre{left:72px;top:365px;width:650px;height:66px;font-size:52px}
-    .event-title{left:72px;top:435px;width:700px;height:365px;font-size:92px}
-    .event-copy{left:72px;top:825px;width:780px;height:150px;font-size:38px}
-
-    .event-cards{
-      position:absolute;
-      z-index:6;
-      left:72px;
-      right:72px;
-      bottom:240px;
-      display:grid;
-      grid-template-columns:1fr 1fr 1.24fr;
-      gap:18px;
-    }
-
-    .event-card{
-      min-height:185px;
-      border-radius:28px;
-      border:2px solid rgba(255,255,255,.35);
-      background:rgba(0,36,71,.34);
-      color:#fff;
-      padding:25px 22px;
-      overflow:hidden;
-      backdrop-filter:blur(4px);
-    }
-
-    .event-icon{
-      font-size:42px;
-      line-height:1;
-      margin-bottom:16px;
-      color:#fff;
-    }
-
-    .event-label{
-      font-size:24px;
-      font-weight:800;
-      font-family:Poppins, Arial, sans-serif;
-      letter-spacing:.04em;
-      margin-bottom:10px;
-      text-transform:uppercase;
-    }
-
-    .event-value{
-      font-family:Helvetica, Arial, sans-serif;
-      font-size:30px;
-      line-height:1.08;
-      font-weight:400;
-      white-space:pre-line;
-    }
-
-    /* PRODUCT TEMPLATE */
-    .product-pre{left:72px;top:360px;width:620px;height:62px;font-size:50px}
-    .product-title{left:72px;top:430px;width:705px;height:335px;font-size:88px}
-    .product-copy{left:72px;top:800px;width:700px;height:150px;font-size:36px}
-
-    .benefit-box{
-      position:absolute;
-      z-index:6;
-      left:72px;
-      right:72px;
-      bottom:250px;
-      min-height:310px;
-      border-radius:32px;
-      background:#e6fbff;
-      color:#002447;
-      padding:38px 44px;
-      box-shadow:0 24px 54px rgba(0,0,0,.26);
-      overflow:hidden;
-    }
-
-    .benefit-title{
-      font-family:Poppins, Arial, sans-serif;
-      font-weight:900;
-      font-size:52px;
-      line-height:1;
-      margin:0 0 22px;
-      letter-spacing:-.035em;
-      color:#002447;
-    }
-
-    .benefit-list{
-      margin:0;
-      padding-left:32px;
-      font-family:Helvetica, Arial, sans-serif;
-      font-weight:400;
-      font-size:31px;
-      line-height:1.28;
-      color:#002447;
-    }
-
-    .benefit-list li{margin:8px 0}
-
-    /* COMMEMORATIVE TEMPLATE */
-    .comm-frame{
-      position:absolute;
-      z-index:5;
-      left:72px;
-      right:72px;
-      top:360px;
-      bottom:210px;
-      border:4px solid rgba(255,255,255,.80);
-      border-radius:46px;
-    }
-
-    .comm-pre{left:112px;top:435px;width:640px;height:66px;font-size:50px}
-    .comm-title{left:112px;top:515px;width:705px;height:350px;font-size:84px}
-    .comm-copy{left:112px;top:920px;width:690px;height:185px;font-size:35px}
-
-    .heart{
-      position:absolute;
-      z-index:6;
-      right:78px;
-      bottom:182px;
-      width:82px;
-      height:82px;
-      border-radius:50%;
-      background:rgba(255,67,110,.85);
-      display:grid;
-      place-items:center;
-      color:#fff;
-      font-size:44px;
-      box-shadow:0 18px 36px rgba(0,0,0,.30);
-    }
-
-    .watermark{
-      position:absolute;
-      z-index:20;
-      inset:0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      pointer-events:none;
-      opacity:.18;
-    }
-
-    .watermark span{
-      transform:rotate(-28deg);
-      font-family:Poppins, Arial, sans-serif;
-      font-weight:900;
-      font-size:98px;
-      line-height:1;
-      letter-spacing:.04em;
-      color:#fff;
-      border:8px solid #fff;
-      padding:34px 46px;
-      border-radius:22px;
-      text-transform:uppercase;
-      text-align:center;
-    }
-
-    .approved .watermark{display:none}
-
-    /* PANEL */
-    .panel{
-      background:rgba(5,17,28,.88);
-      border-left:1px solid var(--ua-line);
-      padding:22px;
-      overflow:auto;
-      backdrop-filter:blur(10px);
-    }
-
-    .panel h1{
-      font-size:22px;
-      line-height:1.1;
-      margin:0 0 6px;
-    }
-
-    .panel p{
-      margin:0 0 16px;
-      font-size:13px;
-      color:#b8cbd8;
-      line-height:1.38;
-    }
-
-    .warning{
-      background:rgba(255,213,107,.10);
-      border:1px solid rgba(255,213,107,.26);
-      border-radius:14px;
-      padding:12px;
-      font-size:12px;
-      color:#ffe8a3;
-      line-height:1.35;
-      margin-bottom:16px;
-    }
-
-    .group{
-      border-top:1px solid var(--ua-line);
-      padding-top:16px;
-      margin-top:16px;
-    }
-
-    .field{
-      margin-bottom:13px;
-    }
-
-    .field label{
-      display:block;
-      margin-bottom:6px;
-      color:#d8e7ef;
-      font-size:12px;
-      font-weight:900;
-      letter-spacing:.04em;
-      text-transform:uppercase;
-    }
-
-    .field input,
-    .field textarea{
-      width:100%;
-      background:#10283b;
-      color:#fff;
-      border:1px solid rgba(255,255,255,.14);
-      border-radius:12px;
-      padding:10px 12px;
-      font-size:14px;
-    }
-
-    .field textarea{
-      min-height:74px;
-      resize:vertical;
-    }
-
-    .fixed-legal-box{
-      background:#0e2b3e;
-      border:1px solid rgba(255,255,255,.14);
-      border-radius:12px;
-      padding:12px;
-      color:#fff;
-      font-size:14px;
-      font-weight:800;
-      letter-spacing:.04em;
-    }
-
-    .file-name{
-      margin-top:6px;
-      font-size:12px;
-      color:#aac2d1;
-      word-break:break-word;
-    }
-
-    .actions{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:10px;
-      margin-top:16px;
-    }
-
-    .approval-row{
-      display:grid;
-      grid-template-columns:1fr auto;
-      gap:8px;
-      align-items:end;
-    }
-
-    .approval-status{
-      margin-top:8px;
-      font-size:12px;
-      line-height:1.35;
-      color:#ffe8a3;
-    }
-
-    .approval-status.ok{color:#74e4b4}
-
-    @media(max-width:1180px){
-      :root{--scale:.36}
-      .app{grid-template-columns:1fr}
-      .panel{border-left:0;border-top:1px solid var(--ua-line)}
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UA Flyer Studio v3</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <main class="app">
-    <section class="stage">
-      <div class="stage-top">
-        <select id="templateSelect" class="template-select">
-          <option value="event">Flyer Evento</option>
-          <option value="product">Flyer Producto</option>
-          <option value="comm">Flyer Conmemorativo</option>
-        </select>
-        <div class="spacer"></div>
-        <button class="btn" id="resetBtn">Restaurar</button>
-      </div>
-
-      <div class="artboard-shell">
-        <section id="artboard" class="artboard event">
-          <div class="art-bg"></div>
-          <div id="bgPhoto" class="bg-photo"></div>
-          <div class="overlay"></div>
-
-          <img class="logo-main" src="UA%20Logo_Zurich%20-%20Blanco%20(4).png" alt="Universal Assistance">
-
-          <div id="partnerSlot" class="partner-slot">
-            <span class="partner-placeholder">Logo partner<br>opcional</span>
-            <img id="partnerLogo" class="partner-logo" alt="Partner">
-          </div>
-
-          <div id="templateRoot"></div>
-          <div id="legalText" class="legal-fixed">SUJETO A CONDICIONES GENERALES</div>
-
-          <div id="watermark" class="watermark"><span>Pendiente<br>de aprobación</span></div>
-        </section>
-      </div>
-    </section>
-
-    <aside class="panel">
-      <h1>Editor de Flyers UA</h1>
-      <p>Sin template promo. Evento y Producto tienen legal fijo y no editable.</p>
-
-      <div class="warning">
-        Importante: en GitHub Pages no se puede hacer una aprobación real por mail sin backend. Esta versión deja marca de agua y bloquea la descarga limpia hasta ingresar un código de aprobación.
-      </div>
-
-      <div class="group">
-        <div class="field">
-          <label>Logo partner opcional</label>
-          <input type="file" id="partnerUpload" accept="image/*">
-          <div id="partnerName" class="file-name">Sin logo cargado</div>
-        </div>
-
-        <div class="field">
-          <label>Imagen de fondo opcional</label>
-          <input type="file" id="bgUpload" accept="image/*">
-          <div id="bgName" class="file-name">Sin fondo cargado</div>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">ua</div>
+        <div>
+          <p class="eyebrow">Universal Assistance</p>
+          <h1>Flyer Request Studio</h1>
         </div>
       </div>
-
-      <div id="formFields" class="group"></div>
-
-      <div class="group">
-        <div class="field">
-          <label>Aprobación</label>
-          <div class="approval-row">
-            <input type="text" id="approvalCode" placeholder="Ingresar código de aprobación">
-            <button class="btn dark" id="approveBtn">Validar</button>
-          </div>
-          <div id="approvalStatus" class="approval-status">Estado: pendiente. La pieza se exporta con marca de agua.</div>
-        </div>
+      <div class="status-pill" id="statusPill">
+        <span class="status-dot"></span>
+        <span id="statusText">Borrador</span>
       </div>
-
-      <div class="actions">
-        <button class="btn dark" id="requestApprovalBtn">Solicitar aprobación por mail</button>
-        <button class="btn dark" id="downloadDraftPng">Descargar borrador PNG con marca de agua</button>
-        <button class="btn locked" id="downloadFinalPng">Descargar final PNG aprobado</button>
-        <button class="btn locked" id="downloadFinalSvg">Descargar final SVG aprobado</button>
-      </div>
-    </aside>
-  </main>
-
-  <script>
-    const APPROVER_EMAIL = "milagros.sanchez@universal-assistance.com";
-    const APPROVAL_CODE = "UA-APROBADO";
-
-    const FIXED_LEGAL = "SUJETO A CONDICIONES GENERALES";
-
-    const defaults = {
-      event:{
-        pre:"Te esperamos en",
-        title:"Congreso\\nde Agentes\\nde Viajes",
-        copy:"Una jornada para compartir novedades, herramientas y oportunidades comerciales.",
-        date:"Miércoles\\n24.06.26",
-        time:"23:00 hs",
-        place:"Av. Córdoba 820,\\nCABA"
-      },
-      product:{
-        pre:"Conocé nuestros",
-        title:"Productos\\npara viajar\\ntranquilo",
-        copy:"Coberturas diseñadas para acompañar a tus pasajeros antes, durante y después del viaje.",
-        boxTitle:"Beneficios destacados",
-        b1:"Asistencia médica internacional",
-        b2:"Teleasistencia incluida",
-        b3:"Coberturas para cada tipo de viaje"
-      },
-      comm:{
-        pre:"Hoy celebramos",
-        title:"Una fecha\\npara sentirnos\\nmás cerca",
-        copy:"Universal Assistance acompaña cada viaje, cada historia y cada momento especial.",
-        legal:"Mensaje institucional de Universal Assistance."
-      }
-    };
-
-    const fields = {
-      event:[
-        ["pre","Pre título","text"],
-        ["title","Nombre del evento","textarea"],
-        ["copy","Bajada","textarea"],
-        ["date","Fecha","textarea"],
-        ["time","Hora","textarea"],
-        ["place","Lugar","textarea"]
-      ],
-      product:[
-        ["pre","Intro","text"],
-        ["title","Título principal","textarea"],
-        ["copy","Bajada","textarea"],
-        ["boxTitle","Título caja beneficios","text"],
-        ["b1","Beneficio 1","text"],
-        ["b2","Beneficio 2","text"],
-        ["b3","Beneficio 3","text"]
-      ],
-      comm:[
-        ["pre","Pre título","text"],
-        ["title","Título principal","textarea"],
-        ["copy","Mensaje institucional","textarea"],
-        ["legal","Firma / legal","textarea"]
-      ]
-    };
-
-    let current = "event";
-    let data = JSON.parse(JSON.stringify(defaults));
-    let partnerData = "";
-    let bgData = "";
-    let approved = false;
-
-    const artboard = document.getElementById("artboard");
-    const root = document.getElementById("templateRoot");
-    const form = document.getElementById("formFields");
-    const legalText = document.getElementById("legalText");
-    const partnerLogo = document.getElementById("partnerLogo");
-    const partnerSlot = document.getElementById("partnerSlot");
-    const bgPhoto = document.getElementById("bgPhoto");
-
-    function esc(s=""){
-      return String(s).replace(/[&<>"']/g, m => ({
-        "&":"&amp;","<":"&lt;",">":"&gt;","\\"":"&quot;","'":"&#039;"
-      }[m]));
-    }
-
-    function br(s=""){ return esc(s).replace(/\\n/g,"<br>"); }
-
-    function dotGrid(n=30){
-      return `<div class="dot-grid">${"<span></span>".repeat(n)}</div>`;
-    }
-
-    function renderTemplate(){
-      artboard.className = "artboard " + current + (approved ? " approved" : "");
-      partnerLogo.src = partnerData || "";
-      partnerSlot.classList.toggle("has-logo", !!partnerData);
-      bgPhoto.style.backgroundImage = bgData ? `url(${bgData})` : "";
-      bgPhoto.classList.toggle("show", !!bgData);
-
-      const d = data[current];
-
-      if(current === "event"){
-        legalText.className = "legal-fixed";
-        legalText.textContent = FIXED_LEGAL;
-        root.innerHTML = `
-          <div class="shape shape-b"></div>
-          <div class="shape shape-c"></div>
-          ${dotGrid(35)}
-          <p class="field-area kicker event-pre">${br(d.pre)}</p>
-          <p class="field-area title event-title">${br(d.title)}</p>
-          <p class="field-area copy event-copy">${br(d.copy)}</p>
-          <div class="event-cards">
-            <div class="event-card"><div class="event-icon">▦</div><div class="event-label">Fecha</div><div class="event-value">${br(d.date)}</div></div>
-            <div class="event-card"><div class="event-icon">◷</div><div class="event-label">Hora</div><div class="event-value">${br(d.time)}</div></div>
-            <div class="event-card"><div class="event-icon">●</div><div class="event-label">Lugar</div><div class="event-value">${br(d.place)}</div></div>
-          </div>
-        `;
-      }
-
-      if(current === "product"){
-        legalText.className = "legal-fixed";
-        legalText.textContent = FIXED_LEGAL;
-        root.innerHTML = `
-          <div class="shape shape-a"></div>
-          <div class="shape shape-b"></div>
-          <p class="field-area kicker product-pre">${br(d.pre)}</p>
-          <p class="field-area title product-title">${br(d.title)}</p>
-          <p class="field-area copy product-copy">${br(d.copy)}</p>
-          <div class="benefit-box">
-            <h2 class="benefit-title">${esc(d.boxTitle)}</h2>
-            <ul class="benefit-list">
-              ${d.b1 ? `<li>${esc(d.b1)}</li>` : ""}
-              ${d.b2 ? `<li>${esc(d.b2)}</li>` : ""}
-              ${d.b3 ? `<li>${esc(d.b3)}</li>` : ""}
-            </ul>
-          </div>
-        `;
-      }
-
-      if(current === "comm"){
-        legalText.className = "legal-editable";
-        legalText.textContent = d.legal || "";
-        root.innerHTML = `
-          <div class="shape shape-d"></div>
-          <div class="comm-frame"></div>
-          <div class="heart">♥</div>
-          <p class="field-area kicker comm-pre">${br(d.pre)}</p>
-          <p class="field-area title comm-title">${br(d.title)}</p>
-          <p class="field-area copy comm-copy">${br(d.copy)}</p>
-        `;
-      }
-    }
-
-    function renderForm(){
-      let html = "";
-
-      html += fields[current].map(([key,label,type]) => `
-        <div class="field">
-          <label>${label}</label>
-          ${type === "textarea"
-            ? `<textarea data-key="${key}">${esc(data[current][key] || "")}</textarea>`
-            : `<input data-key="${key}" value="${esc(data[current][key] || "")}">`}
+    </header>
+    <main class="workspace">
+      <section class="form-panel">
+        <div class="panel-title">
+          <h2>Solicitud de pieza</h2>
+          <p>Completá la información para generar el brief y la vista previa.</p>
         </div>
-      `).join("");
-
-      if(current === "event" || current === "product"){
-        html += `
-          <div class="field">
-            <label>Legal fijo</label>
-            <div class="fixed-legal-box">${FIXED_LEGAL}</div>
+        <form id="requestForm">
+          <div class="section-card">
+            <h3>Información general</h3>
+            <label for="tipo">Tipo de pieza</label>
+            <select id="tipo" name="tipo">
+              <option value="evento">Flyer de evento</option>
+              <option value="producto">Flyer de producto</option>
+              <option value="conmemorativo">Pieza conmemorativa</option>
+            </select>
+            <label for="formato">Formato</label>
+            <select id="formato" name="formato">
+              <option value="feed">Instagram / LinkedIn Feed</option>
+              <option value="story">Historia / Story</option>
+              <option value="a4">A4 vertical</option>
+            </select>
+            <label for="pais">País / mercado</label>
+            <select id="pais" name="pais">
+              <option>Uruguay</option><option>Paraguay</option><option>Ecuador</option><option>República Dominicana</option><option>El Salvador</option><option>Bolivia</option><option>Costa Rica</option><option>Guatemala</option><option>Honduras</option><option>Nicaragua</option><option>Perú</option>
+            </select>
+            <label for="partner">Partner / agencia</label>
+            <input id="partner" name="partner" type="text" placeholder="Ej: HotelDO, Tivoli, Despegar" />
+            <label for="solicitante">Solicitante</label>
+            <input id="solicitante" name="solicitante" type="text" placeholder="Nombre de quien solicita" />
           </div>
-        `;
-      }
-
-      form.innerHTML = html;
-
-      form.querySelectorAll("[data-key]").forEach(el => {
-        el.addEventListener("input", e => {
-          data[current][e.target.dataset.key] = e.target.value;
-          approved = false;
-          updateApprovalUI();
-          renderTemplate();
-        });
-      });
-    }
-
-    function switchTemplate(t){
-      current = t;
-      approved = false;
-      updateApprovalUI();
-      renderForm();
-      renderTemplate();
-    }
-
-    function updateApprovalUI(){
-      const status = document.getElementById("approvalStatus");
-      const finalPng = document.getElementById("downloadFinalPng");
-      const finalSvg = document.getElementById("downloadFinalSvg");
-
-      if(approved){
-        status.textContent = "Estado: aprobado. La descarga final queda habilitada y sin marca de agua.";
-        status.classList.add("ok");
-        finalPng.classList.remove("locked");
-        finalSvg.classList.remove("locked");
-      }else{
-        status.textContent = "Estado: pendiente. La pieza se exporta con marca de agua.";
-        status.classList.remove("ok");
-        finalPng.classList.add("locked");
-        finalSvg.classList.add("locked");
-      }
-    }
-
-    function getRequestSummary(){
-      const d = data[current];
-      return Object.entries(d).map(([k,v]) => `${k}: ${v}`).join("\\n");
-    }
-
-    document.getElementById("templateSelect").addEventListener("change", e => switchTemplate(e.target.value));
-
-    document.getElementById("resetBtn").addEventListener("click", () => {
-      data[current] = JSON.parse(JSON.stringify(defaults[current]));
-      approved = false;
-      updateApprovalUI();
-      renderForm();
-      renderTemplate();
-    });
-
-    document.getElementById("partnerUpload").addEventListener("change", e => {
-      const file = e.target.files[0];
-      if(!file){
-        partnerData = "";
-        document.getElementById("partnerName").textContent = "Sin logo cargado";
-        renderTemplate();
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = ev => {
-        partnerData = ev.target.result;
-        document.getElementById("partnerName").textContent = file.name;
-        approved = false;
-        updateApprovalUI();
-        renderTemplate();
-      };
-      reader.readAsDataURL(file);
-    });
-
-    document.getElementById("bgUpload").addEventListener("change", e => {
-      const file = e.target.files[0];
-      if(!file){
-        bgData = "";
-        document.getElementById("bgName").textContent = "Sin fondo cargado";
-        renderTemplate();
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = ev => {
-        bgData = ev.target.result;
-        document.getElementById("bgName").textContent = file.name;
-        approved = false;
-        updateApprovalUI();
-        renderTemplate();
-      };
-      reader.readAsDataURL(file);
-    });
-
-    document.getElementById("approveBtn").addEventListener("click", () => {
-      const code = document.getElementById("approvalCode").value.trim();
-      approved = code === APPROVAL_CODE;
-      if(!approved){
-        alert("Código incorrecto. La pieza sigue pendiente de aprobación.");
-      }
-      updateApprovalUI();
-      renderTemplate();
-    });
-
-    document.getElementById("requestApprovalBtn").addEventListener("click", () => {
-      const subject = encodeURIComponent(`Solicitud de aprobación flyer UA - ${current}`);
-      const body = encodeURIComponent(
-        `Hola Mili,\\n\\nTe solicito aprobación para descargar esta pieza sin marca de agua.\\n\\nTemplate: ${current}\\n\\nCampos cargados:\\n${getRequestSummary()}\\n\\nAdjunto/comparto el borrador generado desde el editor.\\n\\nGracias.`
-      );
-      window.location.href = `mailto:${APPROVER_EMAIL}?subject=${subject}&body=${body}`;
-    });
-
-    function download(blob, name){
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = name;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      setTimeout(() => URL.revokeObjectURL(a.href), 800);
-    }
-
-    async function downloadPng(clean=false){
-      const oldApproved = approved;
-      if(clean && !approved){
-        alert("La descarga final está bloqueada. Primero ingresá el código de aprobación.");
-        return;
-      }
-
-      if(!clean){
-        artboard.classList.remove("approved");
-      }else{
-        artboard.classList.add("approved");
-      }
-
-      if(typeof html2canvas === "undefined"){
-        alert("No se pudo cargar el exportador PNG. Probá descargar SVG o revisá si la red bloquea jsDelivr.");
-        approved = oldApproved;
-        renderTemplate();
-        return;
-      }
-
-      const canvas = await html2canvas(artboard, {
-        backgroundColor:null,
-        scale:1,
-        width:1080,
-        height:1920,
-        useCORS:true,
-        allowTaint:true,
-        logging:false
-      });
-
-      canvas.toBlob(blob => {
-        if(!blob){
-          alert("No se pudo generar el PNG.");
-          return;
-        }
-        download(blob, clean ? `ua-${current}-aprobado.png` : `ua-${current}-borrador.png`);
-      }, "image/png");
-
-      approved = oldApproved;
-      renderTemplate();
-    }
-
-    function absolutizeImages(clone){
-      clone.querySelectorAll("img").forEach(img => {
-        const src = img.getAttribute("src");
-        if(src && !src.startsWith("data:") && !src.startsWith("http")){
-          img.setAttribute("src", new URL(src, window.location.href).href);
-        }
-      });
-    }
-
-    function makeSvg(clean=false){
-      const clone = artboard.cloneNode(true);
-      clone.style.transform = "none";
-      clone.style.width = "1080px";
-      clone.style.height = "1920px";
-      if(clean) clone.classList.add("approved");
-      else clone.classList.remove("approved");
-      absolutizeImages(clone);
-
-      const styles = document.querySelector("style").textContent.replace(/@import[^;]+;/g,"");
-
-      return `<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
-        <foreignObject width="1080" height="1920">
-          <div xmlns="http://www.w3.org/1999/xhtml">
-            <style>${styles}</style>
-            ${clone.outerHTML}
+          <div class="section-card">
+            <h3>Contenido</h3>
+            <label for="titulo">Título principal <span id="tituloCount">0/64</span></label>
+            <input id="titulo" name="titulo" type="text" maxlength="90" placeholder="Ej: Potenciá tus ventas con UA" />
+            <label for="bajada">Bajada / mensaje secundario <span id="bajadaCount">0/130</span></label>
+            <textarea id="bajada" name="bajada" rows="4" maxlength="190" placeholder="Ej: Soluciones de asistencia al viajero pensadas para cada pasajero."></textarea>
+            <label for="cta">CTA</label>
+            <input id="cta" name="cta" type="text" placeholder="Ej: Conocé más" />
+            <label for="objetivo">Objetivo de la pieza</label>
+            <textarea id="objetivo" name="objetivo" rows="3" placeholder="Ej: Comunicar una capacitación para agencias."></textarea>
           </div>
-        </foreignObject>
-      </svg>`;
-    }
-
-    document.getElementById("downloadDraftPng").addEventListener("click", () => downloadPng(false));
-
-    document.getElementById("downloadFinalPng").addEventListener("click", () => downloadPng(true));
-
-    document.getElementById("downloadFinalSvg").addEventListener("click", () => {
-      if(!approved){
-        alert("La descarga final está bloqueada. Primero ingresá el código de aprobación.");
-        return;
-      }
-      download(new Blob([makeSvg(true)], {type:"image/svg+xml"}), `ua-${current}-aprobado.svg`);
-    });
-
-    switchTemplate("event");
-    updateApprovalUI();
-  </script>
+          <div class="section-card dynamic-fields" id="dynamicFields">
+            <h3>Datos específicos</h3>
+            <div data-group="evento">
+              <label for="fechaEvento">Fecha del evento</label>
+              <input id="fechaEvento" name="fechaEvento" type="text" placeholder="Ej: Martes 7/7" />
+              <label for="horaEvento">Hora</label>
+              <input id="horaEvento" name="horaEvento" type="text" placeholder="Ej: 9.30 hs" />
+              <label for="lugarEvento">Lugar / modalidad</label>
+              <input id="lugarEvento" name="lugarEvento" type="text" placeholder="Ej: Online / Applebee's Zona 10" />
+            </div>
+            <div data-group="producto">
+              <label for="producto">Producto a comunicar</label>
+              <input id="producto" name="producto" type="text" placeholder="Ej: Anual Multiviaje, Platinum, Maximum" />
+              <label for="beneficio1">Beneficio 1</label>
+              <input id="beneficio1" name="beneficio1" type="text" placeholder="Ej: Cobertura internacional" />
+              <label for="beneficio2">Beneficio 2</label>
+              <input id="beneficio2" name="beneficio2" type="text" placeholder="Ej: Asistencia 24/7" />
+              <label for="beneficio3">Beneficio 3</label>
+              <input id="beneficio3" name="beneficio3" type="text" placeholder="Ej: Respaldo antes y durante el viaje" />
+            </div>
+            <div data-group="conmemorativo">
+              <label for="dia">Día / efeméride</label>
+              <input id="dia" name="dia" type="text" placeholder="Ej: Día del Agente de Viajes" />
+              <label for="motivo">Motivo</label>
+              <textarea id="motivo" name="motivo" rows="3" placeholder="Ej: Mensaje institucional de saludo y reconocimiento."></textarea>
+            </div>
+          </div>
+          <div class="section-card">
+            <h3>Recursos y comentarios</h3>
+            <label for="logoPartner">Logo partner</label>
+            <input id="logoPartner" name="logoPartner" type="file" accept="image/*" />
+            <label for="imagenFondo">Imagen / fondo opcional</label>
+            <input id="imagenFondo" name="imagenFondo" type="file" accept="image/*" />
+            <label for="comentarios">Observaciones para Marketing</label>
+            <textarea id="comentarios" name="comentarios" rows="4" placeholder="Ej: Usar tono formal, priorizar beneficios, revisar logo partner."></textarea>
+          </div>
+        </form>
+      </section>
+      <section class="preview-panel">
+        <div class="preview-toolbar">
+          <div>
+            <p class="eyebrow">Vista previa</p>
+            <h2 id="previewName">Flyer de evento</h2>
+          </div>
+          <button class="ghost-button" id="copyJsonBtn" type="button">Copiar JSON</button>
+        </div>
+        <div class="canvas-wrap">
+          <article class="flyer-canvas" id="flyerCanvas">
+            <div class="flyer-bg" id="flyerBg"></div>
+            <div class="ua-logo">universal<br><strong>assistance</strong></div>
+            <div class="partner-badge" id="partnerBadge">Partner</div>
+            <img id="partnerLogoPreview" class="partner-logo hidden" alt="Logo partner" />
+            <div class="flyer-content">
+              <p class="market" id="marketPreview">Perú</p>
+              <h2 id="titlePreview">Título del flyer</h2>
+              <p id="subtitlePreview">La bajada de la pieza se verá acá, con el tono comercial adaptado al país.</p>
+              <div class="details-box" id="detailsPreview">Completá los datos específicos para verlos acá.</div>
+              <button id="ctaPreview">CTA</button>
+            </div>
+            <p class="legal" id="legalPreview">SUJETO A CONDICIONES GENERALES</p>
+          </article>
+        </div>
+        <div class="submit-card">
+          <div>
+            <p class="eyebrow">Estado de solicitud</p>
+            <h3 id="submitTitle">Borrador listo para revisar</h3>
+            <p id="submitDescription">Cuando esté completo, enviá la solicitud para que llegue al flujo de Marketing.</p>
+          </div>
+          <button class="primary-button" id="sendBtn" type="button">Enviar solicitud</button>
+        </div>
+        <div class="result-box hidden" id="resultBox"></div>
+      </section>
+    </main>
+  </div>
+  <script src="script.js"></script>
 </body>
 </html>
