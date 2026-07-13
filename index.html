@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>UA Flyer Studio v5</title>
+  <title>UA Flyer Studio v5.1</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -463,6 +463,7 @@
     }
 
     .partner-badge{
+      display:none;
       position:absolute;
       top:5.8%;
       right:7%;
@@ -715,25 +716,6 @@
             <option value="a4" selected>A4 vertical</option>
           </select>
 
-          <label for="pais">País / mercado</label>
-          <select id="pais">
-            <option>Argentina</option>
-            <option>Uruguay</option>
-            <option>Paraguay</option>
-            <option>Chile</option>
-            <option>Perú</option>
-            <option>Ecuador</option>
-            <option>Colombia</option>
-            <option>México</option>
-            <option>Guatemala</option>
-            <option>Honduras</option>
-            <option>Nicaragua</option>
-            <option>El Salvador</option>
-            <option>Costa Rica</option>
-            <option>Panamá</option>
-            <option>República Dominicana</option>
-          </select>
-
           <label for="partner">Partner / agencia</label>
           <input id="partner" type="text" placeholder="Ej: HotelDO, Tivoli, Despegar" />
 
@@ -898,7 +880,6 @@
     const fields = {
       tipo: document.getElementById("tipo"),
       formato: document.getElementById("formato"),
-      pais: document.getElementById("pais"),
       partner: document.getElementById("partner"),
       solicitante: document.getElementById("solicitante"),
       titulo: document.getElementById("titulo"),
@@ -1118,7 +1099,6 @@
       return {
         tipo: fields.tipo.value,
         formato: "A4 vertical",
-        pais: fields.pais.value,
         partner: fields.partner.value,
         solicitante: fields.solicitante.value,
         titulo: fields.titulo.value,
@@ -1289,13 +1269,6 @@
           const w = pLogo.width*ratio, h = pLogo.height*ratio;
           ctx.drawImage(pLogo, chipX+(chipW-w)/2, chipY+(chipH-h)/2, w, h);
         }catch(e){}
-      } else {
-        ctx.fillStyle = "rgba(255,255,255,.16)";
-        const bx=rect.width*.79, by=rect.height*.058, bw=rect.width*.16, bh=rect.height*.044;
-        roundRect(ctx,bx,by,bw,bh,bh/2); ctx.fill();
-        ctx.strokeStyle = "rgba(255,255,255,.26)"; ctx.stroke();
-        ctx.fillStyle="#fff"; ctx.font=`900 ${rect.width*.016}px Poppins, Arial`; ctx.textAlign="center";
-        ctx.fillText("PARTNER",bx+bw/2,by+bh*.62); ctx.textAlign="left";
       }
 
       const title = fields.titulo.value.trim() || adaptDefaultTitle();
