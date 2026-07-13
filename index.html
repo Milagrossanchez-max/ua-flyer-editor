@@ -310,7 +310,10 @@
 
     .flyer-canvas{
       position:relative;
-      width:min(590px,56vw);
+      height:min(100%, 720px);
+      max-height:100%;
+      max-width:100%;
+      width:auto;
       aspect-ratio:1080 / 1530;
       border-radius:34px;
       overflow:hidden;
@@ -318,6 +321,7 @@
       color:white;
       background:linear-gradient(160deg,#00528F 0%,#008091 68%,#00C4DF 100%);
       box-shadow:0 28px 70px rgba(0,0,0,.32);
+      margin:auto;
     }
 
     .flyer-canvas::before{
@@ -355,10 +359,10 @@
 
     .ua-logo-img{
       position:absolute;
-      top:5.4%;
+      top:5.1%;
       left:6%;
-      width:30% !important;
-      max-width:170px !important;
+      width:32% !important;
+      max-width:190px !important;
       min-width:118px;
       height:auto !important;
       object-fit:contain;
@@ -377,6 +381,16 @@
       font-weight:800;
       text-transform:lowercase;
       z-index:3;
+    }
+
+    .brand-divider{
+      position:absolute;
+      top:5.8%;
+      left:40.5%;
+      width:1px;
+      height:54px;
+      background:rgba(255,255,255,.34);
+      z-index:4;
     }
 
     .partner-badge{
@@ -403,12 +417,14 @@
       position:absolute;
       top:5.2%;
       right:6%;
-      max-width:24%;
-      max-height:52px;
+      max-width:25%;
+      max-height:54px;
       object-fit:contain;
-      background:rgba(255,255,255,.92);
-      padding:8px 10px;
-      border-radius:14px;
+      background:linear-gradient(135deg, rgba(0,36,71,.26), rgba(255,255,255,.10));
+      border:1px solid rgba(255,255,255,.22);
+      box-shadow:0 10px 24px rgba(0,0,0,.16);
+      padding:10px 12px;
+      border-radius:16px;
       z-index:4;
     }
 
@@ -426,35 +442,31 @@
     }
 
     .market{
-      display:inline-flex;
-      align-self:flex-start;
-      padding:8px 13px;
-      border-radius:999px;
-      background:rgba(255,255,255,.2);
-      border:1px solid rgba(255,255,255,.24);
-      color:white;
-      font-weight:900;
-      font-size:12px;
-      letter-spacing:.1em;
-      text-transform:uppercase;
+      display:none;
     }
 
     .flyer-content h2{
-      max-width:86%;
+      max-width:90%;
       font-size:clamp(38px,3.7vw,58px);
       line-height:.96;
       letter-spacing:-.06em;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+      hyphens:auto;
     }
 
     .flyer-content p{
-      max-width:88%;
+      max-width:92%;
       color:rgba(255,255,255,.88);
       font-size:clamp(14px,1.1vw,17px);
       line-height:1.42;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+      hyphens:auto;
     }
 
     .details-box{
-      max-width:92%;
+      max-width:94%;
       padding:14px 15px;
       border-radius:20px;
       background:rgba(0,36,71,.32);
@@ -462,6 +474,8 @@
       color:white;
       font-size:clamp(11px,.95vw,13px);
       line-height:1.55;
+      overflow-wrap:anywhere;
+      word-break:break-word;
     }
 
     .flyer-content button{
@@ -630,9 +644,7 @@
 
             <label for="formato">Formato</label>
             <select id="formato" name="formato">
-              <option value="feed">Instagram / LinkedIn Feed</option>
-              <option value="story">Historia / Story</option>
-              <option value="a4">A4 vertical</option>
+              <option value="a4" selected>A4 vertical</option>
             </select>
 
             <label for="pais">País / mercado</label>
@@ -667,7 +679,7 @@
             <input id="titulo" name="titulo" type="text" maxlength="90" placeholder="Ej: Potenciá tus ventas con UA" />
 
             <label for="bajada">Bajada / mensaje secundario <span id="bajadaCount">0/130</span></label>
-            <textarea id="bajada" name="bajada" rows="4" maxlength="190" placeholder="Ej: Soluciones de asistencia al viajero pensadas para cada pasajero."></textarea>
+            <textarea id="bajada" name="bajada" rows="4" maxlength="130" placeholder="Ej: Soluciones de asistencia al viajero pensadas para cada pasajero."></textarea>
 
             <label for="cta">CTA</label>
             <input id="cta" name="cta" type="text" placeholder="Ej: Conocé más" />
@@ -754,6 +766,7 @@
 
             <div class="ua-wordmark-fallback">universal<br><strong>assistance</strong></div>
 
+            <div class="brand-divider hidden" id="brandDivider"></div>
             <div class="partner-badge" id="partnerBadge">Partner</div>
             <img id="partnerLogoPreview" class="partner-logo hidden" alt="Logo partner" />
 
@@ -813,6 +826,7 @@
       market: document.getElementById("marketPreview"),
       partnerBadge: document.getElementById("partnerBadge"),
       partnerLogo: document.getElementById("partnerLogoPreview"),
+      brandDivider: document.getElementById("brandDivider"),
       bg: document.getElementById("flyerBg"),
       title: document.getElementById("titlePreview"),
       subtitle: document.getElementById("subtitlePreview"),
@@ -878,6 +892,8 @@
 
         if (fieldName === "tipo") {
           fields[fieldName].value = cleanValue.toLowerCase();
+        } else if (fieldName === "formato") {
+          fields[fieldName].value = "a4";
         } else {
           fields[fieldName].value = cleanValue;
         }
@@ -945,7 +961,7 @@
       const tipo = fields.tipo.value;
       const partner = fields.partner.value.trim() || "Partner";
       const titulo = adaptDefaultTitle();
-      const bajada = fields.bajada.value.trim() || "La bajada de la pieza se verá acá, con el tono comercial adaptado al país.";
+      const bajada = fields.bajada.value.trim() || "La bajada de la pieza se verá acá, con el tono comercial definido para la pieza.";
       const cta = fields.cta.value.trim() || "Conocé más";
 
       preview.name.textContent = typeLabels[tipo];
@@ -1055,14 +1071,34 @@
       const lines = [];
       let line = "";
 
+      function splitLongWord(word) {
+        const parts = [];
+        let chunk = "";
+        [...word].forEach((char) => {
+          const test = chunk + char;
+          if (ctx.measureText(test).width > maxWidth && chunk) {
+            parts.push(chunk);
+            chunk = char;
+          } else {
+            chunk = test;
+          }
+        });
+        if (chunk) parts.push(chunk);
+        return parts;
+      }
+
       words.forEach((word) => {
-        const testLine = line ? `${line} ${word}` : word;
-        if (ctx.measureText(testLine).width > maxWidth && line) {
-          lines.push(line);
-          line = word;
-        } else {
-          line = testLine;
-        }
+        const wordParts = ctx.measureText(word).width > maxWidth ? splitLongWord(word) : [word];
+
+        wordParts.forEach((part) => {
+          const testLine = line ? `${line} ${part}` : part;
+          if (ctx.measureText(testLine).width > maxWidth && line) {
+            lines.push(line);
+            line = part;
+          } else {
+            line = testLine;
+          }
+        });
       });
 
       if (line) lines.push(line);
@@ -1181,7 +1217,7 @@
 
       ctx.fillStyle = "rgba(255,255,255,.88)";
       ctx.font = "500 29px Poppins, Arial";
-      const bajada = fields.bajada.value.trim() || "La bajada de la pieza se verá acá, con el tono comercial adaptado al país.";
+      const bajada = fields.bajada.value.trim() || "La bajada de la pieza se verá acá, con el tono comercial definido para la pieza.";
       y = drawWrappedText(ctx, bajada, 76, y + 36, 815, 42, 4);
 
       const details = getDetailsText();
@@ -1217,7 +1253,16 @@
 
     function previewImage(input, target, isBackground = false) {
       const file = input.files && input.files[0];
-      if (!file) return;
+
+      if (!file) {
+        if (!isBackground) {
+          target.classList.add("hidden");
+          target.removeAttribute("src");
+          preview.partnerBadge.classList.remove("hidden");
+          preview.brandDivider.classList.add("hidden");
+        }
+        return;
+      }
 
       const reader = new FileReader();
       reader.onload = (event) => {
@@ -1227,6 +1272,7 @@
           target.src = event.target.result;
           target.classList.remove("hidden");
           preview.partnerBadge.classList.add("hidden");
+          preview.brandDivider.classList.remove("hidden");
         }
       };
       reader.readAsDataURL(file);
@@ -1252,6 +1298,7 @@
       preview.partnerLogo.classList.add("hidden");
       preview.partnerLogo.removeAttribute("src");
       preview.partnerBadge.classList.remove("hidden");
+      preview.brandDivider.classList.add("hidden");
       preview.bg.style.backgroundImage = "";
       resultBox.classList.add("hidden");
 
