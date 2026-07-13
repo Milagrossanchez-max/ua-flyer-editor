@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>UA Flyer Studio</title>
+  <title>UA Flyer Studio v4.4</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap');
 
@@ -471,7 +471,7 @@
       position:absolute;
       left:7%;
       right:7%;
-      top:35%;
+      top:34%;
       bottom:auto;
       display:flex;
       flex-direction:column;
@@ -750,6 +750,23 @@
       margin-top:8px;
     }
 
+  
+    /* Fix v4.4: datos específicos visibles según tipo */
+    .dynamic-fields [data-group]{
+      display:none;
+    }
+
+    .dynamic-fields [data-group].active{
+      display:block;
+    }
+
+    body.tipo-evento [data-group="evento"],
+    body.tipo-producto [data-group="producto"],
+    body.tipo-conmemorativo [data-group="conmemorativo"],
+    body.tipo-otro [data-group="otro"]{
+      display:block;
+    }
+
   </style>
 </head>
 
@@ -906,7 +923,7 @@
               <label for="detalleOtro">Detalle del pedido</label>
               <textarea id="detalleOtro" name="detalleOtro" rows="3" placeholder="Contá brevemente qué necesitás comunicar."></textarea>
             </div>
-          </div>
+          </div></div>
 
           <div class="section-card hidden" id="qrSection">
             <div class="section-heading">
@@ -927,7 +944,7 @@
 
           <div class="section-card">
             <div class="section-heading">
-              <span>05</span>
+              <span>04</span>
               <h3>Assets opcionales</h3>
             </div>
 
@@ -975,7 +992,6 @@
             <img id="partnerLogoPreview" class="partner-logo hidden" alt="Logo partner" />
 
             <div class="flyer-content">
-              <p class="market" id="marketPreview">Uruguay</p>
               <h2 id="titlePreview">Título del flyer</h2>
               <p id="subtitlePreview">La bajada de la pieza se verá acá, con el tono comercial definido para la pieza.</p>
               <div class="details-box" id="detailsPreview">Completá los datos específicos para verlos acá.</div>
@@ -1036,7 +1052,6 @@
 
     const preview = {
       name: document.getElementById("previewName"),
-      market: document.getElementById("marketPreview"),
       partnerBadge: document.getElementById("partnerBadge"),
       partnerLogo: document.getElementById("partnerLogoPreview"),
       brandDivider: document.getElementById("brandDivider"),
@@ -1122,17 +1137,25 @@
     }
 
     function updateDynamicFields() {
+      const tipo = fields.tipo.value || "evento";
+
+      document.body.classList.remove("tipo-evento", "tipo-producto", "tipo-conmemorativo", "tipo-otro");
+      document.body.classList.add(`tipo-${tipo}`);
+
       document.querySelectorAll("[data-group]").forEach((group) => {
-        group.classList.toggle("active", group.dataset.group === fields.tipo.value);
+        group.classList.toggle("active", group.dataset.group === tipo);
       });
     }
 
     function updateCounters() {
-      tituloCount.textContent = `${fields.titulo.value.length}/64`;
-      bajadaCount.textContent = `${fields.bajada.value.length}/130`;
+      const titleLength = (fields.titulo.value || "").length;
+      const bajadaLength = (fields.bajada.value || "").length;
 
-      tituloCount.style.color = fields.titulo.value.length > 64 ? "#ff436e" : "#6B7280";
-      bajadaCount.style.color = fields.bajada.value.length > 130 ? "#ff436e" : "#6B7280";
+      tituloCount.textContent = `${titleLength}/64`;
+      bajadaCount.textContent = `${bajadaLength}/130`;
+
+      tituloCount.style.color = titleLength > 64 ? "#ff436e" : "#6B7280";
+      bajadaCount.style.color = bajadaLength > 130 ? "#ff436e" : "#6B7280";
     }
 
     function getDetailsText() {
@@ -1191,30 +1214,16 @@
       const selected = fields.ctaTipo.value;
 
       if (selected === "Sin CTA") return "";
-      if (selected === "otro") return fields.cta.value.trim();
+      if (selected === "otro") return (fields.cta.value || "").trim() || "CTA";
 
       return selected || "Conocé más";
     }
 
-    function normalizeUrl(url) {
-      const clean = String(url || "").trim();
-      if (!clean) return "";
-      if (/^https?:\/\//i.test(clean)) return clean;
-      return `https://${clean}`;
-    }
-
-    function getQrUrl() {
-      const url = normalizeUrl(fields.qrLink.value);
-      if (fields.ctaTipo.value !== "Sin CTA") return "";
-      if (!url || !fields.usarQr.checked) return "";
-      return `https://quickchart.io/qr?text=${encodeURIComponent(url)}&size=260&margin=1`;
-    }
-
     function updatePreview() {
-      const tipo = fields.tipo.value;
-      const partner = fields.partner.value.trim() || "Partner";
-      const titulo = adaptDefaultTitle();
-      const bajada = fields.bajada.value.trim() || "La bajada de la pieza se verá acá, con el tono comercial definido para la pieza.";
+      const tipo = fields.tipo.value || "evento";
+      const partner = (fields.partner.value || "").trim() || "Partner";
+      const titulo = (fields.titulo.value || "").trim() || adaptDefaultTitle();
+      const bajada = (fields.bajada.value || "").trim() || "La bajada de la pieza se verá acá, con el tono comercial definido para la pieza.";
       const cta = getCtaText();
 
       fields.ctaCustomWrap.classList.toggle("hidden", fields.ctaTipo.value !== "otro");
@@ -1227,10 +1236,7 @@
 
       const qrUrl = getQrUrl();
 
-      applyPartnerLogoMode();
-
-      preview.name.textContent = typeLabels[tipo];
-      preview.market.textContent = "";
+      preview.name.textContent = typeLabels[tipo] || "Otro tipo de pieza";
       preview.partnerBadge.textContent = partner;
       preview.title.textContent = titulo;
       preview.subtitle.textContent = bajada;
@@ -1254,6 +1260,7 @@
 
       updateDynamicFields();
       updateCounters();
+      applyPartnerLogoMode();
     }
 
     function getRequestData() {
@@ -1652,8 +1659,12 @@
     Object.values(fields).forEach((field) => {
       if (!field || field.type === "file") return;
       field.addEventListener("input", updatePreview);
+      field.addEventListener("keyup", updatePreview);
       field.addEventListener("change", updatePreview);
     });
+
+    document.getElementById("requestForm").addEventListener("input", updatePreview);
+    document.getElementById("requestForm").addEventListener("change", updatePreview);
 
     fields.logoPartner.addEventListener("change", () => previewImage(fields.logoPartner, preview.partnerLogo));
     fields.imagenFondo.addEventListener("change", () => previewImage(fields.imagenFondo, preview.bg, true));
