@@ -24,7 +24,7 @@
     *{box-sizing:border-box;margin:0;padding:0;}
     html,body{height:100%;}
     body{
-      overflow:hidden;
+      overflow:auto;
       font-family:"Poppins",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
       color:var(--text);
       background:
@@ -36,7 +36,7 @@
     button,input,select,textarea{font:inherit;}
     button{cursor:pointer;}
 
-    .app-shell{height:100vh;}
+    .app-shell{min-height:100vh;}
 
     .topbar{
       height:78px;
@@ -123,20 +123,23 @@
 
 
     .workspace{
-      height:calc(100vh - 78px);
+      min-height:calc(100vh - 78px);
       max-width:none;
       padding:18px 22px;
       display:grid;
       grid-template-columns:430px minmax(620px,1fr);
       gap:20px;
-      overflow:hidden;
+      overflow:visible;
+      align-items:start;
     }
 
     .form-panel{
       min-height:0;
-      height:100%;
+      height:calc(100vh - 114px);
       overflow-y:auto;
       padding-right:6px;
+      position:sticky;
+      top:96px;
     }
 
     .form-panel::-webkit-scrollbar,
@@ -250,10 +253,10 @@
 
     .preview-panel{
       min-height:0;
-      height:100%;
-      overflow:hidden;
+      height:auto;
+      overflow:visible;
       display:grid;
-      grid-template-rows:76px 1fr 92px auto;
+      grid-template-rows:76px minmax(620px, auto) 92px auto;
       gap:14px;
     }
 
@@ -295,9 +298,9 @@
     .ghost-button:hover{background:#DDF1FB;}
 
     .canvas-wrap{
-      min-height:0;
-      height:100%;
-      overflow:auto;
+      min-height:620px;
+      height:620px;
+      overflow:hidden;
       padding:20px;
       border-radius:30px;
       display:grid;
@@ -310,8 +313,9 @@
 
     .flyer-canvas{
       position:relative;
-      height:min(100%, 700px);
-      max-height:100%;
+      height:560px;
+      max-height:calc(100vh - 250px);
+      min-height:520px;
       max-width:100%;
       width:auto;
       aspect-ratio:1080 / 1530;
@@ -385,10 +389,10 @@
 
     .brand-divider{
       position:absolute;
-      top:5.9%;
-      left:39%;
+      top:5.8%;
+      left:41%;
       width:1px;
-      height:52px;
+      height:46px;
       background:rgba(255,255,255,.38);
       z-index:4;
     }
@@ -417,9 +421,9 @@
       position:absolute;
       top:5.2%;
       right:6%;
-      width:25%;
-      max-width:154px;
-      height:54px;
+      width:24%;
+      max-width:135px;
+      height:48px;
       object-fit:contain;
       background:linear-gradient(135deg, rgba(0,36,71,.34), rgba(255,255,255,.12));
       border:1px solid rgba(255,255,255,.24);
@@ -435,11 +439,11 @@
       position:absolute;
       left:7%;
       right:7%;
-      top:34%;
+      top:36%;
       bottom:auto;
       display:flex;
       flex-direction:column;
-      gap:16px;
+      gap:13px;
       z-index:3;
     }
 
@@ -448,37 +452,41 @@
     }
 
     .flyer-content h2{
-      max-width:92%;
-      font-size:clamp(34px,3.25vw,50px);
-      line-height:.98;
-      letter-spacing:-.055em;
-      overflow-wrap:anywhere;
-      word-break:break-word;
-      hyphens:auto;
-    }
-
-    .flyer-content p{
-      max-width:92%;
-      color:rgba(255,255,255,.88);
-      font-size:clamp(12px,1vw,15px);
-      line-height:1.38;
-      overflow-wrap:anywhere;
-      word-break:break-word;
-      hyphens:auto;
+      max-width:94%;
+      font-size:clamp(28px,2.6vw,40px);
+      line-height:1;
+      letter-spacing:-.052em;
+      overflow-wrap:normal;
+      word-break:normal;
+      hyphens:none;
       display:-webkit-box;
       -webkit-line-clamp:4;
       -webkit-box-orient:vertical;
       overflow:hidden;
     }
 
+    .flyer-content p{
+      max-width:92%;
+      color:rgba(255,255,255,.88);
+      font-size:clamp(11px,.9vw,14px);
+      line-height:1.35;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+      hyphens:none;
+      display:-webkit-box;
+      -webkit-line-clamp:3;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+
     .details-box{
       max-width:94%;
-      padding:14px 15px;
+      padding:11px 13px;
       border-radius:20px;
       background:rgba(0,36,71,.32);
       border:1px solid rgba(255,255,255,.22);
       color:white;
-      font-size:clamp(11px,.95vw,13px);
+      font-size:clamp(10px,.82vw,12px);
       line-height:1.55;
       overflow-wrap:anywhere;
       word-break:break-word;
@@ -488,7 +496,7 @@
       align-self:flex-start;
       border:none;
       border-radius:999px;
-      padding:13px 22px;
+      padding:11px 19px;
       background:white;
       color:var(--ua-blue);
       font-weight:900;
@@ -563,6 +571,71 @@
       overflow:auto;
     }
 
+
+    .check-row{
+      justify-content:flex-start;
+      gap:10px;
+      padding:11px 12px;
+      border:1px solid var(--border);
+      border-radius:14px;
+      background:#FFFFFF;
+      margin-top:10px;
+      cursor:pointer;
+    }
+
+    .check-row input{
+      width:18px;
+      min-height:18px;
+      height:18px;
+      accent-color:var(--ua-teal);
+    }
+
+    .check-row span{
+      color:#24364B;
+      font-weight:800;
+      font-size:12px;
+      text-transform:none;
+      letter-spacing:0;
+    }
+
+    .qr-preview{
+      position:absolute;
+      right:7%;
+      bottom:8.5%;
+      width:21%;
+      max-width:92px;
+      aspect-ratio:1;
+      background:#FFFFFF;
+      border-radius:16px;
+      padding:8px;
+      box-shadow:0 12px 26px rgba(0,0,0,.22);
+      z-index:5;
+    }
+
+    .flyer-has-qr .flyer-content{
+      right:30%;
+    }
+
+    .flyer-has-qr .legal{
+      right:30%;
+    }
+
+    @media (max-width:1220px){
+      .preview-panel{
+        grid-template-rows:76px minmax(580px, auto) 92px auto;
+      }
+
+      .canvas-wrap{
+        min-height:580px;
+        height:580px;
+      }
+
+      .flyer-canvas{
+        height:530px;
+        min-height:500px;
+      }
+    }
+
     @media (max-width:1220px){
       .workspace{
         grid-template-columns:390px minmax(560px,1fr);
@@ -597,6 +670,7 @@
       .form-panel,.preview-panel{
         height:auto;
         overflow:visible;
+        position:static;
       }
 
       .preview-panel{
@@ -720,6 +794,16 @@
               <input id="cta" name="cta" type="text" placeholder="Escribí el CTA exacto" />
             </div>
 
+            <div id="ctaLinkWrap">
+              <label for="ctaLink">Link del CTA</label>
+              <input id="ctaLink" name="ctaLink" type="url" placeholder="https://..." />
+
+              <label class="check-row" for="usarQr">
+                <input id="usarQr" name="usarQr" type="checkbox" />
+                <span>Agregar QR con este link</span>
+              </label>
+            </div>
+
             <label for="objetivo">Objetivo de la pieza</label>
             <textarea id="objetivo" name="objetivo" rows="3" placeholder="Ej: Comunicar una capacitación para agencias."></textarea>
           </div>
@@ -822,6 +906,7 @@
               <button id="ctaPreview" type="button">CTA</button>
             </div>
 
+            <img id="qrPreview" class="qr-preview hidden" alt="QR del CTA" />
             <p class="legal" id="legalPreview">SUJETO A CONDICIONES GENERALES</p>
           </article>
         </div>
@@ -853,6 +938,8 @@
       ctaTipo: document.getElementById("ctaTipo"),
       cta: document.getElementById("cta"),
       ctaCustomWrap: document.getElementById("ctaCustomWrap"),
+      ctaLink: document.getElementById("ctaLink"),
+      usarQr: document.getElementById("usarQr"),
       objetivo: document.getElementById("objetivo"),
       fechaEvento: document.getElementById("fechaEvento"),
       horaEvento: document.getElementById("horaEvento"),
@@ -881,6 +968,7 @@
       cta: document.getElementById("ctaPreview"),
       details: document.getElementById("detailsPreview"),
       canvas: document.getElementById("flyerCanvas"),
+      qr: document.getElementById("qrPreview"),
     };
 
     const resultBox = document.getElementById("resultBox");
@@ -1027,6 +1115,12 @@
       return selected || "Conocé más";
     }
 
+    function getQrUrl() {
+      const url = fields.ctaLink.value.trim();
+      if (!url || !fields.usarQr.checked) return "";
+      return `https://quickchart.io/qr?text=${encodeURIComponent(url)}&size=260&margin=1`;
+    }
+
     function updatePreview() {
       const tipo = fields.tipo.value;
       const partner = fields.partner.value.trim() || "Partner";
@@ -1035,6 +1129,9 @@
       const cta = getCtaText();
 
       fields.ctaCustomWrap.classList.toggle("hidden", fields.ctaTipo.value !== "otro");
+      document.getElementById("ctaLinkWrap").classList.toggle("hidden", fields.ctaTipo.value === "Sin CTA");
+
+      const qrUrl = getQrUrl();
 
       preview.name.textContent = typeLabels[tipo];
       preview.market.textContent = "";
@@ -1044,6 +1141,16 @@
       preview.cta.textContent = cta || "";
       preview.cta.classList.toggle("hidden-cta", !cta);
       preview.details.textContent = getDetailsText();
+
+      if (qrUrl) {
+        preview.qr.src = qrUrl;
+        preview.qr.classList.remove("hidden");
+        preview.canvas.classList.add("flyer-has-qr");
+      } else {
+        preview.qr.classList.add("hidden");
+        preview.qr.removeAttribute("src");
+        preview.canvas.classList.remove("flyer-has-qr");
+      }
 
       updateDynamicFields();
       updateCounters();
@@ -1059,6 +1166,8 @@
         titulo: fields.titulo.value,
         bajada: fields.bajada.value,
         cta: getCtaText(),
+        ctaLink: fields.ctaLink.value,
+        agregarQr: fields.usarQr.checked,
         objetivo: fields.objetivo.value,
         evento: {
           fecha: fields.fechaEvento.value,
@@ -1310,11 +1419,28 @@
       const ctaText = getCtaText();
       if (ctaText) {
         ctx.fillStyle = "#FFFFFF";
-        roundRect(ctx, 76, y + 135, 240, 70, 35);
+        roundRect(ctx, 76, y + 125, 240, 70, 35);
         ctx.fill();
         ctx.fillStyle = "#00528F";
         ctx.font = "900 24px Poppins, Arial";
-        ctx.fillText(ctaText, 105, y + 179);
+        ctx.fillText(ctaText, 105, y + 169);
+      }
+
+      // QR
+      const qrUrl = getQrUrl();
+      if (qrUrl) {
+        try {
+          const qrImg = await loadImage(qrUrl);
+          ctx.fillStyle = "#FFFFFF";
+          roundRect(ctx, 822, 1200, 150, 150, 22);
+          ctx.fill();
+          ctx.drawImage(qrImg, 835, 1213, 124, 124);
+          ctx.fillStyle = "#FFFFFF";
+          ctx.font = "800 17px Poppins, Arial";
+          ctx.textAlign = "center";
+          ctx.fillText("Escaneá el QR", 897, 1382);
+          ctx.textAlign = "left";
+        } catch(e) {}
       }
 
       // Legal
@@ -1369,6 +1495,11 @@
           return;
         }
 
+        if (field.type === "checkbox") {
+          field.checked = false;
+          return;
+        }
+
         if (keepSelectDefaults.includes(key)) return;
 
         field.value = "";
@@ -1381,6 +1512,9 @@
       preview.bg.style.backgroundImage = "";
       fields.ctaTipo.value = "Conocé más";
       fields.ctaCustomWrap.classList.add("hidden");
+      preview.qr.classList.add("hidden");
+      preview.qr.removeAttribute("src");
+      preview.canvas.classList.remove("flyer-has-qr");
       resultBox.classList.add("hidden");
 
       updatePreview();
