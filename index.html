@@ -364,21 +364,31 @@
     .ua-logo-img{
       position:absolute;
       top:5.2%;
-      left:6%;
-      width:30% !important;
-      max-width:176px !important;
-      min-width:112px;
+      left:50%;
+      transform:translateX(-50%);
+      width:34% !important;
+      max-width:205px !important;
+      min-width:128px;
       height:auto !important;
       object-fit:contain;
       z-index:3;
       display:block;
     }
 
+    .flyer-has-partner .ua-logo-img{
+      left:6%;
+      transform:none;
+      width:30% !important;
+      max-width:176px !important;
+      min-width:112px;
+    }
+
     .ua-wordmark-fallback{
       display:none;
       position:absolute;
       top:5.5%;
-      left:6%;
+      left:50%;
+      transform:translateX(-50%);
       font-size:20px;
       line-height:.86;
       letter-spacing:-.05em;
@@ -387,17 +397,23 @@
       z-index:3;
     }
 
+    .flyer-has-partner .ua-wordmark-fallback{
+      left:6%;
+      transform:none;
+    }
+
     .brand-divider{
       position:absolute;
       top:5.8%;
-      left:41%;
+      left:50%;
       width:1px;
-      height:46px;
-      background:rgba(255,255,255,.38);
+      height:50px;
+      background:rgba(255,255,255,.42);
       z-index:4;
     }
 
     .partner-badge{
+      display:none;
       position:absolute;
       top:5.9%;
       right:6%;
@@ -421,15 +437,15 @@
       position:absolute;
       top:5.2%;
       right:6%;
-      width:24%;
-      max-width:135px;
-      height:48px;
+      width:28%;
+      max-width:165px;
+      height:56px;
       object-fit:contain;
-      background:linear-gradient(135deg, rgba(0,36,71,.34), rgba(255,255,255,.12));
-      border:1px solid rgba(255,255,255,.24);
-      box-shadow:0 10px 24px rgba(0,0,0,.18);
-      padding:10px 12px;
-      border-radius:16px;
+      background:linear-gradient(135deg, rgba(0,36,71,.74), rgba(0,128,145,.42));
+      border:1px solid rgba(255,255,255,.34);
+      box-shadow:0 12px 26px rgba(0,0,0,.22);
+      padding:10px 14px;
+      border-radius:18px;
       z-index:4;
     }
 
@@ -439,7 +455,7 @@
       position:absolute;
       left:7%;
       right:7%;
-      top:36%;
+      top:35%;
       bottom:auto;
       display:flex;
       flex-direction:column;
@@ -453,16 +469,28 @@
 
     .flyer-content h2{
       max-width:94%;
-      font-size:clamp(28px,2.6vw,40px);
+      font-size:clamp(30px,2.75vw,43px);
       line-height:1;
       letter-spacing:-.052em;
-      overflow-wrap:normal;
-      word-break:normal;
+      overflow-wrap:anywhere;
+      word-break:break-word;
       hyphens:none;
       display:-webkit-box;
-      -webkit-line-clamp:4;
+      -webkit-line-clamp:5;
       -webkit-box-orient:vertical;
       overflow:hidden;
+    }
+
+    .flyer-title-long .flyer-content h2{
+      font-size:clamp(25px,2.25vw,35px);
+      line-height:1.02;
+      -webkit-line-clamp:6;
+    }
+
+    .flyer-title-xlong .flyer-content h2{
+      font-size:clamp(22px,1.95vw,30px);
+      line-height:1.04;
+      -webkit-line-clamp:7;
     }
 
     .flyer-content p{
@@ -504,6 +532,11 @@
 
     .flyer-content button.hidden-cta{
       display:none;
+    }
+
+    .flyer-content button.linked{
+      box-shadow:0 12px 28px rgba(255,255,255,.16);
+      cursor:pointer;
     }
 
     .legal{
@@ -601,9 +634,9 @@
     .qr-preview{
       position:absolute;
       right:7%;
-      bottom:8.5%;
+      bottom:10%;
       width:21%;
-      max-width:92px;
+      max-width:98px;
       aspect-ratio:1;
       background:#FFFFFF;
       border-radius:16px;
@@ -612,12 +645,20 @@
       z-index:5;
     }
 
-    .flyer-has-qr .flyer-content{
-      right:30%;
+    .flyer-has-qr .details-box{
+      max-width:66%;
     }
 
     .flyer-has-qr .legal{
       right:30%;
+    }
+
+    .helper-text{
+      margin:-2px 0 12px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.45;
+      font-weight:600;
     }
 
     @media (max-width:1220px){
@@ -797,11 +838,6 @@
             <div id="ctaLinkWrap">
               <label for="ctaLink">Link del CTA</label>
               <input id="ctaLink" name="ctaLink" type="url" placeholder="https://..." />
-
-              <label class="check-row" for="usarQr">
-                <input id="usarQr" name="usarQr" type="checkbox" />
-                <span>Agregar QR con este link</span>
-              </label>
             </div>
 
             <label for="objetivo">Objetivo de la pieza</label>
@@ -856,9 +892,26 @@
             </div>
           </div>
 
-          <div class="section-card">
+          <div class="section-card hidden" id="qrSection">
             <div class="section-heading">
               <span>04</span>
+              <h3>QR opcional</h3>
+            </div>
+
+            <p class="helper-text">Usalo cuando el flyer no lleve botón de CTA.</p>
+
+            <label for="qrLink">Link para generar QR</label>
+            <input id="qrLink" name="qrLink" type="url" placeholder="https://..." />
+
+            <label class="check-row" for="usarQr">
+              <input id="usarQr" name="usarQr" type="checkbox" />
+              <span>Mostrar QR en el flyer</span>
+            </label>
+          </div>
+
+          <div class="section-card">
+            <div class="section-heading">
+              <span>05</span>
               <h3>Assets opcionales</h3>
             </div>
 
@@ -939,6 +992,7 @@
       cta: document.getElementById("cta"),
       ctaCustomWrap: document.getElementById("ctaCustomWrap"),
       ctaLink: document.getElementById("ctaLink"),
+      qrLink: document.getElementById("qrLink"),
       usarQr: document.getElementById("usarQr"),
       objetivo: document.getElementById("objetivo"),
       fechaEvento: document.getElementById("fechaEvento"),
@@ -1005,6 +1059,8 @@
         copy: "bajada",
         cta: "cta",
         ctaTipo: "ctaTipo",
+        ctaLink: "ctaLink",
+        qrLink: "qrLink",
         objetivo: "objetivo",
         fecha: "fechaEvento",
         date: "fechaEvento",
@@ -1115,8 +1171,16 @@
       return selected || "Conocé más";
     }
 
+    function normalizeUrl(url) {
+      const clean = String(url || "").trim();
+      if (!clean) return "";
+      if (/^https?:\/\//i.test(clean)) return clean;
+      return `https://${clean}`;
+    }
+
     function getQrUrl() {
-      const url = fields.ctaLink.value.trim();
+      const url = normalizeUrl(fields.qrLink.value);
+      if (fields.ctaTipo.value !== "Sin CTA") return "";
       if (!url || !fields.usarQr.checked) return "";
       return `https://quickchart.io/qr?text=${encodeURIComponent(url)}&size=260&margin=1`;
     }
@@ -1130,6 +1194,11 @@
 
       fields.ctaCustomWrap.classList.toggle("hidden", fields.ctaTipo.value !== "otro");
       document.getElementById("ctaLinkWrap").classList.toggle("hidden", fields.ctaTipo.value === "Sin CTA");
+      document.getElementById("qrSection").classList.toggle("hidden", fields.ctaTipo.value !== "Sin CTA");
+
+      if (fields.ctaTipo.value !== "Sin CTA") {
+        fields.usarQr.checked = false;
+      }
 
       const qrUrl = getQrUrl();
 
@@ -1140,7 +1209,11 @@
       preview.subtitle.textContent = bajada;
       preview.cta.textContent = cta || "";
       preview.cta.classList.toggle("hidden-cta", !cta);
+      preview.cta.classList.toggle("linked", !!cta && !!normalizeUrl(fields.ctaLink.value));
       preview.details.textContent = getDetailsText();
+
+      preview.canvas.classList.toggle("flyer-title-long", titulo.length > 48);
+      preview.canvas.classList.toggle("flyer-title-xlong", titulo.length > 72 || /\S{18,}/.test(titulo));
 
       if (qrUrl) {
         preview.qr.src = qrUrl;
@@ -1167,7 +1240,8 @@
         bajada: fields.bajada.value,
         cta: getCtaText(),
         ctaLink: fields.ctaLink.value,
-        agregarQr: fields.usarQr.checked,
+        qrLink: fields.qrLink.value,
+        agregarQr: fields.usarQr.checked && fields.ctaTipo.value === "Sin CTA",
         objetivo: fields.objetivo.value,
         evento: {
           fecha: fields.fechaEvento.value,
@@ -1346,16 +1420,19 @@
       ctx.restore();
 
       // Logo UA
+      const hasPartnerLogoForLogo = !preview.partnerLogo.classList.contains("hidden") && preview.partnerLogo.src;
       try {
         const logo = await loadImage("UA%20Logo_Zurich%20-%20Blanco%20(4).png");
-        const logoW = 330;
+        const logoW = hasPartnerLogoForLogo ? 330 : 390;
         const logoH = logo.height * (logoW / logo.width);
-        ctx.drawImage(logo, 72, 72, logoW, logoH);
+        const logoX = hasPartnerLogoForLogo ? 72 : (1080 - logoW) / 2;
+        ctx.drawImage(logo, logoX, 72, logoW, logoH);
       } catch(e) {
         ctx.fillStyle = "#FFFFFF";
         ctx.font = "900 46px Poppins, Arial";
-        ctx.fillText("universal", 72, 105);
-        ctx.fillText("assistance", 72, 150);
+        const x = hasPartnerLogoForLogo ? 72 : 420;
+        ctx.fillText("universal", x, 105);
+        ctx.fillText("assistance", x, 150);
       }
 
       // Partner
@@ -1456,6 +1533,13 @@
       link.click();
     }
 
+
+    function openCtaLink() {
+      const url = normalizeUrl(fields.ctaLink.value);
+      if (!url || !getCtaText()) return;
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
+
     function previewImage(input, target, isBackground = false) {
       const file = input.files && input.files[0];
 
@@ -1463,8 +1547,9 @@
         if (!isBackground) {
           target.classList.add("hidden");
           target.removeAttribute("src");
-          preview.partnerBadge.classList.remove("hidden");
+          preview.partnerBadge.classList.add("hidden");
           preview.brandDivider.classList.add("hidden");
+          preview.canvas.classList.remove("flyer-has-partner");
         }
         return;
       }
@@ -1478,6 +1563,7 @@
           target.classList.remove("hidden");
           preview.partnerBadge.classList.add("hidden");
           preview.brandDivider.classList.remove("hidden");
+          preview.canvas.classList.add("flyer-has-partner");
         }
       };
       reader.readAsDataURL(file);
@@ -1507,14 +1593,17 @@
 
       preview.partnerLogo.classList.add("hidden");
       preview.partnerLogo.removeAttribute("src");
-      preview.partnerBadge.classList.remove("hidden");
+      preview.partnerBadge.classList.add("hidden");
       preview.brandDivider.classList.add("hidden");
+      preview.canvas.classList.remove("flyer-has-partner");
       preview.bg.style.backgroundImage = "";
       fields.ctaTipo.value = "Conocé más";
       fields.ctaCustomWrap.classList.add("hidden");
       preview.qr.classList.add("hidden");
       preview.qr.removeAttribute("src");
       preview.canvas.classList.remove("flyer-has-qr");
+      preview.canvas.classList.remove("flyer-title-long", "flyer-title-xlong");
+      document.getElementById("qrSection").classList.add("hidden");
       resultBox.classList.add("hidden");
 
       updatePreview();
@@ -1532,6 +1621,7 @@
     sendBtn.addEventListener("click", simulateSend);
     downloadPngBtn.addEventListener("click", downloadPng);
     clearBtn.addEventListener("click", clearForm);
+    preview.cta.addEventListener("click", openCtaLink);
 
     fields.formato.value = "a4";
     loadFromUrl();
