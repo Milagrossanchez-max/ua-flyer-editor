@@ -1,13 +1,95 @@
 <!DOCTYPE html>
 <html lang="es">
+ 
 <head>
-<meta charset="UTF-8">
-<title>UA Flyer Studio v2</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UA Flyer Studio</title>
+ 
+    <link rel="stylesheet" href="styles.css">
 </head>
  
 <body>
  
-<h1>UA Flyer Studio v2</h1>
+<header class="header">
+    <h1>UA Flyer Studio</h1>
+    <div class="acciones">
+        <button>Guardar</button>
+        <button>Vista previa</button>
+        <button class="primary">Enviar solicitud</button>
+    </div>
+</header>
+ 
+<div class="contenedor">
+ 
+    <aside class="panel izquierdo">
+ 
+        <h2>Datos del flyer</h2>
+ 
+        <label>Solicitante</label>
+        <input type="text">
+ 
+        <label>País</label>
+        <input type="text">
+ 
+        <label>Partner</label>
+        <input type="text">
+ 
+        <label>Tipo de flyer</label>
+        <select>
+            <option>Promoción</option>
+            <option>Evento</option>
+            <option>Producto</option>
+        </select>
+ 
+        <label>Título</label>
+        <input type="text">
+ 
+        <label>Bajada</label>
+        <textarea rows="4"></textarea>
+ 
+        <label>CTA</label>
+        <input type="text">
+ 
+    </aside>
+ 
+    <main class="preview">
+ 
+        <div class="flyer">
+ 
+            <h3>Vista previa del Flyer</h3>
+ 
+        </div>
+ 
+    </main>
+ 
+    <aside class="panel derecho">
+ 
+        <h2>Configuración</h2>
+ 
+        <label>Formato</label>
+ 
+        <select>
+            <option>Instagram</option>
+            <option>Historia</option>
+            <option>LinkedIn</option>
+            <option>A4</option>
+        </select>
+ 
+        <label>Plantilla</label>
+ 
+        <select>
+            <option>Corporativa</option>
+            <option>Promoción</option>
+            <option>Evento</option>
+        </select>
+ 
+    </aside>
+ 
+</div>
+ 
+<script src="script.js"></script>
  
 </body>
+ 
 </html>
