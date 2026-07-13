@@ -977,7 +977,7 @@
             <div class="flyer-content">
               <p class="market" id="marketPreview">Uruguay</p>
               <h2 id="titlePreview">Título del flyer</h2>
-              <p id="subtitlePreview">La bajada de la pieza se verá acá, con el tono comercial adaptado al país.</p>
+              <p id="subtitlePreview">La bajada de la pieza se verá acá, con el tono comercial definido para la pieza.</p>
               <div class="details-box" id="detailsPreview">Completá los datos específicos para verlos acá.</div>
               <button id="ctaPreview" type="button">CTA</button>
             </div>
@@ -1408,203 +1408,206 @@
     }
 
     async function downloadPng() {
-      const data = getRequestData();
-      const canvas = document.createElement("canvas");
-      canvas.width = 1080;
-      canvas.height = 1530;
-      const ctx = canvas.getContext("2d");
+      const canvasEl = preview.canvas;
+      const scale = 3;
+      const rect = canvasEl.getBoundingClientRect();
 
-      const bg = ctx.createLinearGradient(0, 0, 1080, 1530);
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.round(rect.width * scale);
+      canvas.height = Math.round(rect.height * scale);
+
+      const ctx = canvas.getContext("2d");
+      ctx.scale(scale, scale);
+
+      const computed = getComputedStyle(canvasEl);
+      const radius = parseFloat(computed.borderRadius) || 34;
+
+      ctx.save();
+      roundRect(ctx, 0, 0, rect.width, rect.height, radius);
+      ctx.clip();
+
+      const bg = ctx.createLinearGradient(0, 0, rect.width, rect.height);
       bg.addColorStop(0, "#00528F");
       bg.addColorStop(0.68, "#008091");
       bg.addColorStop(1, "#00C4DF");
       ctx.fillStyle = bg;
-      ctx.fillRect(0, 0, 1080, 1530);
+      ctx.fillRect(0, 0, rect.width, rect.height);
 
-      // Fondo opcional
+      // Fondo opcional cargado por la usuaria
       if (fields.imagenFondo.files && fields.imagenFondo.files[0]) {
         try {
           const imgUrl = URL.createObjectURL(fields.imagenFondo.files[0]);
           const bgImg = await loadImage(imgUrl);
           ctx.save();
           ctx.globalAlpha = 0.22;
-          drawCoverImage(ctx, bgImg, 0, 0, 1080, 1530);
+          drawCoverImage(ctx, bgImg, 0, 0, rect.width, rect.height);
           ctx.restore();
           URL.revokeObjectURL(imgUrl);
         } catch(e) {}
       }
 
-      // Elementos gráficos
+      // Elementos gráficos circulares iguales al preview
       ctx.save();
       ctx.fillStyle = "rgba(255,255,255,.13)";
       ctx.beginPath();
-      ctx.arc(925, 130, 250, 0, Math.PI * 2);
+      ctx.arc(rect.width * .84, rect.height * .08, rect.width * .24, 0, Math.PI * 2);
       ctx.fill();
 
       ctx.fillStyle = "rgba(255,67,110,.16)";
       ctx.beginPath();
-      ctx.arc(20, 1420, 185, 0, Math.PI * 2);
+      ctx.arc(rect.width * .02, rect.height * .96, rect.width * .17, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
 
-      // Logo UA
-      const hasPartnerLogoForLogo = !preview.partnerLogo.classList.contains("hidden") && preview.partnerLogo.src;
+      const hasPartnerLogo = !preview.partnerLogo.classList.contains("hidden") && preview.partnerLogo.src;
+
+      // Logo UA: centrado si no hay partner, a la izquierda si hay partner
       try {
         const logo = await loadImage("UA%20Logo_Zurich%20-%20Blanco%20(4).png");
-        const logoW = hasPartnerLogoForLogo ? 330 : 390;
+        const logoW = hasPartnerLogo ? rect.width * .30 : rect.width * .34;
         const logoH = logo.height * (logoW / logo.width);
-        const logoX = hasPartnerLogoForLogo ? 72 : (1080 - logoW) / 2;
-        ctx.drawImage(logo, logoX, 72, logoW, logoH);
+        const logoX = hasPartnerLogo ? rect.width * .06 : (rect.width - logoW) / 2;
+        const logoY = rect.height * .052;
+        ctx.drawImage(logo, logoX, logoY, logoW, logoH);
       } catch(e) {
         ctx.fillStyle = "#FFFFFF";
-        ctx.font = "900 46px Poppins, Arial";
-        const x = hasPartnerLogoForLogo ? 72 : 420;
-        ctx.fillText("universal", x, 105);
-        ctx.fillText("assistance", x, 150);
+        ctx.font = `900 ${rect.width * .04}px Poppins, Arial`;
+        const x = hasPartnerLogo ? rect.width * .06 : rect.width * .40;
+        ctx.fillText("universal", x, rect.height * .08);
+        ctx.fillText("assistance", x, rect.height * .115);
       }
 
-      // Partner
-      if (!preview.partnerLogo.classList.contains("hidden") && preview.partnerLogo.src) {
+      // Partner real o badge
+      if (hasPartnerLogo) {
         try {
+          ctx.fillStyle = "rgba(255,255,255,.42)";
+          ctx.fillRect(rect.width * .50, rect.height * .058, 1.5, rect.height * .055);
+
           const pLogo = await loadImage(preview.partnerLogo.src);
-          ctx.fillStyle = "rgba(255,255,255,.92)";
-          roundRect(ctx, 820, 72, 185, 72, 22);
-          ctx.fill();
-          const maxW = 145;
-          const maxH = 48;
+          const chipX = rect.width * .66;
+          const chipY = rect.height * .052;
+          const chipW = rect.width * .28;
+          const chipH = rect.height * .055;
+          const mode = fields.partnerLogoMode.value || "claro";
+
+          if (mode !== "sin-fondo") {
+            roundRect(ctx, chipX, chipY, chipW, chipH, rect.width * .018);
+            if (mode === "claro") {
+              ctx.fillStyle = "rgba(255,255,255,.94)";
+              ctx.fill();
+              ctx.strokeStyle = "rgba(255,255,255,.70)";
+              ctx.stroke();
+            } else {
+              const chipBg = ctx.createLinearGradient(chipX, chipY, chipX + chipW, chipY + chipH);
+              chipBg.addColorStop(0, "rgba(0,36,71,.78)");
+              chipBg.addColorStop(1, "rgba(0,128,145,.46)");
+              ctx.fillStyle = chipBg;
+              ctx.fill();
+              ctx.strokeStyle = "rgba(255,255,255,.34)";
+              ctx.stroke();
+            }
+          }
+
+          const maxW = chipW * .74;
+          const maxH = chipH * .64;
           const ratio = Math.min(maxW / pLogo.width, maxH / pLogo.height);
           const w = pLogo.width * ratio;
           const h = pLogo.height * ratio;
-          ctx.drawImage(pLogo, 820 + (185 - w) / 2, 72 + (72 - h) / 2, w, h);
+          ctx.drawImage(pLogo, chipX + (chipW - w) / 2, chipY + (chipH - h) / 2, w, h);
         } catch(e) {}
       } else {
         ctx.fillStyle = "rgba(255,255,255,.16)";
-        roundRect(ctx, 835, 80, 170, 48, 24);
+        const bx = rect.width * .79;
+        const by = rect.height * .058;
+        const bw = rect.width * .16;
+        const bh = rect.height * .044;
+        roundRect(ctx, bx, by, bw, bh, bh / 2);
         ctx.fill();
         ctx.strokeStyle = "rgba(255,255,255,.26)";
         ctx.stroke();
         ctx.fillStyle = "#FFFFFF";
-        ctx.font = "900 18px Poppins, Arial";
+        ctx.font = `900 ${rect.width * .016}px Poppins, Arial`;
         ctx.textAlign = "center";
-        ctx.fillText((data.partner || "Partner").toUpperCase().slice(0, 16), 920, 111);
+        ctx.fillText("PARTNER", bx + bw / 2, by + bh * .62);
         ctx.textAlign = "left";
       }
 
-      // Contenido
-      ctx.fillStyle = "rgba(255,255,255,.2)";
-      roundRect(ctx, 76, 565, 170, 54, 27);
-      ctx.fill();
-      ctx.strokeStyle = "rgba(255,255,255,.24)";
-      ctx.stroke();
-      ctx.fillStyle = "#FFFFFF";
-      ctx.font = "900 22px Poppins, Arial";
-      ctx.fillText((data.pais || "Mercado").toUpperCase(), 98, 600);
+      // Contenido. Mismas reglas del preview.
+      const title = fields.titulo.value.trim() || adaptDefaultTitle();
+      const isXLong = title.length > 72 || /\S{18,}/.test(title);
+      const isLong = title.length > 48;
+
+      const startX = rect.width * .07;
+      let y = rect.height * .35;
+      const maxTextW = rect.width * .86;
 
       ctx.fillStyle = "#FFFFFF";
-      ctx.font = "900 76px Poppins, Arial";
-      const title = fields.titulo.value.trim() || adaptDefaultTitle();
-      let y = drawWrappedText(ctx, title, 76, 720, 780, 78, 4);
+      const titleSize = isXLong ? rect.width * .052 : isLong ? rect.width * .062 : rect.width * .078;
+      const titleLineHeight = isXLong ? titleSize * 1.07 : titleSize * 1.05;
+      const titleMaxLines = isXLong ? 7 : isLong ? 6 : 5;
+      ctx.font = `900 ${titleSize}px Poppins, Arial`;
+      y = drawWrappedText(ctx, title, startX, y, maxTextW, titleLineHeight, titleMaxLines);
 
       ctx.fillStyle = "rgba(255,255,255,.88)";
-      ctx.font = "500 29px Poppins, Arial";
       const bajada = fields.bajada.value.trim() || "La bajada de la pieza se verá acá, con el tono comercial definido para la pieza.";
-      y = drawWrappedText(ctx, bajada, 76, y + 36, 815, 42, 4);
+      const bajadaSize = rect.width * .026;
+      ctx.font = `500 ${bajadaSize}px Poppins, Arial`;
+      y = drawWrappedText(ctx, bajada, startX, y + rect.height * .025, maxTextW, bajadaSize * 1.38, 3);
 
-      const details = getDetailsText();
+      const qrUrl = getQrUrl();
+      const detailsMaxW = qrUrl ? rect.width * .60 : rect.width * .86;
+
       ctx.fillStyle = "rgba(0,36,71,.32)";
-      roundRect(ctx, 76, y + 32, 810, 70, 26);
+      const detailY = y + rect.height * .025;
+      const detailH = rect.height * .052;
+      roundRect(ctx, startX, detailY, detailsMaxW, detailH, detailH / 2);
       ctx.fill();
       ctx.strokeStyle = "rgba(255,255,255,.22)";
       ctx.stroke();
-      ctx.fillStyle = "#FFFFFF";
-      ctx.font = "700 22px Poppins, Arial";
-      drawWrappedText(ctx, details, 102, y + 76, 750, 29, 2);
 
-      // CTA
+      ctx.fillStyle = "#FFFFFF";
+      ctx.font = `700 ${rect.width * .022}px Poppins, Arial`;
+      drawWrappedText(ctx, getDetailsText(), startX + rect.width * .025, detailY + detailH * .62, detailsMaxW - rect.width * .05, rect.width * .029, 2);
+
       const ctaText = getCtaText();
       if (ctaText) {
+        const ctaY = detailY + detailH + rect.height * .025;
+        const ctaW = Math.min(rect.width * .30, Math.max(rect.width * .20, ctaText.length * rect.width * .014 + rect.width * .09));
+        const ctaH = rect.height * .055;
         ctx.fillStyle = "#FFFFFF";
-        roundRect(ctx, 76, y + 125, 240, 70, 35);
+        roundRect(ctx, startX, ctaY, ctaW, ctaH, ctaH / 2);
         ctx.fill();
         ctx.fillStyle = "#00528F";
-        ctx.font = "900 24px Poppins, Arial";
-        ctx.fillText(ctaText, 105, y + 169);
+        ctx.font = `900 ${rect.width * .026}px Poppins, Arial`;
+        ctx.fillText(ctaText, startX + rect.width * .03, ctaY + ctaH * .63);
       }
 
-      // QR
-      const qrUrl = getQrUrl();
       if (qrUrl) {
         try {
           const qrImg = await loadImage(qrUrl);
+          const qrSize = rect.width * .19;
+          const qrX = rect.width * .74;
+          const qrY = rect.height * .75;
           ctx.fillStyle = "#FFFFFF";
-          roundRect(ctx, 822, 1200, 150, 150, 22);
+          roundRect(ctx, qrX, qrY, qrSize, qrSize, rect.width * .022);
           ctx.fill();
-          ctx.drawImage(qrImg, 835, 1213, 124, 124);
-          ctx.fillStyle = "#FFFFFF";
-          ctx.font = "800 17px Poppins, Arial";
-          ctx.textAlign = "center";
-          ctx.fillText("Escaneá el QR", 897, 1382);
-          ctx.textAlign = "left";
+          ctx.drawImage(qrImg, qrX + qrSize * .09, qrY + qrSize * .09, qrSize * .82, qrSize * .82);
         } catch(e) {}
       }
 
-      // Legal
       ctx.fillStyle = "rgba(255,255,255,.72)";
-      ctx.font = "700 15px Poppins, Arial";
+      ctx.font = `700 ${rect.width * .013}px Poppins, Arial`;
       ctx.textAlign = "center";
-      ctx.fillText("SUJETO A CONDICIONES GENERALES", 540, 1460);
+      ctx.fillText("SUJETO A CONDICIONES GENERALES", rect.width / 2, rect.height * .95);
       ctx.textAlign = "left";
+
+      ctx.restore();
 
       const link = document.createElement("a");
       link.download = `UA_Flyer_${Date.now()}.png`;
       link.href = canvas.toDataURL("image/png");
       link.click();
     }
-
-
-    function openCtaLink() {
-      const url = normalizeUrl(fields.ctaLink.value);
-      if (!url || !getCtaText()) return;
-      window.open(url, "_blank", "noopener,noreferrer");
-    }
-
-
-    function applyPartnerLogoMode() {
-      const mode = fields.partnerLogoMode.value || "claro";
-      preview.partnerLogo.classList.remove("mode-claro", "mode-oscuro", "mode-sin-fondo");
-      preview.partnerLogo.classList.add(`mode-${mode}`);
-    }
-
-    function previewImage(input, target, isBackground = false) {
-      const file = input.files && input.files[0];
-
-      if (!file) {
-        if (!isBackground) {
-          target.classList.add("hidden");
-          target.removeAttribute("src");
-          preview.partnerBadge.classList.add("hidden");
-          preview.brandDivider.classList.add("hidden");
-          preview.canvas.classList.remove("flyer-has-partner");
-        }
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (isBackground) {
-          target.style.backgroundImage = `url(${event.target.result})`;
-        } else {
-          target.src = event.target.result;
-          applyPartnerLogoMode();
-          target.classList.remove("hidden");
-          preview.partnerBadge.classList.add("hidden");
-          preview.brandDivider.classList.remove("hidden");
-          preview.canvas.classList.add("flyer-has-partner");
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-
 
     function clearForm() {
       const keepSelectDefaults = ["tipo", "formato", "pais", "ctaTipo"];
