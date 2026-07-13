@@ -441,12 +441,28 @@
       max-width:165px;
       height:56px;
       object-fit:contain;
-      background:linear-gradient(135deg, rgba(0,36,71,.74), rgba(0,128,145,.42));
       border:1px solid rgba(255,255,255,.34);
       box-shadow:0 12px 26px rgba(0,0,0,.22);
       padding:10px 14px;
       border-radius:18px;
       z-index:4;
+    }
+
+    .partner-logo.mode-claro{
+      background:rgba(255,255,255,.94);
+      border-color:rgba(255,255,255,.70);
+    }
+
+    .partner-logo.mode-oscuro{
+      background:linear-gradient(135deg, rgba(0,36,71,.78), rgba(0,128,145,.46));
+      border-color:rgba(255,255,255,.34);
+    }
+
+    .partner-logo.mode-sin-fondo{
+      background:transparent;
+      border-color:transparent;
+      box-shadow:none;
+      padding:0;
     }
 
     .hidden{display:none !important;}
@@ -918,6 +934,13 @@
             <label for="logoPartner">Logo partner</label>
             <input id="logoPartner" name="logoPartner" type="file" accept="image/*" />
 
+            <label for="partnerLogoMode">Fondo del logo partner</label>
+            <select id="partnerLogoMode" name="partnerLogoMode">
+              <option value="claro" selected>Claro, para logos en color</option>
+              <option value="oscuro">Oscuro, para logos blancos</option>
+              <option value="sin-fondo">Sin fondo</option>
+            </select>
+
             <label for="imagenFondo">Imagen / fondo opcional</label>
             <input id="imagenFondo" name="imagenFondo" type="file" accept="image/*" />
           </div>
@@ -1007,6 +1030,7 @@
       tipoOtro: document.getElementById("tipoOtro"),
       detalleOtro: document.getElementById("detalleOtro"),
       logoPartner: document.getElementById("logoPartner"),
+      partnerLogoMode: document.getElementById("partnerLogoMode"),
       imagenFondo: document.getElementById("imagenFondo"),
     };
 
@@ -1061,6 +1085,7 @@
         ctaTipo: "ctaTipo",
         ctaLink: "ctaLink",
         qrLink: "qrLink",
+        partnerLogoMode: "partnerLogoMode",
         objetivo: "objetivo",
         fecha: "fechaEvento",
         date: "fechaEvento",
@@ -1202,6 +1227,8 @@
 
       const qrUrl = getQrUrl();
 
+      applyPartnerLogoMode();
+
       preview.name.textContent = typeLabels[tipo];
       preview.market.textContent = "";
       preview.partnerBadge.textContent = partner;
@@ -1235,6 +1262,7 @@
         formato: "A4 vertical",
         pais: fields.pais.value,
         partner: fields.partner.value,
+        partnerLogoMode: fields.partnerLogoMode.value,
         solicitante: fields.solicitante.value,
         titulo: fields.titulo.value,
         bajada: fields.bajada.value,
@@ -1540,6 +1568,13 @@
       window.open(url, "_blank", "noopener,noreferrer");
     }
 
+
+    function applyPartnerLogoMode() {
+      const mode = fields.partnerLogoMode.value || "claro";
+      preview.partnerLogo.classList.remove("mode-claro", "mode-oscuro", "mode-sin-fondo");
+      preview.partnerLogo.classList.add(`mode-${mode}`);
+    }
+
     function previewImage(input, target, isBackground = false) {
       const file = input.files && input.files[0];
 
@@ -1560,6 +1595,7 @@
           target.style.backgroundImage = `url(${event.target.result})`;
         } else {
           target.src = event.target.result;
+          applyPartnerLogoMode();
           target.classList.remove("hidden");
           preview.partnerBadge.classList.add("hidden");
           preview.brandDivider.classList.remove("hidden");
@@ -1598,6 +1634,7 @@
       preview.canvas.classList.remove("flyer-has-partner");
       preview.bg.style.backgroundImage = "";
       fields.ctaTipo.value = "Conocé más";
+      fields.partnerLogoMode.value = "claro";
       fields.ctaCustomWrap.classList.add("hidden");
       preview.qr.classList.add("hidden");
       preview.qr.removeAttribute("src");
