@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>UA Flyer Studio v5.1</title>
+  <meta name="theme-color" content="#002447" />
+  <title>UA Flyer Studio v6.0</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -13,34 +14,43 @@
       --ua-teal:#008091;
       --ua-dark:#002447;
       --ua-cyan:#00C4DF;
-      --ua-pink:#ff436e;
-      --bg:#F2F8FB;
+      --ua-pink:#FF436E;
+      --bg:#F3F7FA;
       --card:#FFFFFF;
-      --text:#09243F;
+      --text:#0B233A;
       --muted:#667085;
-      --border:#DDEAF1;
-      --shadow:0 22px 55px rgba(0,36,71,.12);
+      --border:#DCE7EE;
+      --soft:#EEF5F8;
+      --success:#087A70;
+      --warning:#B54708;
+      --danger:#C4320A;
+      --shadow-sm:0 8px 24px rgba(0,36,71,.07);
+      --shadow:0 24px 64px rgba(0,36,71,.13);
     }
 
     *{box-sizing:border-box}
 
+    html{scroll-behavior:smooth}
+
     html,body{
       margin:0;
       min-height:100%;
-      font-family:Poppins, Arial, sans-serif;
+      font-family:Poppins,Arial,sans-serif;
       color:var(--text);
       background:
-        radial-gradient(circle at 20% 15%, rgba(0,196,223,.13), transparent 25%),
-        linear-gradient(180deg,#FFFFFF 0%,#F2F8FB 100%);
+        radial-gradient(circle at 12% 5%,rgba(0,196,223,.10),transparent 24%),
+        radial-gradient(circle at 90% 0%,rgba(0,82,143,.08),transparent 22%),
+        linear-gradient(180deg,#FFFFFF 0%,var(--bg) 100%);
     }
 
-    button,input,select,textarea{
-      font:inherit;
+    button,input,select,textarea{font:inherit}
+    button{cursor:pointer}
+    button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
+      outline:3px solid rgba(0,196,223,.25);
+      outline-offset:2px;
     }
 
-    button{
-      cursor:pointer;
-    }
+    .hidden{display:none!important}
 
     .app{
       min-height:100vh;
@@ -49,203 +59,345 @@
     }
 
     .topbar{
-      height:86px;
-      padding:16px 30px;
+      min-height:78px;
+      padding:12px 28px;
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:24px;
-      background:rgba(255,255,255,.92);
-      backdrop-filter:blur(14px);
-      border-bottom:1px solid var(--border);
+      background:rgba(255,255,255,.88);
+      backdrop-filter:blur(18px);
+      border-bottom:1px solid rgba(220,231,238,.92);
       position:sticky;
       top:0;
-      z-index:20;
+      z-index:30;
     }
 
     .brand{
       display:flex;
       align-items:center;
-      gap:14px;
+      gap:13px;
       min-width:260px;
     }
 
     .brand-icon{
-      width:58px;
-      height:58px;
+      width:48px;
+      height:48px;
       border-radius:15px;
       display:grid;
       place-items:center;
-      background:linear-gradient(140deg,var(--ua-blue),var(--ua-teal));
+      background:linear-gradient(145deg,var(--ua-dark),var(--ua-blue) 58%,var(--ua-teal));
       color:#fff;
       font-weight:900;
-      font-size:25px;
+      font-size:22px;
       letter-spacing:-.08em;
+      box-shadow:0 12px 24px rgba(0,82,143,.20);
     }
 
     .brand small{
       display:block;
       color:var(--ua-blue);
       text-transform:uppercase;
-      letter-spacing:.18em;
-      font-weight:900;
-      font-size:12px;
-      line-height:1;
-      margin-bottom:5px;
+      letter-spacing:.16em;
+      font-weight:800;
+      font-size:10px;
+      margin-bottom:3px;
     }
 
     .brand h1{
       margin:0;
-      font-size:24px;
-      letter-spacing:-.05em;
+      font-size:22px;
       line-height:1;
+      letter-spacing:-.05em;
     }
 
     .top-actions{
       display:flex;
       align-items:center;
-      gap:12px;
-      flex-wrap:wrap;
       justify-content:flex-end;
+      gap:10px;
+      flex-wrap:wrap;
     }
 
-    .pill{
-      border:none;
-      padding:11px 16px;
+    .save-status{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      min-height:40px;
+      padding:9px 13px;
       border-radius:999px;
-      background:#EAF5FB;
-      color:var(--ua-blue);
-      font-weight:900;
-      font-size:13px;
+      color:#316073;
+      background:#F4F9FB;
+      border:1px solid var(--border);
+      font-size:12px;
+      font-weight:700;
       white-space:nowrap;
+    }
+
+    .save-dot{
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:#12B76A;
+      box-shadow:0 0 0 4px rgba(18,183,106,.12);
+    }
+
+    .ghost-btn,.secondary-btn,.primary-btn,.icon-btn{
+      border:0;
+      font-weight:800;
+      transition:transform .18s ease,box-shadow .18s ease,background .18s ease;
+    }
+
+    .ghost-btn:hover,.secondary-btn:hover,.primary-btn:hover,.icon-btn:hover{transform:translateY(-1px)}
+    .ghost-btn:active,.secondary-btn:active,.primary-btn:active,.icon-btn:active{transform:translateY(0)}
+
+    .ghost-btn{
+      min-height:40px;
+      padding:9px 14px;
+      border-radius:13px;
+      color:var(--ua-blue);
+      background:#EAF4F9;
+    }
+
+    .secondary-btn{
+      min-height:42px;
+      padding:10px 15px;
+      border-radius:14px;
+      color:var(--ua-blue);
+      background:#EEF6FA;
+    }
+
+    .primary-btn{
+      min-height:46px;
+      padding:12px 18px;
+      border-radius:15px;
+      background:linear-gradient(135deg,var(--ua-teal),var(--ua-cyan));
+      color:#fff;
+      box-shadow:0 14px 28px rgba(0,128,145,.20);
+    }
+
+    .primary-btn:disabled{
+      cursor:not-allowed;
+      opacity:.45;
+      box-shadow:none;
+      transform:none;
     }
 
     .workspace{
       flex:1;
       display:grid;
-      grid-template-columns:430px minmax(640px, 1fr);
+      grid-template-columns:minmax(380px,430px) minmax(620px,1fr);
       gap:22px;
-      padding:22px 30px 26px;
+      padding:22px 28px 28px;
       min-height:0;
     }
 
-    .form-panel{
-      height:calc(100vh - 134px);
+    .form-panel,.preview-panel{
+      height:calc(100vh - 128px);
       overflow-y:auto;
       padding-right:8px;
+      scrollbar-width:thin;
+      scrollbar-color:#A8C8D6 transparent;
     }
 
-    .form-panel::-webkit-scrollbar,
-    .preview-panel::-webkit-scrollbar{
-      width:9px;
-    }
-
-    .form-panel::-webkit-scrollbar-thumb,
-    .preview-panel::-webkit-scrollbar-thumb{
-      background:#A6CFE0;
+    .form-panel::-webkit-scrollbar,.preview-panel::-webkit-scrollbar{width:8px}
+    .form-panel::-webkit-scrollbar-thumb,.preview-panel::-webkit-scrollbar-thumb{
+      background:#A8C8D6;
       border-radius:999px;
     }
 
     .intro{
-      padding:24px 24px 26px;
-      border-radius:28px;
-      background:linear-gradient(135deg,var(--ua-dark),var(--ua-blue));
+      padding:22px;
+      border-radius:24px;
       color:#fff;
+      background:
+        radial-gradient(circle at 90% 10%,rgba(0,196,223,.25),transparent 28%),
+        linear-gradient(135deg,var(--ua-dark),var(--ua-blue));
       box-shadow:var(--shadow);
-      margin-bottom:16px;
+      margin-bottom:14px;
+      overflow:hidden;
+      position:relative;
     }
 
     .eyebrow{
-      margin:0 0 8px;
+      margin:0 0 7px;
       text-transform:uppercase;
-      letter-spacing:.18em;
-      font-size:12px;
+      letter-spacing:.17em;
+      font-size:10px;
       font-weight:900;
-      opacity:.78;
+      opacity:.76;
     }
 
     .intro h2{
-      margin:0 0 14px;
-      font-size:30px;
-      letter-spacing:-.06em;
+      margin:0 0 10px;
+      font-size:28px;
       line-height:1.05;
+      letter-spacing:-.06em;
     }
 
     .intro p{
       margin:0;
-      color:rgba(255,255,255,.82);
+      color:rgba(255,255,255,.80);
       line-height:1.5;
+      font-size:13px;
       font-weight:500;
     }
 
-    .card{
-      padding:22px;
-      border-radius:26px;
-      background:rgba(255,255,255,.93);
-      border:1px solid var(--border);
-      box-shadow:0 14px 38px rgba(0,36,71,.07);
+    .progress-card{
+      margin-top:18px;
+      padding:12px 13px;
+      border-radius:16px;
+      background:rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.15);
+    }
+
+    .progress-copy{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      color:rgba(255,255,255,.9);
+      font-size:11px;
+      font-weight:800;
+      margin-bottom:8px;
+    }
+
+    .progress-track{
+      height:7px;
+      border-radius:999px;
+      background:rgba(255,255,255,.16);
+      overflow:hidden;
+    }
+
+    .progress-bar{
+      height:100%;
+      width:15%;
+      border-radius:inherit;
+      background:linear-gradient(90deg,#fff,var(--ua-cyan));
+      transition:width .25s ease;
+    }
+
+    .steps{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:7px;
       margin-bottom:14px;
+    }
+
+    .step{
+      padding:9px 7px;
+      border-radius:13px;
+      background:rgba(255,255,255,.88);
+      border:1px solid var(--border);
+      color:#607286;
+      font-size:9px;
+      font-weight:800;
+      text-align:center;
+      box-shadow:var(--shadow-sm);
+    }
+
+    .step.active{
+      color:var(--ua-blue);
+      border-color:rgba(0,128,145,.35);
+      background:#EAF8F8;
+    }
+
+    .card{
+      padding:20px;
+      border-radius:22px;
+      background:rgba(255,255,255,.94);
+      border:1px solid rgba(220,231,238,.96);
+      box-shadow:var(--shadow-sm);
+      margin-bottom:13px;
     }
 
     .section-heading{
       display:flex;
       align-items:center;
-      gap:12px;
-      margin-bottom:18px;
+      gap:11px;
+      margin-bottom:15px;
     }
 
-    .section-heading span{
-      width:34px;
-      height:34px;
-      border-radius:12px;
+    .section-number{
+      width:31px;
+      height:31px;
+      border-radius:11px;
       display:grid;
       place-items:center;
-      background:#E7F6FA;
+      background:linear-gradient(145deg,#E9F6F8,#EAF2F8);
       color:var(--ua-blue);
+      font-size:11px;
       font-weight:900;
-      font-size:12px;
+      flex:0 0 auto;
     }
 
     .section-heading h3{
       margin:0;
-      font-size:20px;
-      letter-spacing:-.045em;
+      font-size:18px;
+      line-height:1.1;
+      letter-spacing:-.04em;
+    }
+
+    .section-heading p{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:11px;
+      line-height:1.35;
+      font-weight:500;
     }
 
     label{
       display:block;
-      color:#26364B;
-      font-size:13px;
-      font-weight:900;
-      margin:14px 0 8px;
+      margin:13px 0 7px;
+      color:#283A4D;
+      font-size:12px;
+      font-weight:800;
+    }
+
+    .required::after{
+      content:" *";
+      color:var(--ua-pink);
     }
 
     input,select,textarea{
       width:100%;
       border:1px solid var(--border);
       background:#fff;
-      border-radius:16px;
-      padding:13px 14px;
-      color:#24364B;
+      border-radius:14px;
+      padding:12px 13px;
+      color:#26394C;
       outline:none;
-      transition:.18s ease;
+      transition:border-color .18s ease,box-shadow .18s ease,background .18s ease;
     }
+
+    input::placeholder,textarea::placeholder{color:#98A6B4}
 
     input:focus,select:focus,textarea:focus{
       border-color:var(--ua-cyan);
-      box-shadow:0 0 0 4px rgba(0,196,223,.14);
+      box-shadow:0 0 0 4px rgba(0,196,223,.11);
+    }
+
+    input.invalid,textarea.invalid,select.invalid{
+      border-color:#F97066;
+      background:#FFF8F7;
     }
 
     textarea{
       resize:vertical;
-      min-height:94px;
+      min-height:88px;
       line-height:1.45;
     }
 
     select#formato{
-      background:#F8FAFC;
-      color:#6B7280;
+      color:#637083;
+      background:#F8FAFB;
       pointer-events:none;
+    }
+
+    .field-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
     }
 
     .counter-row{
@@ -256,150 +408,327 @@
     }
 
     .counter{
-      color:#6B7280;
-      font-size:12px;
-      font-weight:900;
-    }
-
-    .hidden{display:none!important}
-
-    .check-row{
-      display:flex;
-      align-items:center;
-      justify-content:flex-start;
-      gap:10px;
-      padding:12px 14px;
-      border:1px solid var(--border);
-      border-radius:16px;
-      background:#fff;
-      margin-top:10px;
-      cursor:pointer;
+      color:#7B8794;
+      font-size:10px;
       font-weight:800;
-      color:#24364B;
     }
 
-    .check-row input{
-      width:18px;
-      height:18px;
-      min-height:18px;
-      accent-color:var(--ua-teal);
-    }
+    .counter.warning{color:var(--warning)}
+    .counter.danger{color:var(--danger)}
 
     .helper{
+      margin:-2px 0 10px;
       color:var(--muted);
-      font-size:12px;
+      font-size:10px;
       line-height:1.5;
-      font-weight:600;
-      margin:-4px 0 12px;
+      font-weight:500;
     }
 
     .dynamic-fields [data-group]{display:none}
     .dynamic-fields [data-group].active{display:block}
 
-    .preview-panel{
-      height:calc(100vh - 134px);
-      overflow-y:auto;
-      padding-right:8px;
+    .template-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:9px;
     }
 
-    .preview-head{
-      height:76px;
+    .template-option{
+      position:relative;
+      cursor:pointer;
+    }
+
+    .template-option input{
+      position:absolute;
+      opacity:0;
+      pointer-events:none;
+    }
+
+    .template-tile{
+      min-height:94px;
+      padding:9px;
+      border-radius:15px;
+      border:1px solid var(--border);
+      background:#fff;
+      transition:.18s ease;
+    }
+
+    .template-option input:checked + .template-tile{
+      border-color:var(--ua-teal);
+      box-shadow:0 0 0 3px rgba(0,128,145,.12);
+      transform:translateY(-1px);
+    }
+
+    .template-preview{
+      height:49px;
+      border-radius:10px;
+      margin-bottom:8px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .template-preview::before{
+      content:"";
+      position:absolute;
+      left:10%;
+      right:30%;
+      top:28%;
+      height:5px;
+      border-radius:999px;
+      background:rgba(255,255,255,.92);
+      box-shadow:0 9px 0 rgba(255,255,255,.48);
+    }
+
+    .template-preview.corporate{background:linear-gradient(145deg,var(--ua-blue),var(--ua-teal))}
+    .template-preview.premium{background:linear-gradient(145deg,#001629,#00385C 58%,#006879)}
+    .template-preview.vibrant{background:linear-gradient(145deg,#00528F,#008091 60%,#00C4DF)}
+
+    .template-name{
+      display:block;
+      color:#26394C;
+      font-size:10px;
+      font-weight:800;
+      text-align:center;
+    }
+
+    .upload-box{
+      position:relative;
+      display:block;
+      padding:15px;
+      border-radius:16px;
+      border:1px dashed #A9C8D6;
+      background:linear-gradient(180deg,#FBFDFE,#F4F9FB);
+      cursor:pointer;
+      transition:.18s ease;
+    }
+
+    .upload-box:hover{
+      border-color:var(--ua-teal);
+      background:#F1FAFA;
+    }
+
+    .upload-box input{
+      position:absolute;
+      inset:0;
+      opacity:0;
+      cursor:pointer;
+    }
+
+    .upload-title{
+      display:block;
+      color:var(--ua-blue);
+      font-size:12px;
+      font-weight:800;
+      margin-bottom:3px;
+    }
+
+    .upload-subtitle{
+      display:block;
+      color:var(--muted);
+      font-size:10px;
+      line-height:1.45;
+    }
+
+    .file-state{
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:16px;
-      padding:14px 18px;
-      border-radius:26px;
+      gap:10px;
+      margin-top:8px;
+      padding:8px 10px;
+      border-radius:11px;
+      background:#EAF8F5;
+      color:#126056;
+      font-size:10px;
+      font-weight:700;
+    }
+
+    .range-row{
+      display:grid;
+      grid-template-columns:1fr 44px;
+      align-items:center;
+      gap:10px;
+    }
+
+    input[type="range"]{
+      padding:0;
+      accent-color:var(--ua-teal);
+    }
+
+    .range-value{
+      color:var(--ua-blue);
+      font-size:11px;
+      font-weight:800;
+      text-align:right;
+    }
+
+    .check-row{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:11px 12px;
+      border:1px solid var(--border);
+      border-radius:14px;
+      background:#fff;
+      margin-top:9px;
+      cursor:pointer;
+      color:#26394C;
+      font-size:11px;
+      font-weight:700;
+    }
+
+    .check-row input{
+      width:17px;
+      height:17px;
+      min-height:17px;
+      accent-color:var(--ua-teal);
+    }
+
+    .preview-head{
+      min-height:68px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      padding:11px 14px 11px 17px;
+      border-radius:21px;
       background:rgba(255,255,255,.94);
       border:1px solid var(--border);
-      box-shadow:0 14px 38px rgba(0,36,71,.07);
-      margin-bottom:14px;
+      box-shadow:var(--shadow-sm);
+      margin-bottom:12px;
     }
 
     .preview-head small{
       display:block;
+      margin-bottom:2px;
       color:var(--ua-blue);
       text-transform:uppercase;
-      letter-spacing:.18em;
+      letter-spacing:.16em;
+      font-size:9px;
       font-weight:900;
-      font-size:12px;
-      margin-bottom:3px;
     }
 
     .preview-head h2{
       margin:0;
-      font-size:24px;
-      letter-spacing:-.05em;
+      font-size:20px;
       line-height:1;
+      letter-spacing:-.05em;
     }
 
-    .primary-btn{
-      border:none;
-      border-radius:18px;
-      padding:15px 20px;
-      background:linear-gradient(135deg,var(--ua-teal),var(--ua-cyan));
-      color:#fff;
-      font-weight:900;
-      box-shadow:0 18px 35px rgba(0,128,145,.2);
-      white-space:nowrap;
+    .preview-actions{
+      display:flex;
+      align-items:center;
+      gap:8px;
     }
 
-    .secondary-btn{
-      border:none;
-      border-radius:18px;
-      padding:15px 20px;
-      background:#EEF6FC;
+    .zoom-control{
+      display:flex;
+      align-items:center;
+      gap:4px;
+      padding:4px;
+      border-radius:13px;
+      background:#F2F7F9;
+      border:1px solid var(--border);
+    }
+
+    .icon-btn{
+      width:32px;
+      height:32px;
+      border-radius:9px;
+      display:grid;
+      place-items:center;
       color:var(--ua-blue);
-      font-weight:900;
-      white-space:nowrap;
+      background:transparent;
+      font-size:17px;
+    }
+
+    .zoom-label{
+      min-width:42px;
+      text-align:center;
+      color:#4D6577;
+      font-size:10px;
+      font-weight:800;
     }
 
     .canvas-wrap{
-      height:610px;
-      padding:22px;
-      border-radius:30px;
+      min-height:618px;
+      padding:24px;
+      border-radius:28px;
       display:grid;
       place-items:center;
       background:
-        radial-gradient(circle at 52% 20%, rgba(0,196,223,.25), transparent 25%),
-        linear-gradient(140deg,#061d36 0%,#07375e 52%,#004d63 100%);
+        linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px),
+        radial-gradient(circle at 50% 16%,rgba(0,196,223,.22),transparent 27%),
+        linear-gradient(145deg,#061A2D,#073456 55%,#004E5C);
+      background-size:24px 24px,24px 24px,auto,auto;
       box-shadow:var(--shadow);
-      overflow:hidden;
-      margin-bottom:14px;
+      overflow:auto;
+      margin-bottom:12px;
+    }
+
+    .canvas-stage{
+      display:grid;
+      place-items:center;
+      min-width:100%;
+      min-height:570px;
     }
 
     .flyer-canvas{
+      --preview-scale:1;
+      --image-opacity:.22;
       position:relative;
-      height:560px;
+      width:396px;
       aspect-ratio:1080/1530;
-      max-width:100%;
-      border-radius:34px;
+      border-radius:30px;
       overflow:hidden;
       color:#fff;
       background:linear-gradient(160deg,#00528F 0%,#008091 68%,#00C4DF 100%);
-      box-shadow:0 26px 60px rgba(0,0,0,.28);
+      box-shadow:0 28px 65px rgba(0,0,0,.30);
       isolation:isolate;
+      transform:scale(var(--preview-scale));
+      transform-origin:center;
+      transition:transform .2s ease,background .2s ease;
+      flex:0 0 auto;
+    }
+
+    .flyer-canvas.template-premium{
+      background:linear-gradient(155deg,#00182C 0%,#003A5D 57%,#006A78 100%);
+    }
+
+    .flyer-canvas.template-vibrant{
+      background:linear-gradient(155deg,#00528F 0%,#007B99 52%,#00C4DF 100%);
     }
 
     .flyer-canvas::before{
       content:"";
       position:absolute;
       inset:0;
-      background:var(--bg-image, none) center/cover no-repeat;
-      opacity:.22;
+      background:var(--bg-image,none) center/cover no-repeat;
+      opacity:var(--image-opacity);
       z-index:0;
     }
 
     .flyer-canvas::after{
       content:"";
       position:absolute;
-      width:52%;
+      width:56%;
       aspect-ratio:1;
-      right:-18%;
+      right:-20%;
       top:-10%;
       border-radius:50%;
-      background:rgba(255,255,255,.13);
+      background:rgba(255,255,255,.12);
       z-index:1;
+    }
+
+    .template-premium::after{
+      border:1px solid rgba(255,255,255,.13);
+      background:transparent;
+    }
+
+    .template-vibrant::after{
+      background:rgba(255,255,255,.15);
+      box-shadow:-115px 390px 0 12px rgba(255,67,110,.11);
     }
 
     .corner-circle{
@@ -409,9 +738,22 @@
       left:-19%;
       bottom:-12%;
       border-radius:50%;
-      background:rgba(255,67,110,.16);
+      background:rgba(255,67,110,.15);
       z-index:1;
     }
+
+    .safe-area{
+      position:absolute;
+      inset:4.2%;
+      border:1px dashed rgba(255,255,255,.18);
+      border-radius:22px;
+      pointer-events:none;
+      z-index:8;
+      opacity:0;
+      transition:.18s ease;
+    }
+
+    .show-guides .safe-area{opacity:1}
 
     .ua-logo-img{
       position:absolute;
@@ -420,7 +762,7 @@
       transform:translateX(-50%);
       width:34%;
       max-width:205px;
-      min-width:126px;
+      min-width:120px;
       z-index:4;
       object-fit:contain;
     }
@@ -429,8 +771,7 @@
       left:6%;
       transform:none;
       width:30%;
-      max-width:176px;
-      min-width:112px;
+      min-width:106px;
     }
 
     .ua-fallback{
@@ -458,23 +799,7 @@
       left:50%;
       width:1px;
       height:50px;
-      background:rgba(255,255,255,.42);
-      z-index:4;
-    }
-
-    .partner-badge{
-      display:none;
-      position:absolute;
-      top:5.8%;
-      right:7%;
-      padding:9px 20px;
-      border-radius:999px;
-      background:rgba(255,255,255,.16);
-      border:1px solid rgba(255,255,255,.26);
-      color:#fff;
-      font-size:12px;
-      font-weight:900;
-      text-transform:uppercase;
+      background:rgba(255,255,255,.35);
       z-index:4;
     }
 
@@ -483,24 +808,22 @@
       top:5.2%;
       right:6%;
       width:28%;
-      max-width:165px;
       height:56px;
       object-fit:contain;
-      border:1px solid rgba(255,255,255,.34);
-      box-shadow:0 12px 26px rgba(0,0,0,.22);
+      border:1px solid rgba(255,255,255,.32);
+      box-shadow:0 12px 26px rgba(0,0,0,.18);
       padding:10px 14px;
-      border-radius:18px;
+      border-radius:17px;
       z-index:4;
     }
 
     .partner-logo.mode-claro{
-      background:rgba(255,255,255,.94);
-      border-color:rgba(255,255,255,.7);
+      background:rgba(255,255,255,.95);
+      border-color:rgba(255,255,255,.65);
     }
 
     .partner-logo.mode-oscuro{
-      background:linear-gradient(135deg,rgba(0,36,71,.78),rgba(0,128,145,.46));
-      border-color:rgba(255,255,255,.34);
+      background:linear-gradient(135deg,rgba(0,36,71,.82),rgba(0,128,145,.50));
     }
 
     .partner-logo.mode-sin-fondo{
@@ -510,23 +833,67 @@
       padding:0;
     }
 
+    .category-label{
+      position:absolute;
+      left:7%;
+      top:30.2%;
+      z-index:3;
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      padding:7px 10px;
+      border-radius:999px;
+      background:rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.18);
+      color:rgba(255,255,255,.92);
+      text-transform:uppercase;
+      letter-spacing:.13em;
+      font-size:8px;
+      font-weight:900;
+      backdrop-filter:blur(5px);
+    }
+
+    .category-label::before{
+      content:"";
+      width:5px;
+      height:5px;
+      border-radius:50%;
+      background:var(--ua-cyan);
+      box-shadow:0 0 0 3px rgba(0,196,223,.15);
+    }
+
     .flyer-content{
       position:absolute;
       left:7%;
       right:7%;
-      top:35%;
+      top:36%;
+      z-index:3;
       display:flex;
       flex-direction:column;
-      gap:13px;
-      z-index:3;
+      gap:11px;
+    }
+
+    .align-center .category-label{
+      left:50%;
+      transform:translateX(-50%);
+    }
+
+    .align-center .flyer-content{
+      align-items:center;
+      text-align:center;
+    }
+
+    .align-center .flyer-content h2,
+    .align-center .flyer-content p{
+      max-width:100%;
     }
 
     .flyer-content h2{
       margin:0;
-      max-width:94%;
-      font-size:clamp(30px,2.75vw,43px);
-      line-height:1;
-      letter-spacing:-.052em;
+      max-width:95%;
+      font-size:34px;
+      line-height:1.01;
+      letter-spacing:-.055em;
       overflow-wrap:anywhere;
       word-break:break-word;
       display:-webkit-box;
@@ -536,23 +903,23 @@
     }
 
     .flyer-title-long .flyer-content h2{
-      font-size:clamp(25px,2.25vw,35px);
-      line-height:1.02;
+      font-size:29px;
+      line-height:1.03;
       -webkit-line-clamp:6;
     }
 
     .flyer-title-xlong .flyer-content h2{
-      font-size:clamp(22px,1.95vw,30px);
-      line-height:1.04;
+      font-size:25px;
+      line-height:1.05;
       -webkit-line-clamp:7;
     }
 
     .flyer-content p{
       margin:0;
-      max-width:92%;
-      color:rgba(255,255,255,.88);
-      font-size:clamp(11px,.9vw,14px);
-      line-height:1.35;
+      max-width:94%;
+      color:rgba(255,255,255,.83);
+      font-size:12px;
+      line-height:1.42;
       overflow-wrap:anywhere;
       word-break:break-word;
       display:-webkit-box;
@@ -561,66 +928,119 @@
       overflow:hidden;
     }
 
-    .details-box{
-      max-width:94%;
-      padding:11px 13px;
-      border-radius:18px;
-      background:rgba(0,36,71,.32);
-      border:1px solid rgba(255,255,255,.22);
+    .details-list{
+      display:grid;
+      gap:7px;
+      width:94%;
+    }
+
+    .detail-row{
+      display:flex;
+      align-items:flex-start;
+      gap:9px;
+      padding:8px 10px;
+      border-radius:13px;
+      background:rgba(0,36,71,.27);
+      border:1px solid rgba(255,255,255,.16);
       color:#fff;
-      font-size:clamp(10px,.82vw,12px);
-      font-weight:700;
+      font-size:10px;
       line-height:1.35;
-      overflow:hidden;
-      display:-webkit-box;
-      -webkit-line-clamp:2;
-      -webkit-box-orient:vertical;
+      font-weight:700;
+      backdrop-filter:blur(5px);
+    }
+
+    .align-center .detail-row{
+      justify-content:center;
+      text-align:left;
+    }
+
+    .detail-icon{
+      width:18px;
+      height:18px;
+      border-radius:6px;
+      display:grid;
+      place-items:center;
+      flex:0 0 auto;
+      background:rgba(255,255,255,.12);
+      font-size:9px;
     }
 
     .flyer-cta{
       align-self:flex-start;
-      border:none;
+      border:0;
       border-radius:999px;
-      padding:11px 19px;
+      padding:10px 17px;
       background:#fff;
       color:var(--ua-blue);
+      font-size:11px;
       font-weight:900;
-      box-shadow:0 12px 28px rgba(255,255,255,.16);
+      box-shadow:0 12px 24px rgba(0,0,0,.10);
     }
 
-    .flyer-cta.hidden-cta{
-      display:none;
-    }
+    .align-center .flyer-cta{align-self:center}
+    .flyer-cta.hidden-cta{display:none}
 
     .qr-preview{
       position:absolute;
       right:7%;
-      bottom:10%;
+      bottom:9%;
       width:21%;
-      max-width:98px;
+      max-width:96px;
       aspect-ratio:1;
       background:#fff;
-      border-radius:16px;
-      padding:8px;
-      box-shadow:0 12px 26px rgba(0,0,0,.22);
+      border-radius:15px;
+      padding:7px;
+      box-shadow:0 12px 26px rgba(0,0,0,.20);
       z-index:5;
     }
 
-    .flyer-has-qr .details-box{
-      max-width:66%;
-    }
+    .flyer-has-qr .details-list{width:66%}
 
     .legal{
       position:absolute;
       left:6%;
       right:6%;
-      bottom:5%;
+      bottom:4.6%;
+      margin:0;
       text-align:center;
-      color:rgba(255,255,255,.72);
-      font-size:9px;
-      font-weight:800;
-      letter-spacing:.03em;
+      color:rgba(255,255,255,.62);
+      font-size:7px;
+      line-height:1.3;
+      font-weight:700;
+      letter-spacing:.045em;
       z-index:4;
+    }
+
+    .validation-card{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      margin-bottom:12px;
+      padding:12px 14px;
+      border-radius:17px;
+      border:1px solid #F2D29F;
+      background:#FFF9ED;
+      color:#7A4C00;
+      font-size:11px;
+      line-height:1.45;
+      font-weight:600;
+    }
+
+    .validation-card.valid{
+      border-color:#A7DCCE;
+      background:#ECFAF6;
+      color:#126056;
+    }
+
+    .validation-icon{
+      width:22px;
+      height:22px;
+      flex:0 0 auto;
+      border-radius:8px;
+      display:grid;
+      place-items:center;
+      background:rgba(255,255,255,.65);
+      font-weight:900;
     }
 
     .submit-card{
@@ -628,49 +1048,74 @@
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:16px;
-      padding:18px 22px;
-      border-radius:26px;
+      gap:14px;
+      padding:17px 19px;
+      border-radius:22px;
       background:rgba(255,255,255,.94);
       border:1px solid var(--border);
-      box-shadow:0 14px 38px rgba(0,36,71,.07);
+      box-shadow:var(--shadow-sm);
     }
 
     .submit-card h3{
-      margin:0 0 5px;
-      font-size:22px;
-      letter-spacing:-.05em;
+      margin:0 0 4px;
+      font-size:19px;
+      letter-spacing:-.04em;
     }
 
     .submit-card p{
       margin:0;
       color:var(--muted);
+      font-size:11px;
+      line-height:1.4;
       font-weight:500;
     }
 
     .result{
-      margin-top:14px;
+      margin-top:12px;
       padding:16px;
-      border-radius:22px;
+      border-radius:18px;
       background:#EAFBF8;
       color:#064B55;
       border:1px solid rgba(0,128,145,.22);
-      font-size:13px;
-      line-height:1.5;
+      font-size:11px;
+      line-height:1.55;
       white-space:pre-wrap;
+      box-shadow:var(--shadow-sm);
     }
 
     @media (max-width:1100px){
-      .workspace{
-        grid-template-columns:1fr;
-      }
+      .workspace{grid-template-columns:1fr}
       .form-panel,.preview-panel{
         height:auto;
         overflow:visible;
       }
-      .canvas-wrap{
-        height:620px;
+      .preview-panel{padding-right:0}
+    }
+
+    @media (max-width:720px){
+      .topbar{
+        align-items:flex-start;
+        padding:12px 16px;
       }
+      .brand{min-width:0}
+      .save-status{display:none}
+      .workspace{padding:16px;gap:16px}
+      .field-grid,.template-grid{grid-template-columns:1fr}
+      .preview-head{align-items:flex-start}
+      .preview-actions{flex-wrap:wrap;justify-content:flex-end}
+      .canvas-wrap{padding:18px 12px;min-height:570px}
+      .flyer-canvas{width:360px}
+      .submit-card{align-items:flex-start;flex-direction:column}
+      .primary-btn{width:100%}
+    }
+
+    @media (max-width:420px){
+      .brand small{display:none}
+      .brand h1{font-size:18px}
+      .brand-icon{width:42px;height:42px}
+      .ghost-btn{font-size:11px}
+      .flyer-canvas{width:320px}
+      .steps{grid-template-columns:1fr 1fr}
     }
   </style>
 </head>
@@ -685,25 +1130,49 @@
           <h1>UA Flyer Studio</h1>
         </div>
       </div>
+
       <div class="top-actions">
-        <span class="pill">Herramienta interna UA</span>
-        <span class="pill">Vista previa en tiempo real</span>
-        <button class="pill" id="clearBtn" type="button">Limpiar formulario</button>
+        <span class="save-status" id="saveStatus">
+          <span class="save-dot"></span>
+          <span id="saveStatusText">Guardado automáticamente</span>
+        </span>
+        <button class="ghost-btn" id="clearBtn" type="button">Nuevo flyer</button>
       </div>
     </header>
 
     <main class="workspace">
-      <form class="form-panel" id="requestForm">
+      <form class="form-panel" id="requestForm" novalidate>
         <section class="intro">
           <p class="eyebrow">Nueva solicitud</p>
-          <h2>Crear nuevo flyer</h2>
-          <p>Completá la información comercial, revisá la vista previa y enviá la solicitud.</p>
+          <h2>Creá una pieza lista para trabajar</h2>
+          <p>Completá el brief, definí el estilo y revisá el resultado en tiempo real antes de enviarlo.</p>
+
+          <div class="progress-card">
+            <div class="progress-copy">
+              <span>Progreso del brief</span>
+              <span id="progressLabel">15%</span>
+            </div>
+            <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+          </div>
         </section>
 
-        <section class="card">
-          <div class="section-heading"><span>01</span><h3>Información general</h3></div>
+        <div class="steps" aria-label="Etapas del formulario">
+          <div class="step active" data-step="1">01 · General</div>
+          <div class="step" data-step="2">02 · Contenido</div>
+          <div class="step" data-step="3">03 · Diseño</div>
+          <div class="step" data-step="4">04 · Revisar</div>
+        </div>
 
-          <label for="tipo">Tipo de pieza</label>
+        <section class="card">
+          <div class="section-heading">
+            <span class="section-number">01</span>
+            <div>
+              <h3>Información general</h3>
+              <p>Definí el tipo de pedido y quién lo solicita.</p>
+            </div>
+          </div>
+
+          <label class="required" for="tipo">Tipo de pieza</label>
           <select id="tipo">
             <option value="evento">Flyer de evento</option>
             <option value="producto">Flyer de producto</option>
@@ -711,23 +1180,34 @@
             <option value="otro">Otro tipo de pieza</option>
           </select>
 
-          <label for="formato">Formato</label>
-          <select id="formato">
-            <option value="a4" selected>A4 vertical</option>
-          </select>
+          <div class="field-grid">
+            <div>
+              <label for="formato">Formato</label>
+              <select id="formato">
+                <option value="a4" selected>A4 vertical</option>
+              </select>
+            </div>
+            <div>
+              <label class="required" for="solicitante">Solicitante</label>
+              <input id="solicitante" type="text" placeholder="Nombre y apellido" autocomplete="name" />
+            </div>
+          </div>
 
           <label for="partner">Partner / agencia</label>
           <input id="partner" type="text" placeholder="Ej: HotelDO, Tivoli, Despegar" />
-
-          <label for="solicitante">Solicitante</label>
-          <input id="solicitante" type="text" placeholder="Nombre de quien solicita" />
         </section>
 
         <section class="card">
-          <div class="section-heading"><span>02</span><h3>Contenido</h3></div>
+          <div class="section-heading">
+            <span class="section-number">02</span>
+            <div>
+              <h3>Contenido</h3>
+              <p>Escribí el mensaje principal y la acción esperada.</p>
+            </div>
+          </div>
 
           <div class="counter-row">
-            <label for="titulo">Título principal</label>
+            <label class="required" for="titulo">Título principal</label>
             <span class="counter" id="tituloCount">0/64</span>
           </div>
           <input id="titulo" type="text" maxlength="64" placeholder="Ej: Potenciá tus ventas con UA" />
@@ -738,7 +1218,7 @@
           </div>
           <textarea id="bajada" rows="4" maxlength="130" placeholder="Ej: Soluciones de asistencia al viajero pensadas para cada pasajero."></textarea>
 
-          <label for="ctaTipo">CTA</label>
+          <label for="ctaTipo">Llamado a la acción</label>
           <select id="ctaTipo">
             <option>Conocé más</option>
             <option>Reservá tu lugar</option>
@@ -751,12 +1231,12 @@
 
           <div id="ctaCustomWrap" class="hidden">
             <label for="cta">CTA personalizado</label>
-            <input id="cta" type="text" placeholder="Escribí el CTA exacto" />
+            <input id="cta" type="text" maxlength="30" placeholder="Escribí el CTA exacto" />
           </div>
 
           <div id="ctaLinkWrap">
             <label for="ctaLink">Link del CTA</label>
-            <input id="ctaLink" type="url" placeholder="https://..." />
+            <input id="ctaLink" type="url" placeholder="https://..." inputmode="url" />
           </div>
 
           <label for="objetivo">Objetivo de la pieza</label>
@@ -764,15 +1244,27 @@
         </section>
 
         <section class="card dynamic-fields">
-          <div class="section-heading"><span>03</span><h3>Datos específicos</h3></div>
+          <div class="section-heading">
+            <span class="section-number">03</span>
+            <div>
+              <h3>Datos específicos</h3>
+              <p>La información cambia según el tipo de pieza seleccionado.</p>
+            </div>
+          </div>
 
           <div data-group="evento" class="active">
             <label for="fechaEvento">Fecha del evento</label>
             <input id="fechaEvento" type="text" placeholder="Ej: Martes 7/7" />
-            <label for="horaEvento">Hora</label>
-            <input id="horaEvento" type="text" placeholder="Ej: 9.30 hs" />
-            <label for="lugarEvento">Lugar / modalidad</label>
-            <input id="lugarEvento" type="text" placeholder="Ej: Online / Applebee's Zona 10" />
+            <div class="field-grid">
+              <div>
+                <label for="horaEvento">Hora</label>
+                <input id="horaEvento" type="text" placeholder="Ej: 9:30 h" />
+              </div>
+              <div>
+                <label for="lugarEvento">Lugar / modalidad</label>
+                <input id="lugarEvento" type="text" placeholder="Ej: Online / Zona 10" />
+              </div>
+            </div>
           </div>
 
           <div data-group="producto">
@@ -801,74 +1293,166 @@
           </div>
         </section>
 
+        <section class="card">
+          <div class="section-heading">
+            <span class="section-number">04</span>
+            <div>
+              <h3>Diseño y recursos</h3>
+              <p>Elegí una variante visual aprobada y sumá los assets.</p>
+            </div>
+          </div>
+
+          <label>Estilo del flyer</label>
+          <div class="template-grid">
+            <label class="template-option">
+              <input type="radio" name="template" value="corporate" checked />
+              <span class="template-tile">
+                <span class="template-preview corporate"></span>
+                <span class="template-name">Corporativo</span>
+              </span>
+            </label>
+            <label class="template-option">
+              <input type="radio" name="template" value="premium" />
+              <span class="template-tile">
+                <span class="template-preview premium"></span>
+                <span class="template-name">Premium</span>
+              </span>
+            </label>
+            <label class="template-option">
+              <input type="radio" name="template" value="vibrant" />
+              <span class="template-tile">
+                <span class="template-preview vibrant"></span>
+                <span class="template-name">Comercial</span>
+              </span>
+            </label>
+          </div>
+
+          <div class="field-grid">
+            <div>
+              <label for="alignment">Alineación</label>
+              <select id="alignment">
+                <option value="left" selected>Izquierda</option>
+                <option value="center">Centrada</option>
+              </select>
+            </div>
+            <div>
+              <label for="partnerLogoMode">Fondo del logo partner</label>
+              <select id="partnerLogoMode">
+                <option value="claro" selected>Claro</option>
+                <option value="oscuro">Oscuro</option>
+                <option value="sin-fondo">Sin fondo</option>
+              </select>
+            </div>
+          </div>
+
+          <label for="logoPartner">Logo partner</label>
+          <label class="upload-box" for="logoPartner">
+            <input id="logoPartner" type="file" accept="image/png,image/jpeg,image/svg+xml,image/webp" />
+            <span class="upload-title">Cargar logo del partner</span>
+            <span class="upload-subtitle">PNG o SVG con buena resolución. El fondo puede ajustarse debajo.</span>
+          </label>
+          <div class="file-state hidden" id="logoFileState">
+            <span id="logoFileName">Archivo cargado</span>
+            <span>✓</span>
+          </div>
+
+          <label for="imagenFondo">Imagen / fondo opcional</label>
+          <label class="upload-box" for="imagenFondo">
+            <input id="imagenFondo" type="file" accept="image/png,image/jpeg,image/webp" />
+            <span class="upload-title">Cargar imagen de fondo</span>
+            <span class="upload-subtitle">Usá una imagen horizontal o vertical de alta calidad.</span>
+          </label>
+          <div class="file-state hidden" id="bgFileState">
+            <span id="bgFileName">Archivo cargado</span>
+            <span>✓</span>
+          </div>
+
+          <label for="imageOpacity">Intensidad de la imagen</label>
+          <div class="range-row">
+            <input id="imageOpacity" type="range" min="8" max="55" value="22" />
+            <span class="range-value" id="imageOpacityValue">22%</span>
+          </div>
+
+          <label class="check-row" for="showGuides">
+            <input id="showGuides" type="checkbox" />
+            <span>Mostrar márgenes seguros en la vista previa</span>
+          </label>
+        </section>
+
         <section class="card hidden" id="qrSection">
-          <div class="section-heading"><span>04</span><h3>QR opcional</h3></div>
-          <p class="helper">Usalo cuando el flyer no lleve botón de CTA.</p>
+          <div class="section-heading">
+            <span class="section-number">05</span>
+            <div>
+              <h3>QR opcional</h3>
+              <p>Disponible cuando la pieza no lleva botón de CTA.</p>
+            </div>
+          </div>
 
           <label for="qrLink">Link para generar QR</label>
-          <input id="qrLink" type="url" placeholder="https://..." />
+          <input id="qrLink" type="url" placeholder="https://..." inputmode="url" />
 
           <label class="check-row" for="usarQr">
             <input id="usarQr" type="checkbox" />
             <span>Mostrar QR en el flyer</span>
           </label>
         </section>
-
-        <section class="card">
-          <div class="section-heading"><span>04</span><h3>Assets opcionales</h3></div>
-
-          <label for="logoPartner">Logo partner</label>
-          <input id="logoPartner" type="file" accept="image/*" />
-
-          <label for="partnerLogoMode">Fondo del logo partner</label>
-          <select id="partnerLogoMode">
-            <option value="claro" selected>Claro, para logos en color</option>
-            <option value="oscuro">Oscuro, para logos blancos</option>
-            <option value="sin-fondo">Sin fondo</option>
-          </select>
-
-          <label for="imagenFondo">Imagen / fondo opcional</label>
-          <input id="imagenFondo" type="file" accept="image/*" />
-        </section>
       </form>
 
       <section class="preview-panel">
         <div class="preview-head">
           <div>
-            <small>Vista previa</small>
+            <small>Vista previa en tiempo real</small>
             <h2 id="previewName">Flyer de evento</h2>
           </div>
-          <button class="secondary-btn" id="downloadPngBtn" type="button">Descargar PNG</button>
+
+          <div class="preview-actions">
+            <div class="zoom-control" aria-label="Control de zoom">
+              <button class="icon-btn" id="zoomOutBtn" type="button" aria-label="Alejar">−</button>
+              <span class="zoom-label" id="zoomLabel">100%</span>
+              <button class="icon-btn" id="zoomInBtn" type="button" aria-label="Acercar">+</button>
+            </div>
+            <button class="secondary-btn" id="downloadPngBtn" type="button">Descargar PNG</button>
+          </div>
         </div>
 
         <div class="canvas-wrap">
-          <div class="flyer-canvas" id="flyerCanvas">
-            <div class="corner-circle"></div>
-            <img class="ua-logo-img" id="uaLogoPreview" src="UA%20Logo_Zurich%20-%20Blanco%20(4).png" alt="Universal Assistance" onerror="this.style.display='none';document.getElementById('uaFallback').style.display='block';" />
-            <div class="ua-fallback" id="uaFallback">universal<br>assistance</div>
-            <div class="brand-divider hidden" id="brandDivider"></div>
-            <div class="partner-badge" id="partnerBadge">Partner</div>
-            <img class="partner-logo hidden mode-claro" id="partnerLogoPreview" alt="Logo partner" />
+          <div class="canvas-stage">
+            <div class="flyer-canvas template-corporate" id="flyerCanvas">
+              <div class="corner-circle"></div>
+              <div class="safe-area"></div>
 
-            <div class="flyer-content">
-              <h2 id="titlePreview">Una invitación para potenciar tus ventas</h2>
-              <p id="subtitlePreview">La bajada de la pieza se verá acá, con el tono comercial definido para la pieza.</p>
-              <div class="details-box" id="detailsPreview">Completá fecha, hora y lugar del evento.</div>
-              <button class="flyer-cta" id="ctaPreview" type="button">Conocé más</button>
+              <img class="ua-logo-img" id="uaLogoPreview" src="UA%20Logo_Zurich%20-%20Blanco%20(4).png" alt="Universal Assistance" onerror="this.style.display='none';document.getElementById('uaFallback').style.display='block';" />
+              <div class="ua-fallback" id="uaFallback">universal<br>assistance</div>
+              <div class="brand-divider hidden" id="brandDivider"></div>
+              <img class="partner-logo hidden mode-claro" id="partnerLogoPreview" alt="Logo partner" />
+
+              <div class="category-label" id="categoryPreview">Evento comercial</div>
+
+              <div class="flyer-content">
+                <h2 id="titlePreview">Una invitación para potenciar tus ventas</h2>
+                <p id="subtitlePreview">La bajada de la pieza se verá acá, con el tono comercial definido para la pieza.</p>
+                <div class="details-list" id="detailsPreview"></div>
+                <button class="flyer-cta" id="ctaPreview" type="button">Conocé más</button>
+              </div>
+
+              <img id="qrPreview" class="qr-preview hidden" alt="QR del CTA" />
+              <p class="legal">SUJETO A TÉRMINOS Y CONDICIONES. UNIVERSAL ASSISTANCE SE RESERVA EL DERECHO DE INTERPRETACIÓN.</p>
             </div>
-
-            <img id="qrPreview" class="qr-preview hidden" alt="QR del CTA" />
-            <p class="legal">SUJETO A CONDICIONES GENERALES</p>
           </div>
+        </div>
+
+        <div class="validation-card" id="validationCard">
+          <span class="validation-icon" id="validationIcon">!</span>
+          <span id="validationText">Completá solicitante y título para preparar la solicitud.</span>
         </div>
 
         <div class="submit-card">
           <div>
             <p class="eyebrow">Solicitud preparada</p>
-            <h3>Información lista para enviar</h3>
-            <p>Se genera el pedido con toda la información cargada.</p>
+            <h3>Enviar brief a Marketing</h3>
+            <p>Se incluirán los datos comerciales, la configuración visual y la vista previa.</p>
           </div>
-          <button class="primary-btn" id="sendBtn" type="button">Enviar solicitud</button>
+          <button class="primary-btn" id="sendBtn" type="button" disabled>Enviar solicitud</button>
         </div>
 
         <div class="result hidden" id="resultBox"></div>
@@ -905,36 +1489,64 @@
       logoPartner: document.getElementById("logoPartner"),
       partnerLogoMode: document.getElementById("partnerLogoMode"),
       imagenFondo: document.getElementById("imagenFondo"),
+      alignment: document.getElementById("alignment"),
+      imageOpacity: document.getElementById("imageOpacity"),
+      showGuides: document.getElementById("showGuides")
     };
 
     const preview = {
       name: document.getElementById("previewName"),
       canvas: document.getElementById("flyerCanvas"),
-      partnerBadge: document.getElementById("partnerBadge"),
       partnerLogo: document.getElementById("partnerLogoPreview"),
       brandDivider: document.getElementById("brandDivider"),
+      category: document.getElementById("categoryPreview"),
       title: document.getElementById("titlePreview"),
       subtitle: document.getElementById("subtitlePreview"),
       details: document.getElementById("detailsPreview"),
       cta: document.getElementById("ctaPreview"),
-      qr: document.getElementById("qrPreview"),
+      qr: document.getElementById("qrPreview")
     };
 
     const typeLabels = {
-      evento: "Flyer de evento",
-      producto: "Flyer de producto",
-      conmemorativo: "Pieza conmemorativa",
-      otro: "Otro tipo de pieza"
+      evento:"Flyer de evento",
+      producto:"Flyer de producto",
+      conmemorativo:"Pieza conmemorativa",
+      otro:"Otro tipo de pieza"
+    };
+
+    const categoryLabels = {
+      evento:"Evento comercial",
+      producto:"Producto UA",
+      conmemorativo:"Comunidad UA",
+      otro:"Comunicación comercial"
     };
 
     const resultBox = document.getElementById("resultBox");
     const tituloCount = document.getElementById("tituloCount");
     const bajadaCount = document.getElementById("bajadaCount");
+    const progressBar = document.getElementById("progressBar");
+    const progressLabel = document.getElementById("progressLabel");
+    const validationCard = document.getElementById("validationCard");
+    const validationIcon = document.getElementById("validationIcon");
+    const validationText = document.getElementById("validationText");
+    const sendBtn = document.getElementById("sendBtn");
+    const saveStatusText = document.getElementById("saveStatusText");
+    const logoFileState = document.getElementById("logoFileState");
+    const logoFileName = document.getElementById("logoFileName");
+    const bgFileState = document.getElementById("bgFileState");
+    const bgFileName = document.getElementById("bgFileName");
+    const storageKey = "uaFlyerStudioDraftV6";
+    let zoom = 1;
+    let saveTimer;
 
     function normalizeUrl(url){
       const clean = String(url || "").trim();
       if (!clean) return "";
       return /^https?:\/\//i.test(clean) ? clean : `https://${clean}`;
+    }
+
+    function selectedTemplate(){
+      return document.querySelector('input[name="template"]:checked')?.value || "corporate";
     }
 
     function getCtaText(){
@@ -959,52 +1571,67 @@
       return "Nueva pieza comercial UA";
     }
 
-    function getDetailsText(){
+    function getDetailItems(){
       const tipo = fields.tipo.value;
       if (tipo === "evento"){
-        const parts = [
-          fields.fechaEvento.value && `Fecha: ${fields.fechaEvento.value}`,
-          fields.horaEvento.value && `Hora: ${fields.horaEvento.value}`,
-          fields.lugarEvento.value && `Lugar: ${fields.lugarEvento.value}`
-        ].filter(Boolean);
-        return parts.length ? parts.join(" · ") : "Completá fecha, hora y lugar del evento.";
+        return [
+          {icon:"D",text:fields.fechaEvento.value || "Completá la fecha del evento"},
+          {icon:"H",text:fields.horaEvento.value || "Completá el horario"},
+          {icon:"L",text:fields.lugarEvento.value || "Completá el lugar o modalidad"}
+        ];
       }
       if (tipo === "producto"){
-        const parts = [
-          fields.producto.value,
-          fields.beneficio1.value,
-          fields.beneficio2.value,
-          fields.beneficio3.value
-        ].filter(Boolean);
-        return parts.length ? parts.join(" · ") : "Completá producto y beneficios principales.";
+        return [
+          {icon:"P",text:fields.producto.value || "Producto a comunicar"},
+          {icon:"1",text:fields.beneficio1.value || "Beneficio principal"},
+          {icon:"2",text:fields.beneficio2.value || "Segundo beneficio"},
+          {icon:"3",text:fields.beneficio3.value || "Tercer beneficio"}
+        ].filter(item => item.text);
       }
       if (tipo === "conmemorativo"){
-        const parts = [
-          fields.dia.value && `Día: ${fields.dia.value}`,
-          fields.motivo.value
-        ].filter(Boolean);
-        return parts.length ? parts.join(" · ") : "Completá día o motivo conmemorativo.";
+        return [
+          {icon:"D",text:fields.dia.value || "Día o efeméride"},
+          {icon:"M",text:fields.motivo.value || "Motivo del mensaje"}
+        ];
       }
-      const parts = [
-        fields.tipoOtro.value && `Pieza: ${fields.tipoOtro.value}`,
-        fields.detalleOtro.value
-      ].filter(Boolean);
-      return parts.length ? parts.join(" · ") : "Completá el detalle del pedido.";
+      return [
+        {icon:"P",text:fields.tipoOtro.value || "Tipo de pieza"},
+        {icon:"D",text:fields.detalleOtro.value || "Detalle del pedido"}
+      ];
+    }
+
+    function renderDetails(){
+      preview.details.innerHTML = "";
+      getDetailItems().slice(0,4).forEach(item => {
+        const row = document.createElement("div");
+        row.className = "detail-row";
+        const icon = document.createElement("span");
+        icon.className = "detail-icon";
+        icon.textContent = item.icon;
+        const text = document.createElement("span");
+        text.textContent = item.text;
+        row.append(icon,text);
+        preview.details.appendChild(row);
+      });
     }
 
     function updateDynamicFields(){
       const tipo = fields.tipo.value || "evento";
       document.body.className = `tipo-${tipo}`;
       document.querySelectorAll(".dynamic-fields [data-group]").forEach(group => {
-        group.classList.toggle("active", group.dataset.group === tipo);
+        group.classList.toggle("active",group.dataset.group === tipo);
       });
     }
 
+    function setCounterState(element,current,limit,warningAt){
+      element.textContent = `${current}/${limit}`;
+      element.classList.toggle("warning",current >= warningAt && current < limit);
+      element.classList.toggle("danger",current >= limit);
+    }
+
     function updateCounters(){
-      const tl = fields.titulo.value.length;
-      const bl = fields.bajada.value.length;
-      tituloCount.textContent = `${tl}/64`;
-      bajadaCount.textContent = `${bl}/130`;
+      setCounterState(tituloCount,fields.titulo.value.length,64,52);
+      setCounterState(bajadaCount,fields.bajada.value.length,130,108);
     }
 
     function applyPartnerLogoMode(){
@@ -1013,138 +1640,293 @@
       preview.partnerLogo.classList.add(`mode-${mode}`);
     }
 
+    function updateTemplate(){
+      const template = selectedTemplate();
+      preview.canvas.classList.remove("template-corporate","template-premium","template-vibrant");
+      preview.canvas.classList.add(`template-${template}`);
+    }
+
+    function updateAlignment(){
+      preview.canvas.classList.toggle("align-center",fields.alignment.value === "center");
+    }
+
+    function updateProgress(){
+      const checks = [
+        Boolean(fields.solicitante.value.trim()),
+        Boolean(fields.titulo.value.trim()),
+        Boolean(fields.bajada.value.trim()),
+        Boolean(fields.objetivo.value.trim()),
+        Boolean(fields.partner.value.trim()),
+        getDetailItems().some(item => !/Completá|Producto a comunicar|Beneficio principal|Segundo beneficio|Tercer beneficio|Día o efeméride|Motivo del mensaje|Tipo de pieza|Detalle del pedido/.test(item.text)),
+        Boolean(getCtaText() || getQrUrl())
+      ];
+      const completed = checks.filter(Boolean).length;
+      const percentage = Math.max(15,Math.round((completed/checks.length)*100));
+      progressBar.style.width = `${percentage}%`;
+      progressLabel.textContent = `${percentage}%`;
+
+      document.querySelectorAll(".step").forEach((step,index) => {
+        const thresholds = [1,3,5,7];
+        step.classList.toggle("active",completed >= thresholds[index]);
+      });
+    }
+
+    function validateForm(showErrors=false){
+      const required = [fields.solicitante,fields.titulo];
+      const missing = required.filter(field => !field.value.trim());
+      if (showErrors){
+        required.forEach(field => field.classList.toggle("invalid",!field.value.trim()));
+      }else{
+        required.forEach(field => field.classList.remove("invalid"));
+      }
+
+      const valid = missing.length === 0;
+      validationCard.classList.toggle("valid",valid);
+      validationIcon.textContent = valid ? "✓" : "!";
+      validationText.textContent = valid
+        ? "El brief está listo para enviar. Revisá la vista previa y los links antes de continuar."
+        : "Completá solicitante y título para preparar la solicitud.";
+      sendBtn.disabled = !valid;
+      return valid;
+    }
+
     function updatePreview(){
       updateDynamicFields();
       updateCounters();
       applyPartnerLogoMode();
+      updateTemplate();
+      updateAlignment();
 
       const tipo = fields.tipo.value || "evento";
       const titulo = fields.titulo.value.trim() || adaptDefaultTitle();
       const bajada = fields.bajada.value.trim() || "La bajada de la pieza se verá acá, con el tono comercial definido para la pieza.";
       const cta = getCtaText();
 
-      fields.ctaCustomWrap.classList.toggle("hidden", fields.ctaTipo.value !== "otro");
-      document.getElementById("ctaLinkWrap").classList.toggle("hidden", fields.ctaTipo.value === "Sin CTA");
-      document.getElementById("qrSection").classList.toggle("hidden", fields.ctaTipo.value !== "Sin CTA");
+      fields.ctaCustomWrap.classList.toggle("hidden",fields.ctaTipo.value !== "otro");
+      document.getElementById("ctaLinkWrap").classList.toggle("hidden",fields.ctaTipo.value === "Sin CTA");
+      document.getElementById("qrSection").classList.toggle("hidden",fields.ctaTipo.value !== "Sin CTA");
 
       if (fields.ctaTipo.value !== "Sin CTA") fields.usarQr.checked = false;
 
       preview.name.textContent = typeLabels[tipo] || "Otro tipo de pieza";
+      preview.category.textContent = categoryLabels[tipo] || "Comunicación comercial";
       preview.title.textContent = titulo;
       preview.subtitle.textContent = bajada;
-      preview.details.textContent = getDetailsText();
-      preview.cta.textContent = cta || "";
-      preview.cta.classList.toggle("hidden-cta", !cta);
+      renderDetails();
+      preview.cta.textContent = cta;
+      preview.cta.classList.toggle("hidden-cta",!cta);
 
-      preview.canvas.classList.toggle("flyer-title-long", titulo.length > 48);
-      preview.canvas.classList.toggle("flyer-title-xlong", titulo.length > 72 || /\S{18,}/.test(titulo));
+      preview.canvas.classList.toggle("flyer-title-long",titulo.length > 44);
+      preview.canvas.classList.toggle("flyer-title-xlong",titulo.length > 56 || /\S{18,}/.test(titulo));
+      preview.canvas.classList.toggle("show-guides",fields.showGuides.checked);
+      preview.canvas.style.setProperty("--image-opacity",`${Number(fields.imageOpacity.value)/100}`);
+      document.getElementById("imageOpacityValue").textContent = `${fields.imageOpacity.value}%`;
 
       const qrUrl = getQrUrl();
       if (qrUrl){
         preview.qr.src = qrUrl;
         preview.qr.classList.remove("hidden");
         preview.canvas.classList.add("flyer-has-qr");
-      } else {
+      }else{
         preview.qr.classList.add("hidden");
         preview.qr.removeAttribute("src");
         preview.canvas.classList.remove("flyer-has-qr");
       }
+
+      updateProgress();
+      validateForm(false);
+      scheduleSave();
     }
 
-    function handleImage(input, callback){
+    function handleImage(input,callback){
       const file = input.files && input.files[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = e => callback(e.target.result);
+      reader.onload = event => callback(event.target.result,file);
       reader.readAsDataURL(file);
     }
 
-    fields.logoPartner.addEventListener("change", () => {
+    fields.logoPartner.addEventListener("change",() => {
       const file = fields.logoPartner.files && fields.logoPartner.files[0];
       if (!file){
         preview.partnerLogo.classList.add("hidden");
         preview.partnerLogo.removeAttribute("src");
         preview.brandDivider.classList.add("hidden");
         preview.canvas.classList.remove("flyer-has-partner");
+        logoFileState.classList.add("hidden");
         return;
       }
-      handleImage(fields.logoPartner, src => {
+      handleImage(fields.logoPartner,(src,loadedFile) => {
         preview.partnerLogo.src = src;
         preview.partnerLogo.classList.remove("hidden");
         preview.brandDivider.classList.remove("hidden");
         preview.canvas.classList.add("flyer-has-partner");
+        logoFileName.textContent = loadedFile.name;
+        logoFileState.classList.remove("hidden");
         applyPartnerLogoMode();
       });
     });
 
-    fields.imagenFondo.addEventListener("change", () => {
+    fields.imagenFondo.addEventListener("change",() => {
       const file = fields.imagenFondo.files && fields.imagenFondo.files[0];
       if (!file){
-        preview.canvas.style.setProperty("--bg-image", "none");
+        preview.canvas.style.setProperty("--bg-image","none");
+        bgFileState.classList.add("hidden");
         return;
       }
-      handleImage(fields.imagenFondo, src => {
-        preview.canvas.style.setProperty("--bg-image", `url(${src})`);
+      handleImage(fields.imagenFondo,(src,loadedFile) => {
+        preview.canvas.style.setProperty("--bg-image",`url("${src}")`);
+        bgFileName.textContent = loadedFile.name;
+        bgFileState.classList.remove("hidden");
       });
     });
 
+    function serializableDraft(){
+      const values = {};
+      Object.entries(fields).forEach(([key,field]) => {
+        if (!field || field.type === "file") return;
+        values[key] = field.type === "checkbox" ? field.checked : field.value;
+      });
+      values.template = selectedTemplate();
+      return values;
+    }
+
+    function scheduleSave(){
+      clearTimeout(saveTimer);
+      saveStatusText.textContent = "Guardando cambios...";
+      saveTimer = setTimeout(() => {
+        try{
+          localStorage.setItem(storageKey,JSON.stringify(serializableDraft()));
+          saveStatusText.textContent = "Guardado automáticamente";
+        }catch(error){
+          saveStatusText.textContent = "No se pudo guardar";
+        }
+      },350);
+    }
+
+    function restoreDraft(){
+      try{
+        const saved = JSON.parse(localStorage.getItem(storageKey) || "null");
+        if (!saved) return;
+        Object.entries(saved).forEach(([key,value]) => {
+          if (key === "template"){
+            const templateInput = document.querySelector(`input[name="template"][value="${value}"]`);
+            if (templateInput) templateInput.checked = true;
+            return;
+          }
+          const field = fields[key];
+          if (!field || field.type === "file") return;
+          if (field.type === "checkbox") field.checked = Boolean(value);
+          else field.value = value;
+        });
+      }catch(error){}
+    }
+
     Object.values(fields).forEach(field => {
       if (!field || field.type === "file") return;
-      field.addEventListener("input", updatePreview);
-      field.addEventListener("change", updatePreview);
-      field.addEventListener("keyup", updatePreview);
+      field.addEventListener("input",updatePreview);
+      field.addEventListener("change",updatePreview);
+    });
+
+    document.querySelectorAll('input[name="template"]').forEach(input => {
+      input.addEventListener("change",updatePreview);
     });
 
     function getRequestData(){
       return {
-        tipo: fields.tipo.value,
-        formato: "A4 vertical",
-        partner: fields.partner.value,
-        solicitante: fields.solicitante.value,
-        titulo: fields.titulo.value,
-        bajada: fields.bajada.value,
-        cta: getCtaText(),
-        ctaLink: fields.ctaLink.value,
-        qrLink: fields.qrLink.value,
-        agregarQr: fields.usarQr.checked && fields.ctaTipo.value === "Sin CTA",
-        objetivo: fields.objetivo.value,
-        datosEspecificos: getDetailsText()
+        tipo:typeLabels[fields.tipo.value],
+        formato:"A4 vertical",
+        partner:fields.partner.value.trim(),
+        solicitante:fields.solicitante.value.trim(),
+        titulo:fields.titulo.value.trim(),
+        bajada:fields.bajada.value.trim(),
+        cta:getCtaText(),
+        ctaLink:normalizeUrl(fields.ctaLink.value),
+        qrLink:normalizeUrl(fields.qrLink.value),
+        agregarQr:fields.usarQr.checked && fields.ctaTipo.value === "Sin CTA",
+        objetivo:fields.objetivo.value.trim(),
+        datosEspecificos:getDetailItems().map(item => item.text),
+        estilo:selectedTemplate(),
+        alineacion:fields.alignment.value,
+        logoPartner:Boolean(fields.logoPartner.files?.[0]),
+        imagenFondo:Boolean(fields.imagenFondo.files?.[0])
       };
     }
 
     function simulateSend(){
+      if (!validateForm(true)){
+        fields.solicitante.value.trim() ? fields.titulo.focus() : fields.solicitante.focus();
+        return;
+      }
+
       const data = getRequestData();
-      const id = `UA-${Date.now().toString().slice(-6)}`;
+      const id = `UA-${new Date().getFullYear()}-${Date.now().toString().slice(-5)}`;
+      const timestamp = new Intl.DateTimeFormat("es-AR",{
+        dateStyle:"medium",
+        timeStyle:"short"
+      }).format(new Date());
+
       resultBox.classList.remove("hidden");
-      resultBox.textContent = `✅ Solicitud generada correctamente.\n\nN° de solicitud: ${id}\n\n${JSON.stringify(data, null, 2)}`;
+      resultBox.textContent =
+`✓ Solicitud creada correctamente
+
+N° de solicitud: ${id}
+Fecha: ${timestamp}
+Solicitante: ${data.solicitante}
+Tipo: ${data.tipo}
+Estilo: ${data.estilo}
+Estado: Lista para enviar a Marketing`;
+
+      resultBox.scrollIntoView({behavior:"smooth",block:"nearest"});
     }
 
     function clearForm(){
-      const keep = ["tipo","formato","pais","ctaTipo","partnerLogoMode"];
-      Object.entries(fields).forEach(([key, field]) => {
-        if (!field || keep.includes(key)) return;
-        if (field.type === "file") field.value = "";
-        else if (field.type === "checkbox") field.checked = false;
-        else field.value = "";
-      });
+      const shouldClear = window.confirm("¿Querés comenzar un flyer nuevo? Se borrará el borrador guardado en este dispositivo.");
+      if (!shouldClear) return;
+
+      localStorage.removeItem(storageKey);
+      document.getElementById("requestForm").reset();
       fields.tipo.value = "evento";
       fields.formato.value = "a4";
       fields.ctaTipo.value = "Conocé más";
       fields.partnerLogoMode.value = "claro";
+      fields.alignment.value = "left";
+      fields.imageOpacity.value = "22";
+
       preview.partnerLogo.classList.add("hidden");
       preview.partnerLogo.removeAttribute("src");
       preview.brandDivider.classList.add("hidden");
-      preview.canvas.classList.remove("flyer-has-partner","flyer-has-qr","flyer-title-long","flyer-title-xlong");
+      preview.canvas.classList.remove("flyer-has-partner","flyer-has-qr","flyer-title-long","flyer-title-xlong","show-guides","align-center");
       preview.canvas.style.setProperty("--bg-image","none");
       preview.qr.classList.add("hidden");
+      logoFileState.classList.add("hidden");
+      bgFileState.classList.add("hidden");
       resultBox.classList.add("hidden");
+      zoom = 1;
+      applyZoom();
       updatePreview();
+      saveStatusText.textContent = "Nuevo borrador";
     }
 
     function openCta(){
       const url = normalizeUrl(fields.ctaLink.value);
-      if (url && getCtaText()) window.open(url, "_blank", "noopener,noreferrer");
+      if (url && getCtaText()) window.open(url,"_blank","noopener,noreferrer");
     }
+
+    function applyZoom(){
+      preview.canvas.style.setProperty("--preview-scale",zoom);
+      document.getElementById("zoomLabel").textContent = `${Math.round(zoom*100)}%`;
+    }
+
+    document.getElementById("zoomOutBtn").addEventListener("click",() => {
+      zoom = Math.max(.75,Number((zoom-.1).toFixed(2)));
+      applyZoom();
+    });
+
+    document.getElementById("zoomInBtn").addEventListener("click",() => {
+      zoom = Math.min(1.25,Number((zoom+.1).toFixed(2)));
+      applyZoom();
+    });
 
     function roundRect(ctx,x,y,w,h,r){
       const radius = Math.min(r,w/2,h/2);
@@ -1158,7 +1940,7 @@
     }
 
     function loadImage(src){
-      return new Promise((resolve,reject)=>{
+      return new Promise((resolve,reject) => {
         const img = new Image();
         img.crossOrigin = "anonymous";
         img.onload = () => resolve(img);
@@ -1175,7 +1957,7 @@
     }
 
     function wrapLines(ctx,text,maxWidth){
-      const words = String(text||"").split(/\s+/).filter(Boolean);
+      const words = String(text || "").split(/\s+/).filter(Boolean);
       const lines = [];
       let line = "";
       words.forEach(word => {
@@ -1183,7 +1965,7 @@
         if (ctx.measureText(test).width > maxWidth && line){
           lines.push(line);
           line = word;
-        } else {
+        }else{
           line = test;
         }
       });
@@ -1191,157 +1973,205 @@
       return lines;
     }
 
-    function drawWrappedText(ctx,text,x,y,maxWidth,lineHeight,maxLines){
+    function drawWrappedText(ctx,text,x,y,maxWidth,lineHeight,maxLines,align="left"){
       const lines = wrapLines(ctx,text,maxWidth).slice(0,maxLines);
-      lines.forEach((line,i)=>ctx.fillText(line,x,y+i*lineHeight));
+      ctx.textAlign = align;
+      lines.forEach((line,index) => ctx.fillText(line,x,y+index*lineHeight));
       return y + lines.length*lineHeight;
     }
 
     async function downloadPng(){
-      const rect = preview.canvas.getBoundingClientRect();
-      const scale = 3;
+      const width = 1080;
+      const height = 1530;
       const canvas = document.createElement("canvas");
-      canvas.width = Math.round(rect.width*scale);
-      canvas.height = Math.round(rect.height*scale);
+      canvas.width = width;
+      canvas.height = height;
       const ctx = canvas.getContext("2d");
-      ctx.scale(scale,scale);
 
-      roundRect(ctx,0,0,rect.width,rect.height,34);
-      ctx.clip();
+      const template = selectedTemplate();
+      const gradient = ctx.createLinearGradient(0,0,width,height);
+      if (template === "premium"){
+        gradient.addColorStop(0,"#00182C");
+        gradient.addColorStop(.57,"#003A5D");
+        gradient.addColorStop(1,"#006A78");
+      }else if (template === "vibrant"){
+        gradient.addColorStop(0,"#00528F");
+        gradient.addColorStop(.52,"#007B99");
+        gradient.addColorStop(1,"#00C4DF");
+      }else{
+        gradient.addColorStop(0,"#00528F");
+        gradient.addColorStop(.68,"#008091");
+        gradient.addColorStop(1,"#00C4DF");
+      }
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0,0,width,height);
 
-      const bg = ctx.createLinearGradient(0,0,rect.width,rect.height);
-      bg.addColorStop(0,"#00528F");
-      bg.addColorStop(.68,"#008091");
-      bg.addColorStop(1,"#00C4DF");
-      ctx.fillStyle = bg;
-      ctx.fillRect(0,0,rect.width,rect.height);
-
-      if (fields.imagenFondo.files && fields.imagenFondo.files[0]){
+      if (fields.imagenFondo.files?.[0]){
         try{
           const url = URL.createObjectURL(fields.imagenFondo.files[0]);
-          const img = await loadImage(url);
-          ctx.globalAlpha = .22;
-          drawCoverImage(ctx,img,0,0,rect.width,rect.height);
+          const image = await loadImage(url);
+          ctx.globalAlpha = Number(fields.imageOpacity.value)/100;
+          drawCoverImage(ctx,image,0,0,width,height);
           ctx.globalAlpha = 1;
           URL.revokeObjectURL(url);
-        }catch(e){}
+        }catch(error){}
       }
 
-      ctx.fillStyle = "rgba(255,255,255,.13)";
-      ctx.beginPath(); ctx.arc(rect.width*.84, rect.height*.08, rect.width*.24, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = "rgba(255,67,110,.16)";
-      ctx.beginPath(); ctx.arc(rect.width*.02, rect.height*.96, rect.width*.17, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = template === "premium" ? "rgba(255,255,255,.03)" : "rgba(255,255,255,.12)";
+      ctx.beginPath();
+      ctx.arc(width*.84,height*.08,width*.25,0,Math.PI*2);
+      ctx.fill();
+
+      ctx.fillStyle = "rgba(255,67,110,.14)";
+      ctx.beginPath();
+      ctx.arc(width*.01,height*.97,width*.18,0,Math.PI*2);
+      ctx.fill();
 
       const hasPartner = !preview.partnerLogo.classList.contains("hidden") && preview.partnerLogo.src;
 
       try{
         const logo = await loadImage("UA%20Logo_Zurich%20-%20Blanco%20(4).png");
-        const logoW = hasPartner ? rect.width*.30 : rect.width*.34;
+        const logoW = hasPartner ? width*.30 : width*.34;
         const logoH = logo.height*(logoW/logo.width);
-        const logoX = hasPartner ? rect.width*.06 : (rect.width-logoW)/2;
-        ctx.drawImage(logo,logoX,rect.height*.052,logoW,logoH);
-      }catch(e){}
+        const logoX = hasPartner ? width*.06 : (width-logoW)/2;
+        ctx.drawImage(logo,logoX,height*.052,logoW,logoH);
+      }catch(error){}
 
       if (hasPartner){
-        ctx.fillStyle = "rgba(255,255,255,.42)";
-        ctx.fillRect(rect.width*.50,rect.height*.058,1.5,rect.height*.055);
+        ctx.fillStyle = "rgba(255,255,255,.36)";
+        ctx.fillRect(width*.50,height*.058,2,height*.055);
         try{
-          const pLogo = await loadImage(preview.partnerLogo.src);
-          const chipX = rect.width*.66, chipY = rect.height*.052, chipW = rect.width*.28, chipH = rect.height*.055;
+          const partnerLogo = await loadImage(preview.partnerLogo.src);
+          const chipX = width*.66;
+          const chipY = height*.052;
+          const chipW = width*.28;
+          const chipH = height*.055;
           const mode = fields.partnerLogoMode.value || "claro";
+
           if (mode !== "sin-fondo"){
             roundRect(ctx,chipX,chipY,chipW,chipH,18);
-            if (mode === "claro"){
-              ctx.fillStyle = "rgba(255,255,255,.94)";
-              ctx.fill();
-            } else {
-              const g = ctx.createLinearGradient(chipX,chipY,chipX+chipW,chipY+chipH);
-              g.addColorStop(0,"rgba(0,36,71,.78)");
-              g.addColorStop(1,"rgba(0,128,145,.46)");
-              ctx.fillStyle = g;
-              ctx.fill();
-            }
-            ctx.strokeStyle = "rgba(255,255,255,.34)";
+            ctx.fillStyle = mode === "claro" ? "rgba(255,255,255,.95)" : "rgba(0,36,71,.80)";
+            ctx.fill();
+            ctx.strokeStyle = "rgba(255,255,255,.30)";
             ctx.stroke();
           }
-          const maxW = chipW*.74, maxH = chipH*.64;
-          const ratio = Math.min(maxW/pLogo.width,maxH/pLogo.height);
-          const w = pLogo.width*ratio, h = pLogo.height*ratio;
-          ctx.drawImage(pLogo, chipX+(chipW-w)/2, chipY+(chipH-h)/2, w, h);
-        }catch(e){}
+
+          const maxW = chipW*.74;
+          const maxH = chipH*.64;
+          const ratio = Math.min(maxW/partnerLogo.width,maxH/partnerLogo.height);
+          const logoW = partnerLogo.width*ratio;
+          const logoH = partnerLogo.height*ratio;
+          ctx.drawImage(partnerLogo,chipX+(chipW-logoW)/2,chipY+(chipH-logoH)/2,logoW,logoH);
+        }catch(error){}
       }
 
-      const title = fields.titulo.value.trim() || adaptDefaultTitle();
-      const isXLong = title.length>72 || /\S{18,}/.test(title);
-      const isLong = title.length>48;
-      const startX=rect.width*.07;
-      let y=rect.height*.35;
-      const maxTextW=rect.width*.86;
-      const titleSize = isXLong ? rect.width*.052 : isLong ? rect.width*.062 : rect.width*.078;
-      ctx.fillStyle="#fff";
-      ctx.font=`900 ${titleSize}px Poppins, Arial`;
-      y = drawWrappedText(ctx,title,startX,y,maxTextW,titleSize*1.05,isXLong?7:isLong?6:5);
+      const centered = fields.alignment.value === "center";
+      const contentX = centered ? width/2 : width*.07;
+      const maxTextWidth = width*.86;
+      const align = centered ? "center" : "left";
 
-      const bajada = fields.bajada.value.trim() || "La bajada de la pieza se verá acá, con el tono comercial definido para la pieza.";
-      const bajadaSize=rect.width*.026;
-      ctx.fillStyle="rgba(255,255,255,.88)";
-      ctx.font=`500 ${bajadaSize}px Poppins, Arial`;
-      y = drawWrappedText(ctx,bajada,startX,y+rect.height*.025,maxTextW,bajadaSize*1.38,3);
-
-      const qrUrl = getQrUrl();
-      const detailMaxW = qrUrl ? rect.width*.60 : rect.width*.86;
-      const detailY = y + rect.height*.025;
-      const detailH = rect.height*.052;
-      ctx.fillStyle="rgba(0,36,71,.32)";
-      roundRect(ctx,startX,detailY,detailMaxW,detailH,detailH/2);
+      ctx.fillStyle = "rgba(255,255,255,.13)";
+      roundRect(ctx,centered ? width*.35 : width*.07,height*.302,width*.30,height*.04,25);
       ctx.fill();
-      ctx.strokeStyle="rgba(255,255,255,.22)";
+      ctx.strokeStyle = "rgba(255,255,255,.18)";
       ctx.stroke();
-      ctx.fillStyle="#fff";
-      ctx.font=`700 ${rect.width*.022}px Poppins, Arial`;
-      drawWrappedText(ctx,getDetailsText(),startX+rect.width*.025,detailY+detailH*.62,detailMaxW-rect.width*.05,rect.width*.029,2);
+
+      ctx.fillStyle = "rgba(255,255,255,.92)";
+      ctx.font = "900 20px Poppins, Arial";
+      ctx.textAlign = "center";
+      ctx.fillText((categoryLabels[fields.tipo.value] || "COMUNICACIÓN COMERCIAL").toUpperCase(),centered ? width*.50 : width*.22,height*.328);
+
+      const title = fields.titulo.value.trim() || adaptDefaultTitle();
+      const isXLong = title.length > 56 || /\S{18,}/.test(title);
+      const isLong = title.length > 44;
+      let y = height*.40;
+      const titleSize = isXLong ? 66 : isLong ? 76 : 90;
+
+      ctx.fillStyle = "#fff";
+      ctx.font = `900 ${titleSize}px Poppins, Arial`;
+      y = drawWrappedText(ctx,title,contentX,y,maxTextWidth,titleSize*1.04,isXLong?7:isLong?6:5,align);
+
+      const subtitle = fields.bajada.value.trim() || "La bajada de la pieza se verá acá, con el tono comercial definido para la pieza.";
+      ctx.fillStyle = "rgba(255,255,255,.84)";
+      ctx.font = "500 31px Poppins, Arial";
+      y = drawWrappedText(ctx,subtitle,contentX,y+35,maxTextWidth,44,3,align);
+
+      const detailItems = getDetailItems().slice(0,4);
+      const detailWidth = getQrUrl() ? width*.60 : width*.86;
+      const detailX = centered ? (width-detailWidth)/2 : width*.07;
+      y += 28;
+
+      detailItems.forEach(item => {
+        const rowH = 64;
+        ctx.fillStyle = "rgba(0,36,71,.28)";
+        roundRect(ctx,detailX,y,detailWidth,rowH,18);
+        ctx.fill();
+        ctx.strokeStyle = "rgba(255,255,255,.16)";
+        ctx.stroke();
+
+        ctx.fillStyle = "rgba(255,255,255,.14)";
+        roundRect(ctx,detailX+15,y+13,38,38,10);
+        ctx.fill();
+
+        ctx.fillStyle = "#fff";
+        ctx.font = "900 18px Poppins, Arial";
+        ctx.textAlign = "center";
+        ctx.fillText(item.icon,detailX+34,y+39);
+
+        ctx.font = "700 24px Poppins, Arial";
+        ctx.textAlign = "left";
+        ctx.fillText(String(item.text).slice(0,58),detailX+69,y+39);
+        y += rowH+12;
+      });
 
       const ctaText = getCtaText();
       if (ctaText){
-        const ctaY = detailY+detailH+rect.height*.025;
-        const ctaW = Math.min(rect.width*.34, Math.max(rect.width*.18, ctaText.length*rect.width*.014+rect.width*.09));
-        const ctaH = rect.height*.055;
-        ctx.fillStyle="#fff";
-        roundRect(ctx,startX,ctaY,ctaW,ctaH,ctaH/2);
+        const ctaW = Math.min(width*.36,Math.max(width*.20,ctaText.length*16+120));
+        const ctaH = 74;
+        const ctaX = centered ? (width-ctaW)/2 : width*.07;
+        const ctaY = y+20;
+        ctx.fillStyle = "#fff";
+        roundRect(ctx,ctaX,ctaY,ctaW,ctaH,37);
         ctx.fill();
-        ctx.fillStyle="#00528F";
-        ctx.font=`900 ${rect.width*.026}px Poppins, Arial`;
-        ctx.fillText(ctaText,startX+rect.width*.03,ctaY+ctaH*.63);
+        ctx.fillStyle = "#00528F";
+        ctx.font = "900 28px Poppins, Arial";
+        ctx.textAlign = "center";
+        ctx.fillText(ctaText,ctaX+ctaW/2,ctaY+47);
       }
 
+      const qrUrl = getQrUrl();
       if (qrUrl){
         try{
-          const qrImg = await loadImage(qrUrl);
-          const qrSize=rect.width*.19, qrX=rect.width*.74, qrY=rect.height*.75;
-          ctx.fillStyle="#fff";
-          roundRect(ctx,qrX,qrY,qrSize,qrSize,16);
+          const qrImage = await loadImage(qrUrl);
+          const qrSize = width*.19;
+          const qrX = width*.74;
+          const qrY = height*.75;
+          ctx.fillStyle = "#fff";
+          roundRect(ctx,qrX,qrY,qrSize,qrSize,18);
           ctx.fill();
-          ctx.drawImage(qrImg,qrX+qrSize*.09,qrY+qrSize*.09,qrSize*.82,qrSize*.82);
-        }catch(e){}
+          ctx.drawImage(qrImage,qrX+qrSize*.09,qrY+qrSize*.09,qrSize*.82,qrSize*.82);
+        }catch(error){}
       }
 
-      ctx.fillStyle="rgba(255,255,255,.72)";
-      ctx.font=`700 ${rect.width*.013}px Poppins, Arial`;
-      ctx.textAlign="center";
-      ctx.fillText("SUJETO A CONDICIONES GENERALES",rect.width/2,rect.height*.95);
+      ctx.fillStyle = "rgba(255,255,255,.62)";
+      ctx.font = "700 17px Poppins, Arial";
+      ctx.textAlign = "center";
+      ctx.fillText("SUJETO A TÉRMINOS Y CONDICIONES. UNIVERSAL ASSISTANCE SE RESERVA EL DERECHO DE INTERPRETACIÓN.",width/2,height*.952);
 
-      const link=document.createElement("a");
-      link.download=`UA_Flyer_${Date.now()}.png`;
-      link.href=canvas.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.download = `UA_Flyer_${Date.now()}.png`;
+      link.href = canvas.toDataURL("image/png");
       link.click();
     }
 
-    document.getElementById("sendBtn").addEventListener("click", simulateSend);
-    document.getElementById("clearBtn").addEventListener("click", clearForm);
-    document.getElementById("downloadPngBtn").addEventListener("click", downloadPng);
-    preview.cta.addEventListener("click", openCta);
+    document.getElementById("sendBtn").addEventListener("click",simulateSend);
+    document.getElementById("clearBtn").addEventListener("click",clearForm);
+    document.getElementById("downloadPngBtn").addEventListener("click",downloadPng);
+    preview.cta.addEventListener("click",openCta);
 
+    restoreDraft();
     fields.formato.value = "a4";
+    applyZoom();
     updatePreview();
   </script>
 </body>
