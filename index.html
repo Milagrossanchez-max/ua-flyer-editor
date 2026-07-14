@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#002447" />
-  <title>UA Flyer Studio v6.0</title>
+  <title>UA Flyer Studio v6.1</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -180,6 +180,12 @@
       cursor:not-allowed;
       opacity:.45;
       box-shadow:none;
+      transform:none;
+    }
+
+    .secondary-btn:disabled{
+      cursor:wait;
+      opacity:.68;
       transform:none;
     }
 
@@ -949,6 +955,12 @@
       backdrop-filter:blur(5px);
     }
 
+    .detail-row > span:last-child{
+      min-width:0;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+    }
+
     .align-center .detail-row{
       justify-content:center;
       text-align:left;
@@ -1010,6 +1022,56 @@
       letter-spacing:.045em;
       z-index:4;
     }
+
+
+    .detail-icon svg{
+      width:12px;
+      height:12px;
+      display:block;
+      fill:none;
+      stroke:currentColor;
+      stroke-width:1.8;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+    }
+
+    .content-health-card{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      margin-bottom:12px;
+      padding:12px 14px;
+      border-radius:17px;
+      border:1px solid #A7DCCE;
+      background:#ECFAF6;
+      color:#126056;
+      font-size:11px;
+      line-height:1.45;
+      font-weight:600;
+    }
+
+    .content-health-card.warning{
+      border-color:#F2D29F;
+      background:#FFF9ED;
+      color:#7A4C00;
+    }
+
+    .content-health-icon{
+      width:22px;
+      height:22px;
+      flex:0 0 auto;
+      border-radius:8px;
+      display:grid;
+      place-items:center;
+      background:rgba(255,255,255,.68);
+      font-weight:900;
+    }
+
+    .content-health-copy{display:grid;gap:2px}
+    .content-health-copy strong{font-size:11px}
+    .content-health-copy span{font-weight:500}
+
+    .preview-actions{flex-wrap:wrap;justify-content:flex-end}
 
     .validation-card{
       display:flex;
@@ -1377,6 +1439,14 @@
             <input id="showGuides" type="checkbox" />
             <span>Mostrar márgenes seguros en la vista previa</span>
           </label>
+
+          <div class="counter-row">
+            <label for="legalText">Texto legal</label>
+            <span class="counter" id="legalCount">0/320</span>
+          </div>
+          <textarea id="legalText" rows="3" maxlength="320">SUJETO A TÉRMINOS Y CONDICIONES. UNIVERSAL ASSISTANCE SE RESERVA EL DERECHO DE INTERPRETACIÓN.</textarea>
+          <p class="helper">Podés adaptar el legal a cada campaña. En la pieza se ajustará automáticamente hasta tres líneas.</p>
+
         </section>
 
         <section class="card hidden" id="qrSection">
@@ -1412,6 +1482,7 @@
               <button class="icon-btn" id="zoomInBtn" type="button" aria-label="Acercar">+</button>
             </div>
             <button class="secondary-btn" id="downloadPngBtn" type="button">Descargar PNG</button>
+            <button class="secondary-btn" id="downloadPdfBtn" type="button">Descargar PDF</button>
           </div>
         </div>
 
@@ -1436,8 +1507,17 @@
               </div>
 
               <img id="qrPreview" class="qr-preview hidden" alt="QR del CTA" />
-              <p class="legal">SUJETO A TÉRMINOS Y CONDICIONES. UNIVERSAL ASSISTANCE SE RESERVA EL DERECHO DE INTERPRETACIÓN.</p>
+              <p class="legal" id="legalPreview">SUJETO A TÉRMINOS Y CONDICIONES. UNIVERSAL ASSISTANCE SE RESERVA EL DERECHO DE INTERPRETACIÓN.</p>
             </div>
+          </div>
+        </div>
+
+
+        <div class="content-health-card" id="contentHealthCard">
+          <span class="content-health-icon" id="contentHealthIcon">✓</span>
+          <div class="content-health-copy">
+            <strong id="contentHealthTitle">Composición equilibrada</strong>
+            <span id="contentHealthText">Los textos tienen una extensión adecuada para el diseño seleccionado.</span>
           </div>
         </div>
 
@@ -1491,7 +1571,8 @@
       imagenFondo: document.getElementById("imagenFondo"),
       alignment: document.getElementById("alignment"),
       imageOpacity: document.getElementById("imageOpacity"),
-      showGuides: document.getElementById("showGuides")
+      showGuides: document.getElementById("showGuides"),
+      legalText: document.getElementById("legalText")
     };
 
     const preview = {
@@ -1504,7 +1585,8 @@
       subtitle: document.getElementById("subtitlePreview"),
       details: document.getElementById("detailsPreview"),
       cta: document.getElementById("ctaPreview"),
-      qr: document.getElementById("qrPreview")
+      qr: document.getElementById("qrPreview"),
+      legal: document.getElementById("legalPreview")
     };
 
     const typeLabels = {
@@ -1524,8 +1606,13 @@
     const resultBox = document.getElementById("resultBox");
     const tituloCount = document.getElementById("tituloCount");
     const bajadaCount = document.getElementById("bajadaCount");
+    const legalCount = document.getElementById("legalCount");
     const progressBar = document.getElementById("progressBar");
     const progressLabel = document.getElementById("progressLabel");
+    const contentHealthCard = document.getElementById("contentHealthCard");
+    const contentHealthIcon = document.getElementById("contentHealthIcon");
+    const contentHealthTitle = document.getElementById("contentHealthTitle");
+    const contentHealthText = document.getElementById("contentHealthText");
     const validationCard = document.getElementById("validationCard");
     const validationIcon = document.getElementById("validationIcon");
     const validationText = document.getElementById("validationText");
@@ -1575,29 +1662,44 @@
       const tipo = fields.tipo.value;
       if (tipo === "evento"){
         return [
-          {icon:"D",text:fields.fechaEvento.value || "Completá la fecha del evento"},
-          {icon:"H",text:fields.horaEvento.value || "Completá el horario"},
-          {icon:"L",text:fields.lugarEvento.value || "Completá el lugar o modalidad"}
+          {icon:"calendar",text:fields.fechaEvento.value || "Completá la fecha del evento"},
+          {icon:"clock",text:fields.horaEvento.value || "Completá el horario"},
+          {icon:"location",text:fields.lugarEvento.value || "Completá el lugar o modalidad"}
         ];
       }
       if (tipo === "producto"){
         return [
-          {icon:"P",text:fields.producto.value || "Producto a comunicar"},
-          {icon:"1",text:fields.beneficio1.value || "Beneficio principal"},
-          {icon:"2",text:fields.beneficio2.value || "Segundo beneficio"},
-          {icon:"3",text:fields.beneficio3.value || "Tercer beneficio"}
+          {icon:"product",text:fields.producto.value || "Producto a comunicar"},
+          {icon:"benefit",text:fields.beneficio1.value || "Beneficio principal"},
+          {icon:"benefit",text:fields.beneficio2.value || "Segundo beneficio"},
+          {icon:"benefit",text:fields.beneficio3.value || "Tercer beneficio"}
         ].filter(item => item.text);
       }
       if (tipo === "conmemorativo"){
         return [
-          {icon:"D",text:fields.dia.value || "Día o efeméride"},
-          {icon:"M",text:fields.motivo.value || "Motivo del mensaje"}
+          {icon:"celebration",text:fields.dia.value || "Día o efeméride"},
+          {icon:"message",text:fields.motivo.value || "Motivo del mensaje"}
         ];
       }
       return [
-        {icon:"P",text:fields.tipoOtro.value || "Tipo de pieza"},
-        {icon:"D",text:fields.detalleOtro.value || "Detalle del pedido"}
+        {icon:"piece",text:fields.tipoOtro.value || "Tipo de pieza"},
+        {icon:"detail",text:fields.detalleOtro.value || "Detalle del pedido"}
       ];
+    }
+
+    function detailIconSvg(type){
+      const icons = {
+        calendar:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>',
+        clock:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+        location:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>',
+        product:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="6" width="16" height="14" rx="3"/><path d="M9 6V4h6v2M4 11h16"/></svg>',
+        benefit:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.6 2.6L16.5 9"/></svg>',
+        celebration:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.3 4.7 5.2.8-3.8 3.7.9 5.2L12 15l-4.6 2.4.9-5.2-3.8-3.7 5.2-.8L12 3Z"/></svg>',
+        message:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v12H9l-5 4V5Z"/><path d="M8 9h8M8 13h5"/></svg>',
+        piece:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6V3Z"/><path d="M14 3v5h5M9 12h6M9 16h6"/></svg>',
+        detail:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/></svg>'
+      };
+      return icons[type] || icons.detail;
     }
 
     function renderDetails(){
@@ -1607,7 +1709,7 @@
         row.className = "detail-row";
         const icon = document.createElement("span");
         icon.className = "detail-icon";
-        icon.textContent = item.icon;
+        icon.innerHTML = detailIconSvg(item.icon);
         const text = document.createElement("span");
         text.textContent = item.text;
         row.append(icon,text);
@@ -1632,6 +1734,36 @@
     function updateCounters(){
       setCounterState(tituloCount,fields.titulo.value.length,64,52);
       setCounterState(bajadaCount,fields.bajada.value.length,130,108);
+      setCounterState(legalCount,fields.legalText.value.length,320,240);
+    }
+
+    function updateContentHealth(){
+      const warnings = [];
+      const title = fields.titulo.value.trim();
+      const subtitle = fields.bajada.value.trim();
+      const legal = fields.legalText.value.trim();
+      const detailItems = getDetailItems().filter(item => item.text);
+
+      if (title.length > 52 || /\S{20,}/.test(title)){
+        warnings.push("El título es extenso y se reducirá automáticamente.");
+      }
+      if (subtitle.length > 108 || /\S{24,}/.test(subtitle)){
+        warnings.push("La bajada está cerca del máximo; revisá que siga siendo fácil de leer.");
+      }
+      if (detailItems.some(item => item.text.length > 58 || /\S{24,}/.test(item.text))){
+        warnings.push("Uno o más datos específicos se abreviarán con puntos suspensivos.");
+      }
+      if (legal.length > 220){
+        warnings.push("El legal ocupará hasta tres líneas y tendrá una tipografía más pequeña.");
+      }
+
+      const hasWarnings = warnings.length > 0;
+      contentHealthCard.classList.toggle("warning",hasWarnings);
+      contentHealthIcon.textContent = hasWarnings ? "!" : "✓";
+      contentHealthTitle.textContent = hasWarnings ? "Revisá la legibilidad" : "Composición equilibrada";
+      contentHealthText.textContent = hasWarnings
+        ? warnings.join(" ")
+        : "Los textos tienen una extensión adecuada para el diseño seleccionado.";
     }
 
     function applyPartnerLogoMode(){
@@ -1712,6 +1844,7 @@
       preview.category.textContent = categoryLabels[tipo] || "Comunicación comercial";
       preview.title.textContent = titulo;
       preview.subtitle.textContent = bajada;
+      preview.legal.textContent = fields.legalText.value.trim() || "SUJETO A TÉRMINOS Y CONDICIONES.";
       renderDetails();
       preview.cta.textContent = cta;
       preview.cta.classList.toggle("hidden-cta",!cta);
@@ -1734,6 +1867,7 @@
       }
 
       updateProgress();
+      updateContentHealth();
       validateForm(false);
       scheduleSave();
     }
@@ -1845,6 +1979,7 @@
         qrLink:normalizeUrl(fields.qrLink.value),
         agregarQr:fields.usarQr.checked && fields.ctaTipo.value === "Sin CTA",
         objetivo:fields.objetivo.value.trim(),
+        legal:fields.legalText.value.trim(),
         datosEspecificos:getDetailItems().map(item => item.text),
         estilo:selectedTemplate(),
         alineacion:fields.alignment.value,
@@ -1892,6 +2027,7 @@ Estado: Lista para enviar a Marketing`;
       fields.partnerLogoMode.value = "claro";
       fields.alignment.value = "left";
       fields.imageOpacity.value = "22";
+      fields.legalText.value = "SUJETO A TÉRMINOS Y CONDICIONES. UNIVERSAL ASSISTANCE SE RESERVA EL DERECHO DE INTERPRETACIÓN.";
 
       preview.partnerLogo.classList.add("hidden");
       preview.partnerLogo.removeAttribute("src");
@@ -1956,37 +2092,174 @@ Estado: Lista para enviar a Marketing`;
       ctx.drawImage(img,x+(w-nw)/2,y+(h-nh)/2,nw,nh);
     }
 
-    function wrapLines(ctx,text,maxWidth){
-      const words = String(text || "").split(/\s+/).filter(Boolean);
-      const lines = [];
-      let line = "";
-      words.forEach(word => {
-        const test = line ? `${line} ${word}` : word;
-        if (ctx.measureText(test).width > maxWidth && line){
-          lines.push(line);
-          line = word;
+    function splitTokenToFit(ctx,token,maxWidth){
+      const chunks = [];
+      let chunk = "";
+
+      Array.from(String(token || "")).forEach(character => {
+        const test = `${chunk}${character}`;
+        if (chunk && ctx.measureText(test).width > maxWidth){
+          chunks.push(chunk);
+          chunk = character;
         }else{
-          line = test;
+          chunk = test;
         }
       });
-      if (line) lines.push(line);
+
+      if (chunk) chunks.push(chunk);
+      return chunks;
+    }
+
+    function wrapLines(ctx,text,maxWidth){
+      const paragraphs = String(text || "").replace(/\r/g,"").split("\n");
+      const lines = [];
+
+      paragraphs.forEach((paragraph,paragraphIndex) => {
+        const words = paragraph.trim().split(/\s+/).filter(Boolean);
+        let line = "";
+
+        if (!words.length){
+          if (paragraphIndex < paragraphs.length-1) lines.push("");
+          return;
+        }
+
+        words.forEach(word => {
+          const parts = ctx.measureText(word).width > maxWidth
+            ? splitTokenToFit(ctx,word,maxWidth)
+            : [word];
+
+          parts.forEach((part,partIndex) => {
+            const separator = line && partIndex === 0 ? " " : "";
+            const test = `${line}${separator}${part}`;
+
+            if (line && ctx.measureText(test).width > maxWidth){
+              lines.push(line);
+              line = part;
+            }else{
+              line = test;
+            }
+          });
+        });
+
+        if (line) lines.push(line);
+      });
+
       return lines;
     }
 
+    function truncateToWidth(ctx,text,maxWidth){
+      const ellipsis = "…";
+      const characters = Array.from(String(text || ""));
+      if (ctx.measureText(characters.join("")).width <= maxWidth) return characters.join("");
+
+      while (characters.length && ctx.measureText(`${characters.join("")}${ellipsis}`).width > maxWidth){
+        characters.pop();
+      }
+      return `${characters.join("").trimEnd()}${ellipsis}`;
+    }
+
+    function wrappedLinesForDrawing(ctx,text,maxWidth,maxLines){
+      const allLines = wrapLines(ctx,text,maxWidth);
+      const lines = allLines.slice(0,maxLines);
+
+      if (allLines.length > maxLines && lines.length){
+        lines[lines.length-1] = truncateToWidth(ctx,`${lines[lines.length-1]}…`,maxWidth);
+      }
+      return lines;
+    }
+
+    function fitTextSize(ctx,text,maxWidth,maxLines,startSize,minSize,fontWeight){
+      let size = startSize;
+      while (size > minSize){
+        ctx.font = `${fontWeight} ${size}px Poppins, Arial`;
+        if (wrapLines(ctx,text,maxWidth).length <= maxLines) break;
+        size -= 1;
+      }
+      return size;
+    }
+
     function drawWrappedText(ctx,text,x,y,maxWidth,lineHeight,maxLines,align="left"){
-      const lines = wrapLines(ctx,text,maxWidth).slice(0,maxLines);
+      const lines = wrappedLinesForDrawing(ctx,text,maxWidth,maxLines);
       ctx.textAlign = align;
       lines.forEach((line,index) => ctx.fillText(line,x,y+index*lineHeight));
       return y + lines.length*lineHeight;
     }
 
-    async function downloadPng(){
-      const width = 1080;
-      const height = 1530;
-      const canvas = document.createElement("canvas");
-      canvas.width = width;
-      canvas.height = height;
-      const ctx = canvas.getContext("2d");
+
+    function drawDetailIcon(ctx,type,cx,cy,size=22){
+      ctx.save();
+      ctx.translate(cx,cy);
+      ctx.strokeStyle = "#FFFFFF";
+      ctx.fillStyle = "#FFFFFF";
+      ctx.lineWidth = Math.max(2,size*.09);
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      const r = size*.38;
+
+      if (type === "calendar"){
+        roundRect(ctx,-r,-r*.72,r*2,r*1.55,r*.22);
+        ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(-r,-r*.22); ctx.lineTo(r,-r*.22); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(-r*.45,-r); ctx.lineTo(-r*.45,-r*.55); ctx.moveTo(r*.45,-r); ctx.lineTo(r*.45,-r*.55); ctx.stroke();
+      }else if (type === "clock"){
+        ctx.beginPath(); ctx.arc(0,0,r,0,Math.PI*2); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(0,-r*.55); ctx.moveTo(0,0); ctx.lineTo(r*.42,r*.20); ctx.stroke();
+      }else if (type === "location"){
+        ctx.beginPath();
+        ctx.moveTo(0,r);
+        ctx.bezierCurveTo(-r*.9,r*.05,-r*.8,-r*.9,0,-r);
+        ctx.bezierCurveTo(r*.8,-r*.9,r*.9,r*.05,0,r);
+        ctx.stroke();
+        ctx.beginPath(); ctx.arc(0,-r*.25,r*.24,0,Math.PI*2); ctx.stroke();
+      }else if (type === "product"){
+        roundRect(ctx,-r,-r*.55,r*2,r*1.25,r*.20); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(-r*.35,-r*.55); ctx.lineTo(-r*.35,-r*.85); ctx.lineTo(r*.35,-r*.85); ctx.lineTo(r*.35,-r*.55); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(-r,-r*.05); ctx.lineTo(r,-r*.05); ctx.stroke();
+      }else if (type === "benefit"){
+        ctx.beginPath(); ctx.arc(0,0,r,0,Math.PI*2); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(-r*.45,0); ctx.lineTo(-r*.12,r*.34); ctx.lineTo(r*.50,-r*.40); ctx.stroke();
+      }else if (type === "celebration"){
+        const points=[];
+        for(let i=0;i<10;i++){
+          const radius=i%2===0?r:r*.44;
+          const angle=-Math.PI/2+i*Math.PI/5;
+          points.push([Math.cos(angle)*radius,Math.sin(angle)*radius]);
+        }
+        ctx.beginPath(); ctx.moveTo(...points[0]); points.slice(1).forEach(point=>ctx.lineTo(...point)); ctx.closePath(); ctx.stroke();
+      }else if (type === "message"){
+        roundRect(ctx,-r,-r*.65,r*2,r*1.25,r*.18); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(-r*.35,r*.60); ctx.lineTo(-r*.70,r); ctx.lineTo(-r*.62,r*.52); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(-r*.45,-r*.18); ctx.lineTo(r*.45,-r*.18); ctx.moveTo(-r*.45,r*.18); ctx.lineTo(r*.15,r*.18); ctx.stroke();
+      }else if (type === "piece"){
+        ctx.beginPath(); ctx.moveTo(-r*.65,-r); ctx.lineTo(r*.20,-r); ctx.lineTo(r*.65,-r*.55); ctx.lineTo(r*.65,r); ctx.lineTo(-r*.65,r); ctx.closePath(); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(r*.20,-r); ctx.lineTo(r*.20,-r*.55); ctx.lineTo(r*.65,-r*.55); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(-r*.35,0); ctx.lineTo(r*.35,0); ctx.moveTo(-r*.35,r*.35); ctx.lineTo(r*.35,r*.35); ctx.stroke();
+      }else{
+        ctx.beginPath(); ctx.arc(0,0,r,0,Math.PI*2); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(0,-r*.10); ctx.lineTo(0,r*.55); ctx.stroke();
+        ctx.beginPath(); ctx.arc(0,-r*.50,ctx.lineWidth*.35,0,Math.PI*2); ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    function safeFileName(value){
+      return String(value || "flyer")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g,"")
+        .replace(/[^a-zA-Z0-9]+/g,"_")
+        .replace(/^_+|_+$/g,"")
+        .slice(0,48) || "flyer";
+    }
+
+    async function renderFlyerCanvas(){
+      if (document.fonts?.ready) await document.fonts.ready;
+
+        const width = 1080;
+        const height = 1530;
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
 
       const template = selectedTemplate();
       const gradient = ctx.createLinearGradient(0,0,width,height);
@@ -2085,16 +2358,19 @@ Estado: Lista para enviar a Marketing`;
       const isXLong = title.length > 56 || /\S{18,}/.test(title);
       const isLong = title.length > 44;
       let y = height*.40;
-      const titleSize = isXLong ? 66 : isLong ? 76 : 90;
+      const preferredTitleSize = isXLong ? 66 : isLong ? 76 : 90;
+      const titleMaxLines = isXLong ? 7 : isLong ? 6 : 5;
+      const titleSize = fitTextSize(ctx,title,maxTextWidth,titleMaxLines,preferredTitleSize,56,"900");
 
       ctx.fillStyle = "#fff";
       ctx.font = `900 ${titleSize}px Poppins, Arial`;
-      y = drawWrappedText(ctx,title,contentX,y,maxTextWidth,titleSize*1.04,isXLong?7:isLong?6:5,align);
+      y = drawWrappedText(ctx,title,contentX,y,maxTextWidth,titleSize*1.04,titleMaxLines,align);
 
       const subtitle = fields.bajada.value.trim() || "La bajada de la pieza se verá acá, con el tono comercial definido para la pieza.";
+      const subtitleSize = fitTextSize(ctx,subtitle,maxTextWidth,3,31,23,"500");
       ctx.fillStyle = "rgba(255,255,255,.84)";
-      ctx.font = "500 31px Poppins, Arial";
-      y = drawWrappedText(ctx,subtitle,contentX,y+35,maxTextWidth,44,3,align);
+      ctx.font = `500 ${subtitleSize}px Poppins, Arial`;
+      y = drawWrappedText(ctx,subtitle,contentX,y+35,maxTextWidth,subtitleSize*1.42,3,align);
 
       const detailItems = getDetailItems().slice(0,4);
       const detailWidth = getQrUrl() ? width*.60 : width*.86;
@@ -2113,14 +2389,14 @@ Estado: Lista para enviar a Marketing`;
         roundRect(ctx,detailX+15,y+13,38,38,10);
         ctx.fill();
 
-        ctx.fillStyle = "#fff";
-        ctx.font = "900 18px Poppins, Arial";
-        ctx.textAlign = "center";
-        ctx.fillText(item.icon,detailX+34,y+39);
+        drawDetailIcon(ctx,item.icon,detailX+34,y+32,22);
 
+        ctx.fillStyle = "#fff";
         ctx.font = "700 24px Poppins, Arial";
         ctx.textAlign = "left";
-        ctx.fillText(String(item.text).slice(0,58),detailX+69,y+39);
+        const detailTextWidth = detailWidth-92;
+        const detailText = wrappedLinesForDrawing(ctx,String(item.text),detailTextWidth,1)[0] || "";
+        ctx.fillText(detailText,detailX+69,y+39);
         y += rowH+12;
       });
 
@@ -2134,9 +2410,14 @@ Estado: Lista para enviar a Marketing`;
         roundRect(ctx,ctaX,ctaY,ctaW,ctaH,37);
         ctx.fill();
         ctx.fillStyle = "#00528F";
-        ctx.font = "900 28px Poppins, Arial";
+        let ctaFontSize = 28;
+        ctx.font = `900 ${ctaFontSize}px Poppins, Arial`;
+        while (ctaFontSize > 20 && ctx.measureText(ctaText).width > ctaW-70){
+          ctaFontSize -= 1;
+          ctx.font = `900 ${ctaFontSize}px Poppins, Arial`;
+        }
         ctx.textAlign = "center";
-        ctx.fillText(ctaText,ctaX+ctaW/2,ctaY+47);
+        ctx.fillText(truncateToWidth(ctx,ctaText,ctaW-60),ctaX+ctaW/2,ctaY+47);
       }
 
       const qrUrl = getQrUrl();
@@ -2153,20 +2434,125 @@ Estado: Lista para enviar a Marketing`;
         }catch(error){}
       }
 
+      const legalText = fields.legalText.value.trim() || "SUJETO A TÉRMINOS Y CONDICIONES.";
+      const legalSize = fitTextSize(ctx,legalText,width*.84,3,17,12,"700");
       ctx.fillStyle = "rgba(255,255,255,.62)";
-      ctx.font = "700 17px Poppins, Arial";
-      ctx.textAlign = "center";
-      ctx.fillText("SUJETO A TÉRMINOS Y CONDICIONES. UNIVERSAL ASSISTANCE SE RESERVA EL DERECHO DE INTERPRETACIÓN.",width/2,height*.952);
+      ctx.font = `700 ${legalSize}px Poppins, Arial`;
+      drawWrappedText(
+        ctx,
+        legalText,
+        width/2,
+        height*.925,
+        width*.84,
+        legalSize*1.35,
+        3,
+        "center"
+      );
 
-      const link = document.createElement("a");
-      link.download = `UA_Flyer_${Date.now()}.png`;
-      link.href = canvas.toDataURL("image/png");
-      link.click();
+      return canvas;
+    }
+
+    async function runExport(button,loadingText,errorMessage,task){
+      if (button.disabled) return;
+      const originalText = button.textContent;
+      button.disabled = true;
+      button.textContent = loadingText;
+      try{
+        await task();
+      }catch(error){
+        console.error(errorMessage,error);
+        window.alert(errorMessage);
+      }finally{
+        button.disabled = false;
+        button.textContent = originalText;
+      }
+    }
+
+    async function downloadPng(){
+      const button = document.getElementById("downloadPngBtn");
+      await runExport(button,"Generando PNG...","No se pudo generar el PNG. Revisá las imágenes cargadas e intentá nuevamente.",async () => {
+        const canvas = await renderFlyerCanvas();
+        const title = fields.titulo.value.trim() || adaptDefaultTitle();
+        const link = document.createElement("a");
+        link.download = `UA_${safeFileName(title)}_${new Date().toISOString().slice(0,10)}.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      });
+    }
+
+    function createPdfBlobFromCanvas(canvas){
+      const base64 = canvas.toDataURL("image/jpeg",.95).split(",")[1];
+      const binary = atob(base64);
+      const jpegBytes = new Uint8Array(binary.length);
+      for (let index=0;index<binary.length;index++) jpegBytes[index] = binary.charCodeAt(index);
+
+      const encoder = new TextEncoder();
+      const chunks = [];
+      const offsets = Array(6).fill(0);
+      let byteLength = 0;
+      const addText = text => {
+        const bytes = encoder.encode(text);
+        chunks.push(bytes);
+        byteLength += bytes.length;
+      };
+      const addBytes = bytes => {
+        chunks.push(bytes);
+        byteLength += bytes.length;
+      };
+      const startObject = number => {
+        offsets[number] = byteLength;
+        addText(`${number} 0 obj\n`);
+      };
+
+      addText("%PDF-1.4\n%UA-FLYER\n");
+
+      startObject(1);
+      addText("<< /Type /Catalog /Pages 2 0 R >>\nendobj\n");
+
+      startObject(2);
+      addText("<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n");
+
+      startObject(3);
+      addText("<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>\nendobj\n");
+
+      startObject(4);
+      addText(`<< /Type /XObject /Subtype /Image /Width ${canvas.width} /Height ${canvas.height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${jpegBytes.length} >>\nstream\n`);
+      addBytes(jpegBytes);
+      addText("\nendstream\nendobj\n");
+
+      const contentStream = "q\n595.28 0 0 841.89 0 0 cm\n/Im0 Do\nQ\n";
+      startObject(5);
+      addText(`<< /Length ${encoder.encode(contentStream).length} >>\nstream\n${contentStream}endstream\nendobj\n`);
+
+      const xrefOffset = byteLength;
+      addText("xref\n0 6\n0000000000 65535 f \n");
+      for (let number=1;number<=5;number++){
+        addText(`${String(offsets[number]).padStart(10,"0")} 00000 n \n`);
+      }
+      addText(`trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`);
+
+      return new Blob(chunks,{type:"application/pdf"});
+    }
+
+    async function downloadPdf(){
+      const button = document.getElementById("downloadPdfBtn");
+      await runExport(button,"Generando PDF...","No se pudo generar el PDF. Revisá las imágenes cargadas e intentá nuevamente.",async () => {
+        const canvas = await renderFlyerCanvas();
+        const title = fields.titulo.value.trim() || adaptDefaultTitle();
+        const blob = createPdfBlobFromCanvas(canvas);
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.download = `UA_${safeFileName(title)}_${new Date().toISOString().slice(0,10)}.pdf`;
+        link.href = url;
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(url),1500);
+      });
     }
 
     document.getElementById("sendBtn").addEventListener("click",simulateSend);
     document.getElementById("clearBtn").addEventListener("click",clearForm);
     document.getElementById("downloadPngBtn").addEventListener("click",downloadPng);
+    document.getElementById("downloadPdfBtn").addEventListener("click",downloadPdf);
     preview.cta.addEventListener("click",openCta);
 
     restoreDraft();
